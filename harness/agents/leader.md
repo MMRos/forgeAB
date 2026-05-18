@@ -59,6 +59,7 @@ Tester devuelve resultado:
    - El estado actual en current-dev.xml
    - Los `<skills_required>` de esa función para que el subagente los revise
    - El contexto mínimo necesario (no todo el proyecto)
+5. **Limpieza de contexto:** Al terminar el ciclo de una función (moviéndola a `story-dev.xml`), descarta de tu memoria operativa los detalles técnicos, discusiones y código de la función recién terminada antes de iniciar la siguiente iteración. Quédate solo con el estado global actualizado.
 
 ## Traspaso de batuta — formato estándar
 

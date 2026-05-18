@@ -85,6 +85,8 @@ Genera el bloque de comentarios de la función según `doc-primitive.js`, con to
 
 Entrega ambos esqueletos (test + implementación) al Leader, que los pasará al Implementer.
 
+**Regla de aislamiento de contexto:** Tras entregar los esqueletos de una función, descarta mentalmente sus detalles específicos. No arrastres contexto de una función a la siguiente; cada ejecución de la Fase B debe aislarse basándose únicamente en la spec que recibes en ese momento.
+
 ---
 
 ## Fase C — Actualización de diagramas (triggered por el Tester)
