@@ -9,9 +9,10 @@ Un sistema de agentes coordinados para desarrollar software de forma estructurad
 
 ```
 harness/
-├── README.md                  ← este archivo
-├── current-dev.xml            ← estado activo del desarrollo (gestionado por Leader)
-├── story-dev.xml              ← historial de funciones completadas
+├── init.sh                    ← script de inicialización y seguridad
+├── CLAUDE.md                  ← instrucciones de entrada para Claude Code
+├── .antigravity/              ← instrucciones de entrada para Antigravity
+├── .opencode/                 ← instrucciones de entrada para OpenCode
 ├── templates/                 ← plantillas base para archivos de estado y diagramas
 └── agents/
     ├── 0-leader.md            ← prompt del agente director
@@ -20,6 +21,11 @@ harness/
     ├── 3-implementer.md       ← prompt del agente implementador
     ├── 4-tester.md            ← prompt del agente tester
     └── 5-planner.md           ← prompt del agente planificador arquitectónico
+
+Generados en tiempo de ejecución por init.sh (en harness/):
+├── current-dev.xml            ← estado activo del desarrollo (gestionado por Leader)
+├── story-dev.xml              ← historial de funciones completadas
+└── error-log.xml              ← registro de errores activos
 ```
 
 ---
