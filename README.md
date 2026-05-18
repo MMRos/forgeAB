@@ -1,7 +1,7 @@
 # AI Development Harness
 ## Arnés de desarrollo asistido por IA
 
-Un sistema de agentes coordinados para desarrollar software de forma estructurada, trazable y segura. Adaptable a cualquier lenguaje de programación.
+Un sistema de agentes coordinados para desarrollar software de forma estructurada, trazable y segura. Adaptable a cualquier lenguaje de programación y equipado con validaciones de entorno para una ejecución confiable.
 
 ---
 
@@ -12,24 +12,54 @@ harness/
 ├── README.md                  ← este archivo
 ├── current-dev.xml            ← estado activo del desarrollo (gestionado por Leader)
 ├── story-dev.xml              ← historial de funciones completadas
+├── templates/                 ← plantillas base para archivos de estado y diagramas
 └── agents/
     ├── 0-leader.md            ← prompt del agente director
     ├── 1-specifier.md         ← prompt del agente especificador
     ├── 2-trapper.md           ← prompt del agente de pruebas
     ├── 3-implementer.md       ← prompt del agente implementador
-    └── 4-tester.md            ← prompt del agente tester
+    ├── 4-tester.md            ← prompt del agente tester
+    └── 5-planner.md           ← prompt del agente planificador arquitectónico
 ```
+
+---
+
+## Inicialización y Seguridad (`init.sh`)
+
+Para preparar el entorno de trabajo, el arnés incluye un script de inicialización robusto que debe ejecutarse desde la raíz de tu proyecto:
+
+```bash
+bash harness/init.sh
+```
+
+**Durante la inicialización, el script realiza:**
+1. **Revisión del entorno:** Valida que el arnés no se ejecute en la raíz del sistema operativo y comprueba los permisos de escritura del proyecto.
+2. **Pruebas de seguridad:** Verifica la integridad de la estructura base requerida (carpetas `templates/` y `agents/`).
+3. **Gestión estricta de dependencias (pnpm):** El arnés requiere `pnpm` y prohíbe explícitamente el uso de `npm`. Si `pnpm` no está instalado, el script te guiará para descargar e instalar el binario oficial de forma independiente (vía `curl` o `wget`), configurando los alias automáticamente.
+4. **Despliegue de plantillas:** Configura los archivos de estado XML (`current-dev.xml`, `story-dev.xml`), crea la estructura de diagramas y genera las configuraciones específicas por IDE.
+
+---
+
+## Diagramas Arquitectónicos (`diagrams/`)
+
+El arnés utiliza diagramas en formato Mermaid (`.mmd`) para mantener una visión clara del sistema. Estos diagramas son generados y actualizados por el agente **Planner**:
+- `class-diagram.mmd`: Estructura de clases, entidades y sus relaciones.
+- `use-case.mmd`: Interacciones de los actores con el sistema (casos de uso).
+- `sequence.mmd`: Flujo temporal de mensajes entre componentes.
+- `communication.mmd`: Flujo de mensajes estructural entre objetos.
+- `activity.mmd`: Flujo de control o de datos paso a paso.
+- `state.mmd`: Transiciones de estado de las entidades principales.
 
 ---
 
 ## Flujo de trabajo
 
 ```
-Usuario → Specifier → Leader → [Trapper → Leader → Implementer → Tester] × N
-                                              ↑                       |
-                                              └──── (si falla) ───────┘
-                                                       ↓
-                                                  Specifier → usuario
+Usuario → Specifier → Planner → Leader → [Trapper → Leader → Implementer → Tester] × N
+                                          ↑                                  |
+                                          └───────── (si falla) ─────────────┘
+                                          ↓
+                                  Specifier → usuario
 ```
 
 ### Estados de una función
@@ -65,6 +95,7 @@ agents = {
     "trapper":     load_prompt("agents/2-trapper.md"),
     "implementer": load_prompt("agents/3-implementer.md"),
     "tester":      load_prompt("agents/4-tester.md"),
+    "planner":     load_prompt("agents/5-planner.md"),
 }
 
 # El estado compartido son los archivos XML
@@ -78,11 +109,12 @@ shared_state = {
 
 Para cada función, sigue este orden:
 1. Da el prompt de Specifier + describe la función → obtén specs.
-2. Da el prompt de Trapper + specs → obtén suite de tests.
-3. Da el prompt de Implementer + specs + tests → obtén código.
-4. Da el prompt de Tester + código + tests → obtén resultados.
-5. Si todo pasa: mueve la función a `story-dev.xml`.
-6. Si falla: da el prompt de Specifier + datos del error → ajusta y repite.
+2. Da el prompt de Planner + specs → obtén arquitectura y diagramas actualizados.
+3. Da el prompt de Trapper + specs → obtén suite de tests.
+4. Da el prompt de Implementer + specs + tests → obtén código.
+5. Da el prompt de Tester + código + tests → obtén resultados.
+6. Si todo pasa: mueve la función a `story-dev.xml`.
+7. Si falla: da el prompt de Specifier (o Leader) + datos del error → ajusta y repite.
 
 ---
 
