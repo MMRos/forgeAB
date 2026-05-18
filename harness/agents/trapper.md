@@ -42,12 +42,18 @@ Para cada función debes diseñar mínimo una prueba de cada tipo:
 - Cubre: base de datos, APIs externas, sistema de archivos, cola de mensajes (según aplique).
 - Incluye escenarios de fallo de la dependencia (timeout, error HTTP, BD caída).
 
+### 5. Pruebas de UI/UX (User Acceptance) (`type="ui_ux"`)
+- Obligatorio si la función involucra interfaz gráfica (`<ui_spec>`).
+- Verifica que la interfaz coincida con las especificaciones y el mockup aprobado.
+- Diseña escenarios a nivel de usuario final (introducir datos, click en botones, evaluar validaciones visuales).
+- Instruye sobre qué aspectos de la fluidez y aspecto de la app deben ser evaluados durante la prueba.
+
 ## Formato de entrega
 
 Para cada prueba usa este formato dentro del bloque `<tests>` de current-dev.xml:
 
 ```xml
-<test type="[unit|functional|security|integration]"
+<test type="[unit|functional|security|integration|ui_ux]"
       id="[FID]-[TIPO][N]"
       status="Pending"
       result="">

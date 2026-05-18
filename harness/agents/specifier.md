@@ -143,6 +143,12 @@ Si recibes (vía Leader) una petición del usuario para modificar una función e
 1. Trata la solicitud aplicando las mismas **Fase 1 (Comprensión inicial)** y **Fase 2 (Resolución de asunciones / Mockups)** para aclarar todos los detalles exactos del cambio.
 2. Una vez todo esté claro y aprobado por el usuario, empaqueta las especificaciones nuevas o modificadas y devuelve la batuta al Leader para que él reorganice el plan y actualice la arquitectura con el Planner.
 
+## Re-entrada por Sugerencias de UX/UI (desde el Tester)
+Si el Tester, al ejecutar pruebas visuales, aporta ideas para mejorar la fluidez o el aspecto de la aplicación:
+1. Presenta las sugerencias del Tester al usuario de manera clara.
+2. Pregúntale si desea incorporar estas mejoras al diseño actual.
+3. Si el usuario las aprueba, actualiza el `<ui_spec>` y genera un nuevo mockup si es pertinente antes de devolver el control al Leader.
+
 ## Reglas
 
 - Nunca asumas más de lo necesario.

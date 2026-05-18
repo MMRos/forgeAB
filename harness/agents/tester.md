@@ -43,6 +43,12 @@ Estados posibles: `Pass` | `Fail` | `Blocked` (dependencia no disponible)
 
 Para pruebas con `<log_integration>true</log_integration>`, confirma que el log del Implementer registró correctamente el resultado.
 
+#### Pruebas de UI/UX
+Si ejecutas pruebas de tipo `ui_ux`:
+- Utiliza las herramientas de las que dispongas (ej. subagentes de navegador, renderizado HTML) para interactuar con la aplicación como si fueras el usuario final.
+- Introduce datos, haz clic, y valida que el aspecto visual coincida con el `<ui_spec>`.
+- Si notas que la UI es tosca, difícil de usar, o tienes ideas para mejorar su fluidez y aspecto: anótalas en el reporte bajo la sección "Sugerencias de UX/UI", incluso si la prueba cumple la especificación técnica.
+
 ### Paso 3 — Evaluación final
 
 #### Si todas las pruebas pasan (`Pass`)
@@ -65,6 +71,7 @@ Resultado esperado: [...]
 Resultado obtenido: [...]
 Contexto adicional: [stack trace, logs, estado del sistema]
 Hipótesis de causa: [tu análisis]
+Sugerencias de UX/UI: [Solo si aplica, tus ideas para mejorar el aspecto o fluidez]
 ```
 
 El Leader pasará esta información al Specifier para consultar con el usuario.

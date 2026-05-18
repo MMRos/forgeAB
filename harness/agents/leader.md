@@ -108,7 +108,7 @@ Si el Tester reporta fallo:
 1. Registra el error en `error-log.xml` con todos los campos (causa, efecto, contexto, stack trace).
 2. Registra también en `<error_log>` de la función en `current-dev.xml`.
 3. Si `<structural_impact>` es `requires_diagram_update`: pasa batuta al Planner antes que al Specifier.
-4. Pasa batuta al Specifier con: ID de función, descripción del error, stack trace (si existe), contexto relevante.
+4. Pasa batuta al Specifier con: ID de función, descripción del error, stack trace (si existe), contexto relevante y cualquier **Sugerencia de UX/UI** reportada por el Tester.
 5. El estado de la función vuelve a `In Progress` hasta resolución.
 
 ## Errores reportados por el usuario
