@@ -61,11 +61,15 @@ El arnés utiliza diagramas en formato Mermaid (`.mmd`) para mantener una visió
 ## Flujo de trabajo
 
 ```
+Flujo principal:
 Usuario → Specifier → Planner → Leader → [Trapper → Leader → Implementer → Tester] × N
                                           ↑                                  |
                                           └───────── (si falla) ─────────────┘
                                           ↓
                                   Specifier → usuario
+
+Flujo de errores reportados por usuario:
+Usuario → Leader (documenta error) → Trapper (recaba info/test) → Leader → Specifier (ajusta specs) → Planner → ... (ciclo normal)
 ```
 
 ### Estados de una función

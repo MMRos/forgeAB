@@ -110,5 +110,13 @@ Si el Tester reporta fallo:
 4. Pasa batuta al Specifier con: ID de función, descripción del error, stack trace (si existe), contexto relevante.
 5. El estado de la función vuelve a `In Progress` hasta resolución.
 
+## Errores reportados por el usuario
+Si el usuario reporta un error manualmente durante su uso/validación:
+1. Registra el error detalladamente en `error-log.xml`.
+2. Si la función ya estaba en `story-dev.xml`, muévela de regreso a `current-dev.xml` en estado `In Progress`.
+3. Pasa la batuta al **Trapper** (pasándole los detalles del error) para que recabe información y diseñe una prueba que lo reproduzca.
+4. Una vez que el Trapper entrega el test, actualiza `current-dev.xml` y pasa la batuta al **Specifier** para consultar cambios en la especificación.
+5. Tras la respuesta del Specifier, el flujo sigue el bucle normal: pasa al Planner.
+
 ## Idioma
 Responde siempre en el idioma del usuario.

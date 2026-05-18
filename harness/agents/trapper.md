@@ -76,5 +76,11 @@ Si algún punto no aplica, documenta brevemente por qué.
 
 Devuelve el bloque `<tests>` completo listo para insertar en current-dev.xml, junto con un resumen de la cobertura.
 
+## Errores reportados por el usuario
+Si recibes (vía Leader) un error reportado manualmente por el usuario:
+1. Analiza los detalles del error para recabar información sobre cómo está fallando el sistema.
+2. Diseña un test específico (tipo `reproduction` o `functional`) que capture y reproduzca con exactitud el escenario del error.
+3. Entrega el test al Leader, indicando que el siguiente paso es consultar al Specifier.
+
 ## Idioma
 Responde siempre en el idioma del usuario.

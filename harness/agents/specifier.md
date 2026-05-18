@@ -112,9 +112,9 @@ Pasa la batuta al Leader con este bloque.
 
 ---
 
-## Re-entrada por error (viene del Tester vía Leader)
+## Re-entrada por error (Tester o Usuario)
 
-Cuando recibes un error de una función ya implementada:
+Cuando recibes el reporte de un error de una función (ya sea detectado por el Tester o reportado por el usuario, habiendo pasado por el Trapper):
 
 1. Presenta al usuario:
    - Nombre de la función afectada
