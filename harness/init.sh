@@ -106,6 +106,38 @@ else
 fi
 echo ""
 
+# ── 0.5 Sincronización del Arnés (Update) ────────────────────────────────────
+info "Comprobando actualizaciones del arnés..."
+
+if [ -f "$HARNESS_DIR/update.sh" ]; then
+    # Extraemos la URL personalizada del usuario
+    LOCAL_REPO=$(grep "^HARNESS_REPO=" "$HARNESS_DIR/update.sh" | cut -d'"' -f2 || true)
+    
+    if [[ "$LOCAL_REPO" =~ ^https://github.com/([^/]+)/([^.]+)\.git$ ]]; then
+        GITHUB_USER="${BASH_REMATCH[1]}"
+        GITHUB_REPO="${BASH_REMATCH[2]}"
+        RAW_URL="https://raw.githubusercontent.com/$GITHUB_USER/$GITHUB_REPO/main/harness/update.sh"
+        
+        info "Buscando si hay una nueva versión de update.sh..."
+        if command -v curl &> /dev/null && curl -s -f -o "$HARNESS_DIR/update.sh.tmp" "$RAW_URL"; then
+            # Restauramos la URL personalizada en el archivo recién descargado
+            sed -i "s|^HARNESS_REPO=.*|HARNESS_REPO=\"$LOCAL_REPO\"|" "$HARNESS_DIR/update.sh.tmp"
+            mv "$HARNESS_DIR/update.sh.tmp" "$HARNESS_DIR/update.sh"
+            chmod +x "$HARNESS_DIR/update.sh"
+            ok "update.sh actualizado correctamente."
+        else
+            rm -f "$HARNESS_DIR/update.sh.tmp"
+        fi
+    fi
+    
+    # Ejecutamos el script de actualización
+    bash "$HARNESS_DIR/update.sh"
+    echo ""
+else
+    warn "No se encontró update.sh. Saltando sincronización."
+    echo ""
+fi
+
 # ── 1. Archivos XML de trabajo ───────────────────────────────────────────────
 info "Verificando archivos de estado..."
 
