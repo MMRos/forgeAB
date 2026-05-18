@@ -1,6 +1,5 @@
 # AI Development Harness
 ## Arnés de desarrollo asistido por IA
-
 Un sistema de agentes coordinados para desarrollar software de forma estructurada, trazable y segura. Adaptable a cualquier lenguaje de programación y equipado con validaciones de entorno para una ejecución confiable.
 
 ---
@@ -168,5 +167,5 @@ Si usas un sistema de skills (como el de Claude), el Leader indicará en cada tr
 ---
 
 ## Licencia
-
-Este arnés es una plantilla de libre uso. Adáptalo a tus necesidades.
+Creado por MMRos.
+Licencia pendiente.
