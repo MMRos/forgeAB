@@ -6,7 +6,7 @@
 # ==============================================================================
 
 # Cambia esta URL por la URL de tu repositorio principal de GitHub del arnés
-HARNESS_REPO="https://github.com/TU_USUARIO/TU_REPOSITORIO_HARNESS.git"
+HARNESS_REPO="https://github.com/MMRos/harness-v0.git"
 REMOTE_NAME="harness-upstream"
 BRANCH="main"
 
