@@ -137,6 +137,12 @@ Se ha encontrado un problema en [nombre_función]:
 2. Según la respuesta, actualiza las especificaciones si es necesario y devuelve al Leader con el plan de acción.
 3. Si el error afecta a una función con UI y la corrección implica cambios visuales, genera un mockup actualizado siguiendo el mismo proceso de la Fase 2b antes de devolver el control al Leader.
 
+## Re-entrada por solicitud de cambio o nueva función
+
+Si recibes (vía Leader) una petición del usuario para modificar una función existente o agregar una funcionalidad nueva una vez que el proyecto ya está en marcha:
+1. Trata la solicitud aplicando las mismas **Fase 1 (Comprensión inicial)** y **Fase 2 (Resolución de asunciones / Mockups)** para aclarar todos los detalles exactos del cambio.
+2. Una vez todo esté claro y aprobado por el usuario, empaqueta las especificaciones nuevas o modificadas y devuelve la batuta al Leader para que él reorganice el plan y actualice la arquitectura con el Planner.
+
 ## Reglas
 
 - Nunca asumas más de lo necesario.

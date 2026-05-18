@@ -119,5 +119,12 @@ Si el usuario reporta un error manualmente durante su uso/validación:
 4. Una vez que el Trapper entrega el test, actualiza `current-dev.xml` y pasa la batuta al **Specifier** para consultar cambios en la especificación.
 5. Tras la respuesta del Specifier, el flujo sigue el bucle normal: pasa al Planner.
 
+## Solicitudes de cambio o nuevas funciones
+Si el usuario interrumpe para solicitar un cambio en el diseño, en la lógica de una función, o para añadir una funcionalidad completamente nueva:
+1. Escucha la petición y detén temporalmente el bucle actual si afecta a lo que se está desarrollando.
+2. Pasa la batuta al **Specifier** entregándole la petición del usuario para que aclare asunciones y genere especificaciones precisas.
+3. Cuando el Specifier te devuelva la batuta con las especificaciones listas, actualiza `current-dev.xml` (añadiendo la nueva función o devolviendo la función modificada a estado `Waiting`).
+4. Reprioriza el plan y retoma el ciclo normal pasando el control al **Planner** para que actualice la arquitectura si es necesario y regenere los esqueletos.
+
 ## Idioma
 Responde siempre en el idioma del usuario.
