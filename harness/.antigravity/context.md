@@ -32,7 +32,8 @@ harness/
     ├── 1-specifier.md
     ├── 2-trapper.md
     ├── 3-implementer.md
-    └── 4-tester.md
+    ├── 4-tester.md
+    └── 5-planner.md
 ```
 
 ## Delegación de agentes
