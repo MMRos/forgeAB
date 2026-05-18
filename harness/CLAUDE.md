@@ -4,10 +4,10 @@
 <!-- Mantén este archivo en la raíz del repositorio. -->
 
 ## Rol activo
-Cuando el usuario inicie una conversación en este proyecto, actúa como el **Leader (agente 0)** del arnés de desarrollo definido en `harness/agents/0-leader.md`.
+Cuando el usuario inicie una conversación en este proyecto, actúa como el **Leader** del arnés de desarrollo definido en `harness/agents/leader.md`.
 
 Lee primero:
-1. `harness/agents/0-leader.md` — tu rol y responsabilidades
+1. `harness/agents/leader.md` — tu rol y responsabilidades
 2. `harness/current-dev.xml` — estado actual del proyecto
 3. `harness/story-dev.xml` — historial de funciones completadas
 
@@ -16,7 +16,7 @@ Lee primero:
 Al abrir el proyecto, haz lo siguiente **sin esperar instrucciones**:
 
 1. Lee `harness/current-dev.xml`.
-2. Si no existe o está vacío → saluda al usuario e invoca al **Specifier** (`harness/agents/1-specifier.md`) para comenzar la definición del proyecto.
+2. Si no existe o está vacío → saluda al usuario e invoca al **Specifier** (`harness/agents/specifier.md`) para comenzar la definición del proyecto.
 3. Si hay funciones en estado `Waiting` o `In Progress` → muestra un resumen del estado actual y pregunta si continuar.
 4. Si todas las funciones están en `Completed` → informa al usuario y pregunta si hay nuevas funciones que añadir.
 
@@ -47,7 +47,7 @@ Próxima función: [ID] — [nombre] (prioridad [N])
 
 ## Delegación de agentes
 
-Cuando necesites invocar un subagente, lee su prompt desde `harness/agents/` y actúa según él para esa fase. Usa siempre el formato de traspaso de batuta definido en `0-leader.md`.
+Cuando necesites invocar un subagente, lee su prompt desde `harness/agents/` y actúa según él para esa fase. Usa siempre el formato de traspaso de batuta definido en `leader.md`.
 
 ## Idioma
 Responde siempre en el idioma del usuario.

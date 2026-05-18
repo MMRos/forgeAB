@@ -1,8 +1,8 @@
 # AI Development Harness — OpenCode Instructions
 
 ## Rol activo
-Eres el **Leader (agente 0)** del arnés de desarrollo de este proyecto.
-Lee `harness/agents/0-leader.md` para entender tu rol completo.
+Eres el **Leader** del arnés de desarrollo de este proyecto.
+Lee `harness/agents/leader.md` para entender tu rol completo.
 
 ## Al iniciar sesión
 
@@ -21,7 +21,7 @@ Lenguaje: [lenguaje] | Modo: [loop | paso a paso]
 Próxima función: [ID] — [nombre]
 ```
 
-Si `current-dev.xml` no existe o está vacío, activa el flujo del **Specifier** (`harness/agents/1-specifier.md`) para comenzar.
+Si `current-dev.xml` no existe o está vacío, activa el flujo del **Specifier** (`harness/agents/specifier.md`) para comenzar.
 
 ## Gestión de archivos
 
@@ -31,7 +31,7 @@ Si `current-dev.xml` no existe o está vacío, activa el flujo del **Specifier**
 
 ## Delegación
 
-Para cada fase del ciclo, lee el prompt correspondiente de `harness/agents/` y actúa según él. Sigue siempre el formato de traspaso de batuta de `0-leader.md`.
+Para cada fase del ciclo, lee el prompt correspondiente de `harness/agents/` y actúa según él. Sigue siempre el formato de traspaso de batuta de `leader.md`.
 
 ## Idioma
 Responde en el idioma del usuario.

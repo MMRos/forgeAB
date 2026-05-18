@@ -15,12 +15,12 @@ harness/
 ├── .opencode/                 ← instrucciones de entrada para OpenCode
 ├── templates/                 ← plantillas base para archivos de estado y diagramas
 └── agents/
-    ├── 0-leader.md            ← prompt del agente director
-    ├── 1-specifier.md         ← prompt del agente especificador
-    ├── 2-trapper.md           ← prompt del agente de pruebas
-    ├── 3-implementer.md       ← prompt del agente implementador
-    ├── 4-tester.md            ← prompt del agente tester
-    └── 5-planner.md           ← prompt del agente planificador arquitectónico
+    ├── leader.md              ← prompt del agente director
+    ├── specifier.md           ← prompt del agente especificador
+    ├── trapper.md             ← prompt del agente de pruebas
+    ├── implementer.md         ← prompt del agente implementador
+    ├── tester.md              ← prompt del agente tester
+    └── planner.md             ← prompt del agente planificador arquitectónico
 
 Generados en tiempo de ejecución por init.sh (en harness/):
 ├── current-dev.xml            ← estado activo del desarrollo (gestionado por Leader)
@@ -83,10 +83,10 @@ Waiting → In Progress → Testing Pending → Completed
 ### Opción A — Con un modelo de IA conversacional (Claude, GPT, etc.)
 
 1. Abre una conversación nueva.
-2. Pega el contenido de `agents/1-specifier.md` como system prompt (o como primer mensaje indicando el rol).
+2. Pega el contenido de `agents/specifier.md` como system prompt (o como primer mensaje indicando el rol).
 3. Describe tu proyecto o funcionalidad al agente.
 4. El Specifier te guiará para clarificar requisitos.
-5. Cuando el Specifier pase la batuta al Leader, cambia al prompt de `agents/0-leader.md`.
+5. Cuando el Specifier pase la batuta al Leader, cambia al prompt de `agents/leader.md`.
 6. Continúa el ciclo según el flujo, cambiando de prompt al agent indicado.
 
 ### Opción B — Con un sistema multi-agente automatizado
@@ -96,12 +96,12 @@ Configura cada agente con su prompt correspondiente en tu framework (LangGraph, 
 ```python
 # Ejemplo conceptual con cualquier framework multi-agente
 agents = {
-    "leader":      load_prompt("agents/0-leader.md"),
-    "specifier":   load_prompt("agents/1-specifier.md"),
-    "trapper":     load_prompt("agents/2-trapper.md"),
-    "implementer": load_prompt("agents/3-implementer.md"),
-    "tester":      load_prompt("agents/4-tester.md"),
-    "planner":     load_prompt("agents/5-planner.md"),
+    "leader":      load_prompt("agents/leader.md"),
+    "specifier":   load_prompt("agents/specifier.md"),
+    "trapper":     load_prompt("agents/trapper.md"),
+    "implementer": load_prompt("agents/implementer.md"),
+    "tester":      load_prompt("agents/tester.md"),
+    "planner":     load_prompt("agents/planner.md"),
 }
 
 # El estado compartido son los archivos XML
