@@ -1,0 +1,41 @@
+%%
+  communication.mmd
+  Diagrama de Comunicación (Colaboración) — generado y mantenido por el Planner.
+  Actualizar cuando el Tester detecte structural_impact = requires_diagram_update.
+
+  Propósito: mostrar el flujo de mensajes entre componentes destacando
+             las relaciones estructurales, sin importar el orden temporal.
+  Complementa al diagrama de secuencia: úsalos juntos para el mismo escenario.
+
+  Convenciones:
+    - Los nodos representan objetos/componentes participantes
+    - Las etiquetas de flecha siguen el formato: N: mensaje(params)
+      donde N es el número de orden del mensaje
+    - Numeración jerárquica para sub-mensajes: 1.1, 1.2, 2.1...
+    - Las relaciones estructurales (líneas sin flecha) muestran conocimiento mutuo
+%%
+
+%% Mermaid no tiene tipo nativo de diagrama de comunicación UML.
+%% Se representa con un graph que destaca relaciones y numera los mensajes.
+
+graph TB
+
+  %% ─── COMPONENTES PARTICIPANTES ──────────────────────────────────────────────
+  A["ComponenteA\n(iniciador)"]
+  B["ComponenteB"]
+  C["ComponenteC"]
+  D["ComponenteD\n(persistencia)"]
+
+  %% ─── RELACIONES ESTRUCTURALES (conocimiento entre componentes) ───────────────
+  A --- B
+  B --- C
+  B --- D
+
+  %% ─── FLUJO DE MENSAJES NUMERADOS ────────────────────────────────────────────
+  %% Formato de etiqueta: "N: nombreMensaje(params) → returnType"
+  A -->|"1: iniciarOperacion(datos)"| B
+  B -->|"1.1: validar(datos)"| C
+  C -->|"1.1.1: persistir(entidad)"| D
+  D -->|"1.1.2: confirmar(id)"| C
+  C -->|"1.2: resultado(ok)"| B
+  B -->|"2: respuesta(payload)"| A
