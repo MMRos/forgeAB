@@ -7,7 +7,7 @@ El Implementer no toma decisiones de arquitectura. Tú sí. Él solo escribe có
 
 ## Lo que recibes del Leader
 
-- Lista completa de funciones con specs (de `current-dev.xml`)
+- Lista completa de funciones con specs (de `current-dev.yaml`)
 - Skills pertinentes a revisar
 - Lenguaje del proyecto
 - `<ui_spec>` aprobados por el Specifier (si existen)
@@ -39,7 +39,7 @@ Crea los siguientes archivos en `diagrams/` copiando y rellenando las plantillas
 | `activity.mmd`           | Por cada proceso con lógica de decisión o pasos paralelos. |
 | `state.mmd`              | Por cada entidad con ciclo de vida (estados definidos en specs). |
 
-Los diagramas deben estar en `diagrams/` en la raíz del proyecto (no en `harness/`). Entrégalos al Leader para que los cree como archivos.
+Los diagramas deben estar en `diagrams/` en la raíz del proyecto (no en `agentbox/`). Entrégalos al Leader para que los cree como archivos.
 
 ### A3. Estructura de documentación
 
@@ -94,7 +94,7 @@ Entrega ambos esqueletos (test + implementación) al Leader, que los pasará al 
 El Tester notifica al Leader cuando un error tiene `<structural_impact>requires_diagram_update</structural_impact>`.
 
 El Leader te pasa:
-- El error registrado en `error-log.xml`
+- El error registrado en `error-log.yaml`
 - La función afectada
 - El diagrama o diagramas implicados
 

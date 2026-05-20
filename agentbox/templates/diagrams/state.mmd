@@ -1,0 +1,57 @@
+%%
+  state.mmd
+  Diagrama de Estados — generado y mantenido por el Planner.
+  Actualizar cuando el Tester detecte structural_impact = requires_diagram_update.
+
+  Propósito: modelar el ciclo de vida de una entidad u objeto del sistema,
+             mostrando los estados posibles y las transiciones entre ellos.
+  Muestra: estados, transiciones disparadas por eventos, estados compuestos
+           y estados de inicio/fin.
+
+  Convenciones:
+    - [*] nodo de inicio y fin estándar de Mermaid stateDiagram
+    - estado: nombre simple sin espacios (usar camelCase o guiones bajos)
+    - transición: evento [guardia] / acción
+    - state "Nombre Legible" as alias para nombres con espacios
+    - note: anotaciones aclaratorias sobre un estado
+%%
+
+stateDiagram-v2
+
+  %% ─── ESTADOS ESPECIALES ─────────────────────────────────────────────────────
+  [*] --> EstadoInicial
+
+  %% ─── ESTADOS SIMPLES ────────────────────────────────────────────────────────
+  state "Estado Inicial"    as EstadoInicial
+  state "En Proceso"        as EnProceso
+  state "Pendiente Revisión" as PendienteRevision
+  state "Completado"        as Completado
+  state "Cancelado"         as Cancelado
+  state "Error"             as Error
+
+  %% ─── TRANSICIONES ───────────────────────────────────────────────────────────
+  %% Formato: EstadoOrigen --> EstadoDestino : evento [guardia] / acción
+
+  EstadoInicial     --> EnProceso          : iniciar
+  EnProceso         --> PendienteRevision  : solicitar revisión
+  EnProceso         --> Error              : fallo detectado
+  PendienteRevision --> Completado         : revisión aprobada
+  PendienteRevision --> EnProceso          : revisión rechazada / reintentar
+  Error             --> EnProceso          : corregir / reintentar
+  Error             --> Cancelado          : abandonar
+  Completado        --> [*]
+  Cancelado         --> [*]
+
+  %% ─── ESTADO COMPUESTO (subestados) — descomentar si aplica ──────────────────
+  %% state EnProceso {
+  %%   [*] --> ValidandoDatos
+  %%   ValidandoDatos --> ProcesandoLogica : datos válidos
+  %%   ValidandoDatos --> [*]             : datos inválidos
+  %%   ProcesandoLogica --> [*]
+  %% }
+
+  %% ─── NOTAS ACLARATORIAS ─────────────────────────────────────────────────────
+  note right of Error
+    Registrar en error-log.xml
+    antes de transicionar
+  end note

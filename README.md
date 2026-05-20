@@ -1,5 +1,5 @@
-# AI Development Harness
-## Arnés de desarrollo asistido por IA
+# AgentBox (Forge Agent Box)
+## Entorno de desarrollo asistido por IA
 Un sistema de agentes coordinados para desarrollar software de forma estructurada, trazable y segura. Adaptable a cualquier lenguaje de programación y equipado con validaciones de entorno para una ejecución confiable.
 
 ---
@@ -7,7 +7,7 @@ Un sistema de agentes coordinados para desarrollar software de forma estructurad
 ## Estructura del proyecto
 
 ```
-harness/
+agentbox/
 ├── init.sh                    ← script de inicialización y seguridad
 ├── CLAUDE.md                  ← instrucciones de entrada para Claude Code
 ├── .antigravity/              ← instrucciones de entrada para Antigravity
@@ -21,10 +21,10 @@ harness/
     ├── tester.md              ← prompt del agente tester
     └── planner.md             ← prompt del agente planificador arquitectónico
 
-Generados en tiempo de ejecución por init.sh (en harness/):
-├── current-dev.xml            ← estado activo del desarrollo (gestionado por Leader)
-├── story-dev.xml              ← historial de funciones completadas
-└── error-log.xml              ← registro de errores activos
+Generados en tiempo de ejecución por init.sh (en agentbox/):
+├── current-dev.yaml            ← estado activo del desarrollo (gestionado por Leader)
+├── story-dev.yaml              ← historial de funciones completadas
+└── error-log.yaml              ← registro de errores activos
 ```
 
 ---
@@ -34,14 +34,14 @@ Generados en tiempo de ejecución por init.sh (en harness/):
 Para preparar el entorno de trabajo, el arnés incluye un script de inicialización robusto que debe ejecutarse desde la raíz de tu proyecto:
 
 ```bash
-bash harness/init.sh
+bash agentbox/init.sh
 ```
 
 **Durante la inicialización, el script realiza:**
 1. **Revisión del entorno:** Valida que el arnés no se ejecute en la raíz del sistema operativo y comprueba los permisos de escritura del proyecto.
 2. **Pruebas de seguridad:** Verifica la integridad de la estructura base requerida (carpetas `templates/` y `agents/`).
 3. **Gestión estricta de dependencias (pnpm):** El arnés requiere `pnpm` y prohíbe explícitamente el uso de `npm`. Si `pnpm` no está instalado, el script te guiará para descargar e instalar el binario oficial de forma independiente (vía `curl` o `wget`), configurando los alias automáticamente.
-4. **Despliegue de plantillas:** Configura los archivos de estado XML (`current-dev.xml`, `story-dev.xml`), crea la estructura de diagramas y genera las configuraciones específicas por IDE.
+4. **Despliegue de plantillas:** Configura los archivos de estado XML (`current-dev.yaml`, `story-dev.yaml`), crea la estructura de diagramas y genera las configuraciones específicas por IDE.
 
 ---
 
@@ -107,10 +107,10 @@ agents = {
     "planner":     load_prompt("agents/planner.md"),
 }
 
-# El estado compartido son los archivos XML
+# El estado compartido son los archivos YAML
 shared_state = {
-    "current_dev": parse_xml("current-dev.xml"),
-    "story_dev":   parse_xml("story-dev.xml"),
+    "current_dev": parse_yaml("current-dev.yaml"),
+    "story_dev":   parse_yaml("story-dev.yaml"),
 }
 ```
 
@@ -122,14 +122,14 @@ Para cada función, sigue este orden:
 3. Da el prompt de Trapper + specs → obtén suite de tests.
 4. Da el prompt de Implementer + specs + tests → obtén código.
 5. Da el prompt de Tester + código + tests → obtén resultados.
-6. Si todo pasa: mueve la función a `story-dev.xml`.
+6. Si todo pasa: mueve la función a `story-dev.yaml`.
 7. Si falla: da el prompt de Specifier (o Leader) + datos del error → ajusta y repite.
 
 ---
 
 ## Adaptación a lenguajes
 
-El arnés no asume ningún lenguaje. Cada agente adapta su output al lenguaje especificado en `<meta><language>` de `current-dev.xml`.
+El arnés no asume ningún lenguaje. Cada agente adapta su output al lenguaje especificado en `meta/language` de `current-dev.yaml`.
 
 Ejemplos de adaptaciones automáticas:
 
@@ -141,16 +141,25 @@ Ejemplos de adaptaciones automáticas:
 | Constantes        | SCREAMING_SNAKE  | SCREAMING_SNAKE   | static final        | const SCREAMING   |
 
 ---
+## Base de Conocimiento (Knowledge Base)
 
-## Skills
+Para mantener a los agentes alineados con las reglas y restricciones específicas de tu proyecto (especialmente de seguridad y dependencias obsoletas), puedes dejar notas en formato Markdown dentro de `agentbox/knowledge_base/`.
+Por defecto, el script de inicialización crea un archivo `security-guidelines.md`. El **Implementer** y el **Tester** están obligados a leer el contenido de esta carpeta antes de escribir o evaluar código.
 
-Si usas un sistema de skills (como el de Claude), el Leader indicará en cada traspaso de batuta qué skills debe revisar el subagente. Añade tus skills en la carpeta `skills/` y referéncialos en el campo `<skills_required>` de cada función en `current-dev.xml`.
+---
 
-```xml
-<skills_required>
-  <skill>docx</skill>
-  <skill>pdf-reading</skill>
-</skills_required>
+## Skills y Auditoría de Seguridad
+
+El arnés obliga al Tester a ejecutar comandos de auditoría del ecosistema (ej. `npm audit`, `cargo audit`) siempre que se enfrente a un test de seguridad.
+
+Adicionalmente, si usas un sistema de skills (como el de Claude), el Leader indicará en cada traspaso de batuta qué skills debe revisar el subagente. Añade tus skills en la carpeta `agentbox/skills/` y referéncialos en `current-dev.yaml`.
+**Por defecto se incluye el skill `cve-check`**, el cual el Trapper inyectará automáticamente si hay dependencias externas, instruyendo al Tester para que investigue vulnerabilidades (CVEs) en internet.
+
+```yaml
+skills_required:
+  - docx
+  - pdf-reading
+  - cve-check
 ```
 
 ---
@@ -158,7 +167,7 @@ Si usas un sistema de skills (como el de Claude), el Leader indicará en cada tr
 ## Principios de diseño
 
 - **Contexto mínimo por agente**: cada subagente recibe solo lo que necesita para su tarea.
-- **Trazabilidad**: todo cambio queda registrado en los XML con timestamps.
+- **Trazabilidad**: todo cambio queda registrado en los YAML con timestamps.
 - **Separación de responsabilidades**: tareas, errores y soluciones viven en archivos distintos.
 - **Seguridad por defecto**: toda función tiene pruebas de seguridad antes de implementarse.
 - **Modularidad coherente**: el código se divide por lógica, no por límite de líneas.

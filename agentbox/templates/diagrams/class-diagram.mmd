@@ -1,0 +1,62 @@
+%%
+  class-diagram.mmd
+  Diagrama de Clases — generado y mantenido por el Planner.
+  Actualizar cuando el Tester detecte structural_impact = requires_diagram_update.
+
+  Propósito: representar la arquitectura estática del sistema.
+  Muestra: clases, atributos, métodos y relaciones (herencia, composición,
+           agregación, asociación).
+
+  Convenciones:
+    - Prefijo de visibilidad: + público, - privado, # protegido, ~ paquete
+    - Cardinalidad en asociaciones: "1", "0..1", "1..*", "*"
+    - Clases abstractas: <<abstract>>
+    - Interfaces:        <<interface>>
+    - Enumeraciones:     <<enumeration>>
+%%
+
+classDiagram
+
+  %% ─── EJEMPLO — eliminar y reemplazar con las clases del proyecto ───────────
+
+  class EntidadEjemplo {
+    +String id
+    +String nombre
+    -DateTime creadoEn
+    +metodoPublico() ReturnType
+    -metodoPrivado(param: Type) void
+  }
+
+  class OtraEntidad {
+    +String referencia
+    +operacion() bool
+  }
+
+  class InterfazEjemplo {
+    <<interface>>
+    +metodoRequerido() void
+  }
+
+  class EntidadAbstracta {
+    <<abstract>>
+    +String tipo
+    +comportamiento()* void
+  }
+
+  %% ─── RELACIONES ────────────────────────────────────────────────────────────
+  %% Herencia (generalización)
+  EntidadEjemplo --|> EntidadAbstracta
+
+  %% Implementación de interfaz
+  EntidadEjemplo ..|> InterfazEjemplo
+
+  %% Composición (parte de, ciclo de vida dependiente)
+  EntidadEjemplo *-- OtraEntidad : contiene
+
+  %% Agregación (parte de, ciclo de vida independiente)
+  %% EntidadEjemplo o-- OtraEntidad : agrupa
+
+  %% Asociación con cardinalidad
+  EntidadEjemplo "1" --> "0..*" OtraEntidad : tiene
+
+  %% ─── FIN EJEMPLO ───────────────────────────────────────────────────────────

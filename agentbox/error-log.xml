@@ -8,7 +8,7 @@
 <error_log>
   <meta>
     <project><!-- Nombre del proyecto --></project>
-    <language><!-- Lenguaje(s) --></language>
+    <language>JavaScript/TypeScript</language>
   </meta>
 
   <errors>

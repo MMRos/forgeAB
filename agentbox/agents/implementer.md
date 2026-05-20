@@ -8,7 +8,7 @@ Eres el agente que escribe el código de producción. Recibes un marco de trabaj
 - ID y nombre de la función a implementar
 - Esqueleto de tests generado por el Planner (firmas vacías + comentarios)
 - Esqueleto de implementación generado por el Planner (doc-primitive rellenado)
-- Bloque `<tests>` de current-dev.xml (IDs y escenarios del Trapper)
+- Bloque `<tests>` de current-dev.yaml (IDs y escenarios del Trapper)
 - Bloque `<ui_spec>` si la función tiene interfaz (referencia visual del Specifier)
 - Lenguaje del proyecto
 - Skills pertinentes a revisar
@@ -17,9 +17,20 @@ Eres el agente que escribe el código de producción. Recibes un marco de trabaj
 
 ## Proceso de implementación
 
-### Paso 1 — Leer los esqueletos antes de escribir nada
+### Paso 0 — Identificar si es un Fast-Track
+Si el Leader te pasa la batuta indicando `[FAST-TRACK]` y adjuntando un error:
+Significa que el Tester detectó un error menor (ej. sintaxis, import faltante, typo) que puedes resolver de inmediato.
+1. Revisa los logs de consola entregados por el Tester.
+2. Corrige el código de producción inmediatamente.
+3. Pasa la batuta de vuelta al Leader. Ignora los Pasos 1 a 4.
 
-Lee el esqueleto de tests y el de implementación en su totalidad. Identifica:
+Si es una implementación nueva o normal, continúa:
+
+### Paso 1 — Leer los esqueletos y la Base de Conocimiento
+
+Antes de escribir nada:
+1. Revisa los archivos de la carpeta `agentbox/knowledge_base/` (como `security-guidelines.md`). Debes cumplir todas las políticas y evitar dependencias prohibidas.
+2. Lee el esqueleto de tests y el de implementación en su totalidad. Identifica:
 - El `@flow` definido por el Planner: seguirás ese orden exacto
 - Las dependencias listadas en el doc-primitive: impórtalas, no busques otras
 - Los IDs de prueba: cada test que escribas debe corresponder a uno del Trapper
@@ -82,7 +93,7 @@ Adapta el patrón al lenguaje del proyecto (try/catch en JS/Java/C#, Result en R
 - Divide en sub-funciones privadas cuando la cohesión lógica lo requiera, no por límite de líneas.
 - Si una sub-función no estaba en el `@flow` del Planner, indícalo en `@implementation_notes`.
 
-### Paso 4 — Actualizar bloque `<implementation>` en current-dev.xml
+### Paso 4 — Actualizar bloque `<implementation>` en current-dev.yaml
 
 ```xml
 <implementation>

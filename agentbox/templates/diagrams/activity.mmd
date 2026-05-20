@@ -1,0 +1,64 @@
+%%
+  activity.mmd
+  Diagrama de Actividades — generado y mantenido por el Planner.
+  Actualizar cuando el Tester detecte structural_impact = requires_diagram_update.
+
+  Propósito: describir el flujo de trabajo o lógica interna de un proceso.
+  Muestra: acciones, decisiones, flujos paralelos, swimlanes por responsable
+           y puntos de inicio/fin.
+
+  Convenciones:
+    - ([●]) nodo de inicio (filled circle)
+    - ([○]) nodo de fin (open circle)
+    - {Decisión} rombo de bifurcación
+    - === separador de swimlane (carril por actor/componente)
+    - fork/join para flujos paralelos
+%%
+
+flowchart TD
+
+  %% ─── INICIO ─────────────────────────────────────────────────────────────────
+  Inicio(["●  Inicio"])
+
+  %% ─── SWIMLANE: Actor / Componente A ─────────────────────────────────────────
+  subgraph ActorA["Actor A"]
+    A1["Acción 1"]
+    A2["Acción 2"]
+    DecA{{"¿Condición?"}}
+  end
+
+  %% ─── SWIMLANE: Actor / Componente B ─────────────────────────────────────────
+  subgraph ActorB["Actor B"]
+    B1["Acción B1"]
+    B2["Acción B2"]
+  end
+
+  %% ─── SWIMLANE: Sistema externo / Persistencia ───────────────────────────────
+  subgraph Persistencia["Persistencia"]
+    P1["Guardar datos"]
+    P2["Confirmar transacción"]
+  end
+
+  %% ─── FIN ────────────────────────────────────────────────────────────────────
+  Fin(["○  Fin"])
+
+  %% ─── FLUJO ──────────────────────────────────────────────────────────────────
+  Inicio --> A1
+  A1 --> A2
+  A2 --> DecA
+
+  DecA -- "Sí" --> B1
+  DecA -- "No" --> A1
+
+  B1 --> P1
+  P1 --> P2
+  P2 --> B2
+  B2 --> Fin
+
+  %% ─── FLUJO PARALELO (fork/join) — descomentar si aplica ─────────────────────
+  %% A2 --> Fork{fork}
+  %% Fork --> B1
+  %% Fork --> P1
+  %% B1 --> Join{join}
+  %% P1 --> Join
+  %% Join --> Fin
