@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Copyright (c) 2026 MMRos. Todos los derechos reservados.
 # ─────────────────────────────────────────────────────────────────────────────
 # init.sh — AI Development AgentBox initializer
 # Ejecutar desde la raíz del proyecto: bash agentbox/init.sh

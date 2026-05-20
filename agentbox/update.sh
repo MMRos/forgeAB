@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) 2026 MMRos. Todos los derechos reservados.
 
 # ==============================================================================
 # Script para actualizar AgentBox (antes AI Development Harness)

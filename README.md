@@ -176,5 +176,5 @@ skills_required:
 ---
 
 ## Licencia
-Creado por MMRos.
-Licencia pendiente.
+Copyright (c) 2026 MMRos. Todos los derechos reservados.
+Este software es propietario. Consulta el archivo [LICENSE](./LICENSE) para más detalles sobre las restricciones de uso y distribución.
