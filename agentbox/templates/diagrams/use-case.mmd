@@ -1,0 +1,44 @@
+%%
+  use-case.mmd
+  Diagrama de Casos de Uso — generado y mantenido por el Planner.
+  Actualizar cuando el Tester detecte structural_impact = requires_diagram_update.
+
+  Propósito: describir los requisitos funcionales desde la perspectiva del usuario.
+  Muestra: actores externos, funcionalidades del sistema y sus relaciones.
+
+  Convenciones:
+    - Actor: entidad externa (usuario, sistema externo, servicio)
+    - Caso de uso: funcionalidad observable desde fuera del sistema
+    - <<include>>: el caso base siempre incluye este comportamiento
+    - <<extend>>:  comportamiento opcional o condicional
+%%
+
+%% Mermaid no tiene soporte nativo de casos de uso UML.
+%% Se representa con un flowchart que sigue las convenciones visuales UML.
+
+flowchart LR
+
+  %% ─── ACTORES ────────────────────────────────────────────────────────────────
+  ActorPrincipal(["👤 Actor Principal"])
+  ActorSecundario(["⚙️ Sistema Externo"])
+
+  %% ─── FRONTERA DEL SISTEMA ───────────────────────────────────────────────────
+  subgraph Sistema["🔲 Nombre del Sistema"]
+    direction TB
+
+    UC1(["Caso de Uso 1"])
+    UC2(["Caso de Uso 2"])
+    UC3(["Caso de Uso 3\n<<include>> Validar sesión"])
+    UC4(["Caso de Uso 4\n<<extend>> Enviar notificación"])
+
+  end
+
+  %% ─── ASOCIACIONES ACTOR → CASO DE USO ──────────────────────────────────────
+  ActorPrincipal --> UC1
+  ActorPrincipal --> UC2
+  ActorPrincipal --> UC3
+  ActorSecundario --> UC4
+
+  %% ─── RELACIONES ENTRE CASOS DE USO ─────────────────────────────────────────
+  UC3 -. "<<include>>" .-> UC1
+  UC4 -. "<<extend>>" .-> UC2

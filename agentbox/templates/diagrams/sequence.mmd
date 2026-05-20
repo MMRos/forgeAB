@@ -1,0 +1,62 @@
+%%
+  sequence.mmd
+  Diagrama de Secuencia — generado y mantenido por el Planner.
+  Actualizar cuando el Tester detecte structural_impact = requires_diagram_update.
+
+  Propósito: mostrar la secuencia temporal de mensajes entre componentes
+             para un escenario o caso de uso específico.
+  Muestra: participantes, mensajes síncronos/asíncronos, bloques
+           alternativos, bucles y activaciones.
+
+  Convenciones:
+    - ->  mensaje síncrono (espera respuesta)
+    - ->> mensaje asíncrono (no espera)
+    - --> respuesta (línea punteada)
+    - -x  mensaje que falla
+    - alt/else: flujo alternativo (if/else)
+    - opt: flujo opcional
+    - loop: iteración
+    - activate/deactivate: barra de activación explícita
+%%
+
+sequenceDiagram
+
+  %% ─── PARTICIPANTES (definir en orden de aparición) ─────────────────────────
+  actor Usuario
+  participant Frontend
+  participant Controlador
+  participant Servicio
+  participant BaseDeDatos
+
+  %% ─── ESCENARIO PRINCIPAL ────────────────────────────────────────────────────
+  Usuario->>Frontend: acción del usuario
+  activate Frontend
+
+  Frontend->>Controlador: petición con datos
+  activate Controlador
+
+  Controlador->>Servicio: llamada a lógica de negocio
+  activate Servicio
+
+  opt Validación necesaria
+    Servicio->>Servicio: validar(datos)
+  end
+
+  Servicio->>BaseDeDatos: consulta / persistencia
+  activate BaseDeDatos
+  BaseDeDatos-->>Servicio: resultado
+  deactivate BaseDeDatos
+
+  alt Éxito
+    Servicio-->>Controlador: datos procesados
+    Controlador-->>Frontend: respuesta 200 + payload
+    Frontend-->>Usuario: muestra resultado
+  else Error de negocio
+    Servicio-->>Controlador: error con código
+    Controlador-->>Frontend: respuesta 4xx + mensaje
+    Frontend-->>Usuario: muestra error al usuario
+  end
+
+  deactivate Servicio
+  deactivate Controlador
+  deactivate Frontend

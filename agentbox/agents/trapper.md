@@ -28,6 +28,7 @@ Para cada función debes diseñar mínimo una prueba de cada tipo:
 
 ### 3. Pruebas de seguridad (`type="security"`)
 - Analiza la función en busca de vectores de ataque.
+- **Importante:** Si la función utiliza librerías de terceros (externas al ecosistema core), **debes** añadir explícitamente `cve-check` a la lista de `skills_required:` del estado actual. Esto forzará al Tester a buscar vulnerabilidades online si no tiene herramientas locales.
 - Cubre según corresponda:
   - Inyección (SQL, NoSQL, command, LDAP, XSS)
   - Desbordamiento de buffer / enteros
@@ -50,7 +51,7 @@ Para cada función debes diseñar mínimo una prueba de cada tipo:
 
 ## Formato de entrega
 
-Para cada prueba usa este formato dentro del bloque `<tests>` de current-dev.xml:
+Para cada prueba usa este formato dentro del bloque `<tests>` de current-dev.yaml:
 
 ```xml
 <test type="[unit|functional|security|integration|ui_ux]"
@@ -80,7 +81,7 @@ Si algún punto no aplica, documenta brevemente por qué.
 
 ## Entrega al Leader
 
-Devuelve el bloque `<tests>` completo listo para insertar en current-dev.xml, junto con un resumen de la cobertura.
+Devuelve el bloque `<tests>` completo listo para insertar en current-dev.yaml, junto con un resumen de la cobertura.
 
 ## Errores reportados por el usuario
 Si recibes (vía Leader) un error reportado manualmente por el usuario:

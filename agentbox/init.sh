@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# init.sh — AI Development Harness initializer
-# Ejecutar desde la raíz del proyecto: bash harness/init.sh
+# init.sh — AI Development AgentBox initializer
+# Ejecutar desde la raíz del proyecto: bash agentbox/init.sh
 # ─────────────────────────────────────────────────────────────────────────────
 
 set -euo pipefail
 
-HARNESS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$HARNESS_DIR")"
-TEMPLATES_DIR="$HARNESS_DIR/templates"
+AGENTBOX_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$AGENTBOX_DIR")"
+TEMPLATES_DIR="$AGENTBOX_DIR/templates"
 
 # ── Colores ──────────────────────────────────────────────────────────────────
 GREEN='\033[0;32m'
@@ -23,7 +23,7 @@ warn() { echo -e "${YELLOW}!${NC} $1"; }
 fail() { echo -e "${RED}✗${NC} $1"; exit 1; }
 
 echo ""
-echo "  AI Development Harness — init"
+echo "  AI Development AgentBox — init"
 echo "  ─────────────────────────────"
 echo ""
 
@@ -46,8 +46,8 @@ ok "Permisos de escritura verificados en la raíz del proyecto"
 if [ ! -d "$TEMPLATES_DIR" ]; then
   fail "Carpeta de templates no encontrada ($TEMPLATES_DIR)."
 fi
-if [ ! -d "$HARNESS_DIR/agents" ]; then
-  fail "Carpeta de agentes no encontrada ($HARNESS_DIR/agents)."
+if [ ! -d "$AGENTBOX_DIR/agents" ]; then
+  fail "Carpeta de agentes no encontrada ($AGENTBOX_DIR/agents)."
 fi
 ok "Estructura base del arnés validada"
 
@@ -109,57 +109,91 @@ echo ""
 # ── 0.5 Sincronización del Arnés (Update) ────────────────────────────────────
 info "Comprobando actualizaciones del arnés..."
 
-if [ -f "$HARNESS_DIR/update.sh" ]; then
+if [ -f "$AGENTBOX_DIR/update.sh" ]; then
     # Extraemos la URL personalizada del usuario
-    LOCAL_REPO=$(grep "^HARNESS_REPO=" "$HARNESS_DIR/update.sh" | cut -d'"' -f2 || true)
+    LOCAL_REPO=$(grep "^AGENTBOX_REPO=" "$AGENTBOX_DIR/update.sh" | cut -d'"' -f2 || true)
     
     if [[ "$LOCAL_REPO" =~ ^https://github.com/([^/]+)/([^.]+)\.git$ ]]; then
         GITHUB_USER="${BASH_REMATCH[1]}"
         GITHUB_REPO="${BASH_REMATCH[2]}"
-        RAW_URL="https://raw.githubusercontent.com/$GITHUB_USER/$GITHUB_REPO/main/harness/update.sh"
+        RAW_URL="https://raw.githubusercontent.com/$GITHUB_USER/$GITHUB_REPO/main/agentbox/update.sh"
         
         info "Buscando si hay una nueva versión de update.sh..."
-        if command -v curl &> /dev/null && curl -s -f -o "$HARNESS_DIR/update.sh.tmp" "$RAW_URL"; then
+        if command -v curl &> /dev/null && curl -s -f -o "$AGENTBOX_DIR/update.sh.tmp" "$RAW_URL"; then
             # Restauramos la URL personalizada en el archivo recién descargado
-            sed -i "s|^HARNESS_REPO=.*|HARNESS_REPO=\"$LOCAL_REPO\"|" "$HARNESS_DIR/update.sh.tmp"
-            mv "$HARNESS_DIR/update.sh.tmp" "$HARNESS_DIR/update.sh"
-            chmod +x "$HARNESS_DIR/update.sh"
+            sed -i "s|^AGENTBOX_REPO=.*|AGENTBOX_REPO=\"$LOCAL_REPO\"|" "$AGENTBOX_DIR/update.sh.tmp"
+            mv "$AGENTBOX_DIR/update.sh.tmp" "$AGENTBOX_DIR/update.sh"
+            chmod +x "$AGENTBOX_DIR/update.sh"
             ok "update.sh actualizado correctamente."
         else
-            rm -f "$HARNESS_DIR/update.sh.tmp"
+            rm -f "$AGENTBOX_DIR/update.sh.tmp"
         fi
     fi
     
     # Ejecutamos el script de actualización
-    bash "$HARNESS_DIR/update.sh"
+    bash "$AGENTBOX_DIR/update.sh"
     echo ""
 else
     warn "No se encontró update.sh. Saltando sincronización."
     echo ""
 fi
 
-# ── 1. Archivos XML de trabajo ───────────────────────────────────────────────
+# ── 1. Archivos YAML de trabajo ──────────────────────────────────────────────
 info "Verificando archivos de estado..."
 
-if [ ! -f "$HARNESS_DIR/current-dev.xml" ]; then
-  cp "$TEMPLATES_DIR/current-dev.xml" "$HARNESS_DIR/current-dev.xml"
-  ok "current-dev.xml creado desde plantilla"
+if [ ! -f "$AGENTBOX_DIR/current-dev.yaml" ]; then
+  cp "$TEMPLATES_DIR/current-dev.yaml" "$AGENTBOX_DIR/current-dev.yaml"
+  ok "current-dev.yaml creado desde plantilla"
 else
-  warn "current-dev.xml ya existe — no se sobreescribe"
+  warn "current-dev.yaml ya existe — no se sobreescribe"
 fi
 
-if [ ! -f "$HARNESS_DIR/story-dev.xml" ]; then
-  cp "$TEMPLATES_DIR/story-dev.xml" "$HARNESS_DIR/story-dev.xml"
-  ok "story-dev.xml creado desde plantilla"
+if [ ! -f "$AGENTBOX_DIR/story-dev.yaml" ]; then
+  cp "$TEMPLATES_DIR/story-dev.yaml" "$AGENTBOX_DIR/story-dev.yaml"
+  ok "story-dev.yaml creado desde plantilla"
 else
-  warn "story-dev.xml ya existe — no se sobreescribe"
+  warn "story-dev.yaml ya existe — no se sobreescribe"
 fi
 
-if [ ! -f "$HARNESS_DIR/error-log.xml" ]; then
-  cp "$TEMPLATES_DIR/error-log.xml" "$HARNESS_DIR/error-log.xml"
-  ok "error-log.xml creado desde plantilla"
+if [ ! -f "$AGENTBOX_DIR/error-log.yaml" ]; then
+  cp "$TEMPLATES_DIR/error-log.yaml" "$AGENTBOX_DIR/error-log.yaml"
+  ok "error-log.yaml creado desde plantilla"
 else
-  warn "error-log.xml ya existe — no se sobreescribe"
+  warn "error-log.yaml ya existe — no se sobreescribe"
+fi
+
+# ── 1.5 Configuración de Lenguaje ────────────────────────────────────────────
+info "Configuración de lenguaje..."
+if grep -q 'language: "" # Lenguaje(s) principal(es)' "$AGENTBOX_DIR/current-dev.yaml" 2>/dev/null; then
+  echo ""
+  echo -e "${YELLOW}¿Cuál es el lenguaje principal de este proyecto?${NC}"
+  echo "  1) JavaScript / TypeScript"
+  echo "  2) Python"
+  echo "  3) Java"
+  echo "  4) Rust"
+  echo "  5) Otro"
+  echo -ne "${BLUE}→${NC} Elige una opción [1-5] (por defecto 1): "
+  read lang_choice
+  
+  case "$lang_choice" in
+    2) LANG_VAL="Python" ;;
+    3) LANG_VAL="Java" ;;
+    4) LANG_VAL="Rust" ;;
+    5)
+      echo -ne "${BLUE}→${NC} Escribe el lenguaje: "
+      read custom_lang
+      LANG_VAL="${custom_lang:-Desconocido}"
+      ;;
+    *) LANG_VAL="JavaScript/TypeScript" ;;
+  esac
+  
+  sed -i "s|language: \"\" # Lenguaje(s) principal(es)|language: \"$LANG_VAL\"|g" "$AGENTBOX_DIR/current-dev.yaml"
+  sed -i "s|language: \"\" # Lenguaje(s)|language: \"$LANG_VAL\"|g" "$AGENTBOX_DIR/story-dev.yaml" 2>/dev/null || true
+  sed -i "s|language: \"\" # Lenguaje(s)|language: \"$LANG_VAL\"|g" "$AGENTBOX_DIR/error-log.yaml" 2>/dev/null || true
+  ok "Lenguaje configurado a: $LANG_VAL"
+else
+  CURRENT_LANG=$(grep "language:" "$AGENTBOX_DIR/current-dev.yaml" | head -n 1 | sed -E 's/.*language: "(.*)".*/\1/')
+  ok "Lenguaje ya configurado ($CURRENT_LANG)"
 fi
 
 # ── 2. Carpeta de diagramas en la raíz del proyecto ──────────────────────────
@@ -178,12 +212,33 @@ for diagram in class-diagram use-case sequence communication activity state; do
   fi
 done
 
+# ── 2.5 Base de Conocimiento y Skills ──────────────────────────────────────────
+info "Verificando Base de Conocimiento y Skills..."
+
+KB_DIR="$AGENTBOX_DIR/knowledge_base"
+mkdir -p "$KB_DIR"
+if [ ! -f "$KB_DIR/security-guidelines.md" ]; then
+  cp "$TEMPLATES_DIR/knowledge_base/security-guidelines.md" "$KB_DIR/security-guidelines.md"
+  ok "knowledge_base/security-guidelines.md creado"
+else
+  warn "knowledge_base/security-guidelines.md ya existe"
+fi
+
+SKILLS_DIR="$AGENTBOX_DIR/skills"
+mkdir -p "$SKILLS_DIR"
+if [ ! -f "$SKILLS_DIR/cve-check.md" ]; then
+  cp "$TEMPLATES_DIR/skills/cve-check.md" "$SKILLS_DIR/cve-check.md"
+  ok "skills/cve-check.md creado"
+else
+  warn "skills/cve-check.md ya existe"
+fi
+
 # ── 3. Archivos de configuración por IDE ─────────────────────────────────────
 info "Verificando archivos de configuración por IDE..."
 
 # Claude Code
 if [ ! -f "$PROJECT_ROOT/CLAUDE.md" ]; then
-  cp "$HARNESS_DIR/CLAUDE.md" "$PROJECT_ROOT/CLAUDE.md"
+  cp "$AGENTBOX_DIR/CLAUDE.md" "$PROJECT_ROOT/CLAUDE.md"
   ok "CLAUDE.md copiado a la raíz"
 else
   warn "CLAUDE.md ya existe en la raíz — no se sobreescribe"
@@ -192,7 +247,7 @@ fi
 # OpenCode
 mkdir -p "$PROJECT_ROOT/.opencode"
 if [ ! -f "$PROJECT_ROOT/.opencode/instructions.md" ]; then
-  cp "$HARNESS_DIR/.opencode/instructions.md" "$PROJECT_ROOT/.opencode/instructions.md"
+  cp "$AGENTBOX_DIR/.opencode/instructions.md" "$PROJECT_ROOT/.opencode/instructions.md"
   ok ".opencode/instructions.md copiado"
 else
   warn ".opencode/instructions.md ya existe — no se sobreescribe"
@@ -201,7 +256,7 @@ fi
 # Antigravity
 mkdir -p "$PROJECT_ROOT/.antigravity"
 if [ ! -f "$PROJECT_ROOT/.antigravity/context.md" ]; then
-  cp "$HARNESS_DIR/.antigravity/context.md" "$PROJECT_ROOT/.antigravity/context.md"
+  cp "$AGENTBOX_DIR/.antigravity/context.md" "$PROJECT_ROOT/.antigravity/context.md"
   ok ".antigravity/context.md copiado"
 else
   warn ".antigravity/context.md ya existe — no se sobreescribe"
@@ -222,12 +277,12 @@ echo "  │   ├── sequence.mmd"
 echo "  │   ├── communication.mmd"
 echo "  │   ├── activity.mmd"
 echo "  │   └── state.mmd"
-echo "  └── harness/"
+echo "  └── agentbox/"
 echo "      ├── current-dev.xml"
 echo "      ├── story-dev.xml"
 echo "      ├── error-log.xml"
 echo "      ├── agents/  (leader … planner)"
 echo "      └── templates/"
 echo ""
-ok "Harness listo. Abre el proyecto en tu IDE para activar el Leader."
+ok "AgentBox listo. Abre el proyecto en tu IDE para activar el Leader."
 echo ""
