@@ -176,5 +176,5 @@ skills_required:
 ---
 
 ## Licencia
-Copyright (c) 2026 MMRos. Todos los derechos reservados.
-Este software es propietario. Consulta el archivo [LICENSE](./LICENSE) para más detalles sobre las restricciones de uso y distribución.
+
+ForgeAB  © 2026 by Marc Martínez Ros is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
