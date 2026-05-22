@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  current-dev.xml
+  Archivo activo de desarrollo gestionado por el agente Leader.
+  Estados válidos: Waiting | In Progress | Testing Pending | Completed
+  Al completarse, cada función se mueve a story-dev.xml.
+-->
+project:
+  meta:
+    name:<!-- Nombre del proyecto -->
+    language:"Python"
+    loop_mode:<!-- true | false -->
+    created:<!-- ISO 8601 -->
+    updated:<!-- ISO 8601 -->
+  
+
+  functions:
+
+    <!-- PLANTILLA — copiar y rellenar para cada función -->
+    <function id="F001">
+      name:<!-- nombre_explicativo_de_la_funcion -->
+      priority:<!-- 1 = más alta -->
+      status:Waiting
+
+      specifications:
+        description:<!-- Qué hace esta función -->
+        inputs:
+          <input name="" type="" required="true" description=""/>
+        
+        outputs:
+          <output name="" type="" description=""/>
+        
+        constraints:
+          <!-- Límites, reglas de negocio, condiciones de borde -->
+        
+        assumptions:
+          <!-- Asunciones del Specifier aprobadas por el usuario -->
+        
+      
+
+      dependencies:
+        <!-- IDs de funciones que deben completarse antes -->
+      
+
+      skills_required:
+        <!-- Nombres de skills pertinentes que cada subagente debe revisar -->
+      
+
+      implementation:
+        <!-- Rellena el Implementer: módulo, archivo, clase, línea de inicio -->
+        module:
+        file:
+        notes:
+      
+
+      tests:
+        <!-- Rellena el Trapper; el Tester marca cada resultado -->
+        <test type="unit"        id="T001-U" status="Pending" result=""/>
+        <test type="functional"  id="T001-F" status="Pending" result=""/>
+        <test type="security"    id="T001-S" status="Pending" result=""/>
+        <test type="integration" id="T001-I" status="Pending" result=""/>
+      
+
+      error_log:
+        <!-- Entradas automáticas del try-catch del Implementer -->
+      
+
+      timestamps:
+        started:
+        testing_started:
+        completed:
+      
+    
+
+  
+

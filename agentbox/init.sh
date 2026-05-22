@@ -8,8 +8,10 @@
 set -euo pipefail
 
 AGENTBOX_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$AGENTBOX_DIR")"
+FORGEAB_ROOT="$(dirname "$AGENTBOX_DIR")"
+PROJECT_ROOT="$(dirname "$FORGEAB_ROOT")"
 TEMPLATES_DIR="$AGENTBOX_DIR/templates"
+LOGS_DIR="$PROJECT_ROOT/project-logs"
 
 # ── Colores ──────────────────────────────────────────────────────────────────
 GREEN='\033[0;32m'
@@ -142,30 +144,32 @@ fi
 # ── 1. Archivos YAML de trabajo ──────────────────────────────────────────────
 info "Verificando archivos de estado..."
 
-if [ ! -f "$AGENTBOX_DIR/current-dev.yaml" ]; then
-  cp "$TEMPLATES_DIR/current-dev.yaml" "$AGENTBOX_DIR/current-dev.yaml"
-  ok "current-dev.yaml creado desde plantilla"
+mkdir -p "$LOGS_DIR"
+
+if [ ! -f "$LOGS_DIR/current-dev.yaml" ] && [ ! -f "$LOGS_DIR/current-dev.xml" ]; then
+  cp "$TEMPLATES_DIR/current-dev.yaml" "$LOGS_DIR/current-dev.yaml"
+  ok "project-logs/current-dev.yaml creado desde plantilla"
 else
-  warn "current-dev.yaml ya existe — no se sobreescribe"
+  warn "project-logs/current-dev.yaml ya existe — no se sobreescribe"
 fi
 
-if [ ! -f "$AGENTBOX_DIR/story-dev.yaml" ]; then
-  cp "$TEMPLATES_DIR/story-dev.yaml" "$AGENTBOX_DIR/story-dev.yaml"
-  ok "story-dev.yaml creado desde plantilla"
+if [ ! -f "$LOGS_DIR/story-dev.yaml" ] && [ ! -f "$LOGS_DIR/story-dev.xml" ]; then
+  cp "$TEMPLATES_DIR/story-dev.yaml" "$LOGS_DIR/story-dev.yaml"
+  ok "project-logs/story-dev.yaml creado desde plantilla"
 else
-  warn "story-dev.yaml ya existe — no se sobreescribe"
+  warn "project-logs/story-dev.yaml ya existe — no se sobreescribe"
 fi
 
-if [ ! -f "$AGENTBOX_DIR/error-log.yaml" ]; then
-  cp "$TEMPLATES_DIR/error-log.yaml" "$AGENTBOX_DIR/error-log.yaml"
-  ok "error-log.yaml creado desde plantilla"
+if [ ! -f "$LOGS_DIR/error-log.yaml" ] && [ ! -f "$LOGS_DIR/error-log.xml" ]; then
+  cp "$TEMPLATES_DIR/error-log.yaml" "$LOGS_DIR/error-log.yaml"
+  ok "project-logs/error-log.yaml creado desde plantilla"
 else
-  warn "error-log.yaml ya existe — no se sobreescribe"
+  warn "project-logs/error-log.yaml ya existe — no se sobreescribe"
 fi
 
 # ── 1.5 Configuración de Lenguaje ────────────────────────────────────────────
 info "Configuración de lenguaje..."
-if grep -q 'language: "" # Lenguaje(s) principal(es)' "$AGENTBOX_DIR/current-dev.yaml" 2>/dev/null; then
+if grep -q 'language: "" # Lenguaje(s) principal(es)' "$LOGS_DIR/current-dev.yaml" 2>/dev/null; then
   echo ""
   echo -e "${YELLOW}¿Cuál es el lenguaje principal de este proyecto?${NC}"
   echo "  1) JavaScript / TypeScript"
@@ -188,19 +192,19 @@ if grep -q 'language: "" # Lenguaje(s) principal(es)' "$AGENTBOX_DIR/current-dev
     *) LANG_VAL="JavaScript/TypeScript" ;;
   esac
   
-  sed -i "s|language: \"\" # Lenguaje(s) principal(es)|language: \"$LANG_VAL\"|g" "$AGENTBOX_DIR/current-dev.yaml"
-  sed -i "s|language: \"\" # Lenguaje(s)|language: \"$LANG_VAL\"|g" "$AGENTBOX_DIR/story-dev.yaml" 2>/dev/null || true
-  sed -i "s|language: \"\" # Lenguaje(s)|language: \"$LANG_VAL\"|g" "$AGENTBOX_DIR/error-log.yaml" 2>/dev/null || true
+  sed -i "s|language: \"\" # Lenguaje(s) principal(es)|language: \"$LANG_VAL\"|g" "$LOGS_DIR/current-dev.yaml"
+  sed -i "s|language: \"\" # Lenguaje(s)|language: \"$LANG_VAL\"|g" "$LOGS_DIR/story-dev.yaml" 2>/dev/null || true
+  sed -i "s|language: \"\" # Lenguaje(s)|language: \"$LANG_VAL\"|g" "$LOGS_DIR/error-log.yaml" 2>/dev/null || true
   ok "Lenguaje configurado a: $LANG_VAL"
 else
-  CURRENT_LANG=$(grep "language:" "$AGENTBOX_DIR/current-dev.yaml" | head -n 1 | sed -E 's/.*language: "(.*)".*/\1/')
+  CURRENT_LANG=$(grep "language:" "$LOGS_DIR/current-dev.yaml" | head -n 1 | sed -E 's/.*language: "(.*)".*/\1/')
   ok "Lenguaje ya configurado ($CURRENT_LANG)"
 fi
 
 # ── 2. Carpeta de diagramas en la raíz del proyecto ──────────────────────────
 info "Verificando carpeta de diagramas..."
 
-DIAGRAMS_DIR="$PROJECT_ROOT/diagrams"
+DIAGRAMS_DIR="$FORGEAB_ROOT/diagrams"
 mkdir -p "$DIAGRAMS_DIR"
 
 for diagram in class-diagram use-case sequence communication activity state; do
@@ -238,29 +242,49 @@ fi
 info "Verificando archivos de configuración por IDE..."
 
 # Claude Code
-if [ ! -f "$PROJECT_ROOT/CLAUDE.md" ]; then
-  cp "$AGENTBOX_DIR/CLAUDE.md" "$PROJECT_ROOT/CLAUDE.md"
-  ok "CLAUDE.md copiado a la raíz"
+if [ ! -f "$FORGEAB_ROOT/CLAUDE.md" ]; then
+  cp "$AGENTBOX_DIR/CLAUDE.md" "$FORGEAB_ROOT/CLAUDE.md"
+  ok "CLAUDE.md copiado a forgeAB/"
 else
-  warn "CLAUDE.md ya existe en la raíz — no se sobreescribe"
+  warn "CLAUDE.md ya existe en forgeAB/ — no se sobreescribe"
 fi
 
 # OpenCode
-mkdir -p "$PROJECT_ROOT/.opencode"
-if [ ! -f "$PROJECT_ROOT/.opencode/instructions.md" ]; then
-  cp "$AGENTBOX_DIR/.opencode/instructions.md" "$PROJECT_ROOT/.opencode/instructions.md"
-  ok ".opencode/instructions.md copiado"
+mkdir -p "$FORGEAB_ROOT/.opencode"
+if [ ! -f "$FORGEAB_ROOT/.opencode/instructions.md" ]; then
+  cp "$AGENTBOX_DIR/.opencode/instructions.md" "$FORGEAB_ROOT/.opencode/instructions.md"
+  ok ".opencode/instructions.md copiado a forgeAB/"
 else
   warn ".opencode/instructions.md ya existe — no se sobreescribe"
 fi
 
 # Antigravity
-mkdir -p "$PROJECT_ROOT/.antigravity"
-if [ ! -f "$PROJECT_ROOT/.antigravity/context.md" ]; then
-  cp "$AGENTBOX_DIR/.antigravity/context.md" "$PROJECT_ROOT/.antigravity/context.md"
-  ok ".antigravity/context.md copiado"
+mkdir -p "$FORGEAB_ROOT/.antigravity"
+if [ ! -f "$FORGEAB_ROOT/.antigravity/context.md" ]; then
+  cp "$AGENTBOX_DIR/.antigravity/context.md" "$FORGEAB_ROOT/.antigravity/context.md"
+  ok ".antigravity/context.md copiado a forgeAB/"
 else
   warn ".antigravity/context.md ya existe — no se sobreescribe"
+fi
+
+# ── 3.5 Actualizar .gitignore ────────────────────────────────────────────────
+info "Verificando .gitignore para excluir base de AgentBox/forgeAB..."
+
+GITIGNORE_PATH="$PROJECT_ROOT/.gitignore"
+if [ ! -f "$GITIGNORE_PATH" ]; then
+  touch "$GITIGNORE_PATH"
+  ok ".gitignore creado"
+fi
+
+if ! grep -q "# AgentBox / forgeAB base content" "$GITIGNORE_PATH" 2>/dev/null; then
+  cat << 'EOF' >> "$GITIGNORE_PATH"
+
+# AgentBox / forgeAB base content
+/forgeAB/
+EOF
+  ok ".gitignore actualizado para ignorar base de AgentBox/forgeAB"
+else
+  ok "Reglas de AgentBox ya presentes en .gitignore"
 fi
 
 # ── 4. Verificación final ────────────────────────────────────────────────────
@@ -268,22 +292,24 @@ echo ""
 info "Estructura resultante:"
 echo ""
 echo "  $PROJECT_ROOT/"
-echo "  ├── CLAUDE.md"
-echo "  ├── .opencode/instructions.md"
-echo "  ├── .antigravity/context.md"
-echo "  ├── diagrams/"
-echo "  │   ├── class-diagram.mmd"
-echo "  │   ├── use-case.mmd"
-echo "  │   ├── sequence.mmd"
-echo "  │   ├── communication.mmd"
-echo "  │   ├── activity.mmd"
-echo "  │   └── state.mmd"
-echo "  └── agentbox/"
+echo "  └── forgeAB"
+echo "  |   ├── CLAUDE.md"
+echo "  |   ├── .opencode/instructions.md"
+echo "  |   ├── .antigravity/context.md"
+echo "  |   ├── diagrams/"
+echo "  |   │   ├── class-diagram.mmd"
+echo "  |   │   ├── use-case.mmd"
+echo "  |   │   ├── sequence.mmd"
+echo "  |   │   ├── communication.mmd"
+echo "  |   │   ├── activity.mmd"
+echo "  |   │   └── state.mmd"
+echo "  |   └── agentbox/"
+echo "  |     ├── agents/  (leader … planner)"
+echo "  |     └── templates/"
+echo "  └── project-logs"
 echo "      ├── current-dev.xml"
 echo "      ├── story-dev.xml"
-echo "      ├── error-log.xml"
-echo "      ├── agents/  (leader … planner)"
-echo "      └── templates/"
+echo "      └── error-log.xml"
 echo ""
 ok "AgentBox listo. Abre el proyecto en tu IDE para activar el Leader."
 echo ""

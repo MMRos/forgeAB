@@ -32,7 +32,8 @@ Para cada función debes diseñar mínimo una prueba de cada tipo:
 - Cubre según corresponda:
   - Inyección (SQL, NoSQL, command, LDAP, XSS)
   - Desbordamiento de buffer / enteros
-  - Exposición de datos sensibles en logs o respuestas
+  - Exposición de datos sensibles en respuestas o archivos comunes.
+  - **Revisión de `project-logs/`:** Siempre diseña las pruebas necesarias para inspeccionar la carpeta de logs (current-dev, error-log) asegurando que no se exponen secretos (claves API, tokens, passwords).
   - Bypass de autenticación / autorización
   - Denegación de servicio (inputs maliciosos de gran tamaño o infinitos)
   - Deserialización insegura

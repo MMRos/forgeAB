@@ -46,7 +46,8 @@ Estados posibles: `Pass` | `Fail` | `Blocked` (dependencia no disponible)
 Si la prueba es de seguridad, DEBES ejecutar comandos de auditoría en tu entorno:
 1. Usa la herramienta del ecosistema (ej. `npm audit`, `pip check`, `cargo audit`).
 2. Si tienes el skill `cve-check` listado en `<skills_required>`, ejecútalo siguiendo sus instrucciones para encontrar vulnerabilidades recientes en la web para las librerías usadas.
-3. Cualquier vulnerabilidad (CVSS Alto/Crítico) detectada provoca automáticamente un `Fail` de Categoría B (Impacto Estructural).
+3. **Revisión de `project-logs/`**: Si la prueba indica buscar secretos, DEBES ejecutar un script o comando (ej. `grep` recursivo o utilidades similares) sobre la carpeta `project-logs/` buscando tokens (AKIA, sk-, etc.), contraseñas u otra información sensible.
+4. Cualquier vulnerabilidad (CVSS Alto/Crítico) o secreto expuesto detectado provoca automáticamente un `Fail` de Categoría B (Impacto Estructural).
 
 ### Paso 3 — Evaluación final
 
