@@ -1,6 +1,6 @@
 
-# AgentBox / forgeAB base content
-/agentbox/*
-!/agentbox/*.yaml
-!/agentbox/knowledge_base/
-!/agentbox/skills/
+# forgeAB utilities content
+/forgeAB/
+!/forgeAB/utilities/*.yaml
+!/forgeAB/utilities/knowledge_base/
+!/forgeAB/utilities/skills/
