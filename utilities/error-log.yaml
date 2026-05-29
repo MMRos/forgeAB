@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  error-log.xml
+  Registro de errores gestionado por el Tester.
+  El Tester añade entradas; nunca elimina ni edita entradas existentes.
+  El Leader y el Planner pueden consultarlo para detectar patrones estructurales.
+-->
+error_log:
+  meta:
+    project:<!-- Nombre del proyecto -->
+<<<<<<< HEAD:agentbox/error-log.yaml
+    language:"Python"
+=======
+    language:JavaScript/TypeScript
+>>>>>>> 45a68d9c86f042b27914d499f160f86b5560ea18:utilities/error-log.yaml
+  
+
+  errors:
+
+    <!-- PLANTILLA — copiar y rellenar para cada error -->
+    <error id="E001">
+
+      function_id:<!-- ID de la función en current-dev.xml -->
+      function_name:<!-- Nombre de la función -->
+      test_id:<!-- ID de la prueba que lo detectó -->
+      test_type:<!-- unit | functional | security | integration -->
+
+      datetime:<!-- ISO 8601: 2024-01-01T12:00:00Z -->
+
+      cause:
+        <!-- Qué originó el error: lógica incorrecta, asunción inválida,
+             dependencia fallida, condición de borde no contemplada, etc. -->
+      
+
+      effect:
+        <!-- Qué comportamiento incorrecto produce: excepción lanzada,
+             dato corrupto, respuesta errónea, fallo silencioso, etc. -->
+      
+
+      context:
+        <!-- En qué circunstancias ocurre: entorno, estado del sistema,
+             datos de entrada exactos, secuencia de llamadas previa -->
+        environment:<!-- dev | test | staging | prod -->
+        input_data:<!-- Datos exactos que reproducen el error -->
+        system_state:<!-- Estado relevante del sistema en el momento del fallo -->
+        stack_trace:<!-- Stack trace completo si está disponible -->
+      
+
+      structural_impact:
+        <!-- ¿Este error implica cambios en la arquitectura o diagramas?
+             none | requires_diagram_update | requires_spec_change -->
+        none
+      
+
+      resolution:
+        status:<!-- open | in_progress | resolved -->
+        solution_applied:
+          <!-- Descripción de la solución: qué se cambió y por qué.
+               Dejar vacío si status = open o in_progress. -->
+        
+        resolved_at:<!-- ISO 8601 o vacío -->
+        resolved_by:<!-- Nombre del agente que aplicó la solución -->
+      
+
+    
+
+  
+
+

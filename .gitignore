@@ -1,0 +1,6 @@
+
+# forgeAB utilities content
+/forgeAB/
+!/forgeAB/utilities/*.yaml
+!/forgeAB/utilities/knowledge_base/
+!/forgeAB/utilities/skills/

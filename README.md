@@ -1,103 +1,103 @@
-# AgentBox (Forge Agent Box)
-## Entorno de desarrollo asistido por IA
-Un sistema de agentes coordinados para desarrollar software de forma estructurada, trazable y segura. Adaptable a cualquier lenguaje de programación y equipado con validaciones de entorno para una ejecución confiable.
+# forgeAB (Forge Agent Box)
+## AI-Assisted Development Environment
+A coordinated agent system for developing software in a structured, traceable, and secure way. Adaptable to any programming language and equipped with environment validations for reliable execution.
 
 ---
 
-## Estructura del proyecto
+## Project Structure
 
 ```
-agentbox/
-├── init.sh                    ← script de inicialización y seguridad
-├── CLAUDE.md                  ← instrucciones de entrada para Claude Code
-├── .antigravity/              ← instrucciones de entrada para Antigravity
-├── .opencode/                 ← instrucciones de entrada para OpenCode
-├── templates/                 ← plantillas base para archivos de estado y diagramas
+utilities/
+├── init.sh                    ← initialization and security script
+├── CLAUDE.md                  ← entry instructions for Claude Code
+├── .antigravity/              ← entry instructions for Antigravity
+├── .opencode/                 ← entry instructions for OpenCode
+├── templates/                 ← base templates for state files and diagrams
 └── agents/
-    ├── leader.md              ← prompt del agente director
-    ├── specifier.md           ← prompt del agente especificador
-    ├── trapper.md             ← prompt del agente de pruebas
-    ├── implementer.md         ← prompt del agente implementador
-    ├── tester.md              ← prompt del agente tester
-    └── planner.md             ← prompt del agente planificador arquitectónico
+    ├── leader.md              ← director agent prompt
+    ├── specifier.md           ← specifier agent prompt
+    ├── trapper.md             ← trap/test design agent prompt
+    ├── implementer.md         ← implementer agent prompt
+    ├── tester.md              ← tester agent prompt
+    └── planner.md             ← architecture planner agent prompt
 
-Generados en tiempo de ejecución por init.sh (en agentbox/):
-├── current-dev.yaml            ← estado activo del desarrollo (gestionado por Leader)
-├── story-dev.yaml              ← historial de funciones completadas
-└── error-log.yaml              ← registro de errores activos
+Generated at runtime by init.sh (in utilities/):
+├── current-dev.yaml            ← active development state (managed by Leader)
+├── story-dev.yaml              ← completed feature history
+└── error-log.yaml              ← active error log
 ```
 
 ---
 
-## Inicialización y Seguridad (`init.sh`)
+## Initialization & Security (`init.sh`)
 
-Para preparar el entorno de trabajo, el arnés incluye un script de inicialización robusto que debe ejecutarse desde la raíz de tu proyecto:
+To set up the work environment, the harness includes a robust initialization script that must be run from your project root:
 
 ```bash
-bash agentbox/init.sh
+bash utilities/init.sh
 ```
 
-**Durante la inicialización, el script realiza:**
-1. **Revisión del entorno:** Valida que el arnés no se ejecute en la raíz del sistema operativo y comprueba los permisos de escritura del proyecto.
-2. **Pruebas de seguridad:** Verifica la integridad de la estructura base requerida (carpetas `templates/` y `agents/`).
-3. **Gestión estricta de dependencias (pnpm):** El arnés requiere `pnpm` y prohíbe explícitamente el uso de `npm`. Si `pnpm` no está instalado, el script te guiará para descargar e instalar el binario oficial de forma independiente (vía `curl` o `wget`), configurando los alias automáticamente.
-4. **Despliegue de plantillas:** Configura los archivos de estado XML (`current-dev.yaml`, `story-dev.yaml`), crea la estructura de diagramas y genera las configuraciones específicas por IDE.
+**During initialization, the script performs:**
+1. **Environment review:** Validates the harness is not running at the OS root and checks project write permissions.
+2. **Security checks:** Verifies the integrity of the required base structure (the `templates/` and `agents/` folders).
+3. **Strict dependency management (pnpm):** The harness requires `pnpm` and explicitly prohibits `npm`. If `pnpm` is not installed, the script will guide you to download and install the official binary independently (via `curl` or `wget`), automatically configuring aliases.
+4. **Template deployment:** Sets up YAML state files (`current-dev.yaml`, `story-dev.yaml`), creates the diagram structure and generates IDE-specific configurations.
 
 ---
 
-## Diagramas Arquitectónicos (`diagrams/`)
+## Architectural Diagrams (`diagrams/`)
 
-El arnés utiliza diagramas en formato Mermaid (`.mmd`) para mantener una visión clara del sistema. Estos diagramas son generados y actualizados por el agente **Planner**:
-- `class-diagram.mmd`: Estructura de clases, entidades y sus relaciones.
-- `use-case.mmd`: Interacciones de los actores con el sistema (casos de uso).
-- `sequence.mmd`: Flujo temporal de mensajes entre componentes.
-- `communication.mmd`: Flujo de mensajes estructural entre objetos.
-- `activity.mmd`: Flujo de control o de datos paso a paso.
-- `state.mmd`: Transiciones de estado de las entidades principales.
+The harness uses diagrams in Mermaid format (`.mmd`) to maintain a clear view of the system. These diagrams are generated and updated by the **Planner** agent:
+- `class-diagram.mmd`: Class structure, entities and their relationships.
+- `use-case.mmd`: Actor interactions with the system (use cases).
+- `sequence.mmd`: Temporal message flow between components.
+- `communication.mmd`: Structural message flow between objects.
+- `activity.mmd`: Control or data flow step by step.
+- `state.mmd`: State transitions of the main entities.
 
 ---
 
-## Flujo de trabajo
+## Workflow
 
 ```
-Flujo principal:
-Usuario → Specifier → Planner → Leader → [Trapper → Leader → Implementer → Tester] × N
-                                          ↑                                  |
-                                          └───────── (si falla) ─────────────┘
-                                          ↓
-                                  Specifier → usuario
+Main flow:
+User → Specifier → Planner → Leader → [Trapper → Leader → Implementer → Tester] × N
+                                        ↑                                  |
+                                        └───────── (on failure) ───────────┘
+                                        ↓
+                                Specifier → user
 
-Flujo de errores reportados por usuario:
-Usuario → Leader (documenta error) → Trapper (recaba info/test) → Leader → Specifier (ajusta specs) → Planner → ... (ciclo normal)
+User-reported error flow:
+User → Leader (documents error) → Trapper (gathers info/test) → Leader → Specifier (adjusts specs) → Planner → ... (normal cycle)
 ```
 
-### Estados de una función
+### Feature states
 
 ```
 Waiting → In Progress → Testing Pending → Completed
-                ↑                              |
-                └─── (si falla el test) ───────┘
+              ↑                              |
+              └─── (if test fails) ──────────┘
 ```
 
 ---
 
-## Cómo usar el arnés
+## How to Use the Harness
 
-### Opción A — Con un modelo de IA conversacional (Claude, GPT, etc.)
+### Option A — With a conversational AI model (Claude, GPT, etc.)
 
-1. Abre una conversación nueva.
-2. Pega el contenido de `agents/specifier.md` como system prompt (o como primer mensaje indicando el rol).
-3. Describe tu proyecto o funcionalidad al agente.
-4. El Specifier te guiará para clarificar requisitos.
-5. Cuando el Specifier pase la batuta al Leader, cambia al prompt de `agents/leader.md`.
-6. Continúa el ciclo según el flujo, cambiando de prompt al agent indicado.
+1. Open a new conversation.
+2. Paste the contents of `agents/specifier.md` as the system prompt (or as the first message indicating the role).
+3. Describe your project or feature to the agent.
+4. The Specifier will guide you to clarify requirements.
+5. When the Specifier hands off to the Leader, switch to the `agents/leader.md` prompt.
+6. Continue the cycle according to the flow, switching prompts to the indicated agent.
 
-### Opción B — Con un sistema multi-agente automatizado
+### Option B — With an automated multi-agent system
 
-Configura cada agente con su prompt correspondiente en tu framework (LangGraph, AutoGen, CrewAI, etc.):
+Configure each agent with its corresponding prompt in your framework (LangGraph, AutoGen, CrewAI, etc.):
 
 ```python
-# Ejemplo conceptual con cualquier framework multi-agente
+# Conceptual example with any multi-agent framework
 agents = {
     "leader":      load_prompt("agents/leader.md"),
     "specifier":   load_prompt("agents/specifier.md"),
@@ -107,53 +107,53 @@ agents = {
     "planner":     load_prompt("agents/planner.md"),
 }
 
-# El estado compartido son los archivos YAML
+# Shared state is the YAML files
 shared_state = {
     "current_dev": parse_yaml("current-dev.yaml"),
     "story_dev":   parse_yaml("story-dev.yaml"),
 }
 ```
 
-### Opción C — Manual con cualquier IA
+### Option C — Manual with any AI
 
-Para cada función, sigue este orden:
-1. Da el prompt de Specifier + describe la función → obtén specs.
-2. Da el prompt de Planner + specs → obtén arquitectura y diagramas actualizados.
-3. Da el prompt de Trapper + specs → obtén suite de tests.
-4. Da el prompt de Implementer + specs + tests → obtén código.
-5. Da el prompt de Tester + código + tests → obtén resultados.
-6. Si todo pasa: mueve la función a `story-dev.yaml`.
-7. Si falla: da el prompt de Specifier (o Leader) + datos del error → ajusta y repite.
+For each feature, follow this order:
+1. Give the Specifier prompt + describe the feature → get specs.
+2. Give the Planner prompt + specs → get architecture and updated diagrams.
+3. Give the Trapper prompt + specs → get test suite.
+4. Give the Implementer prompt + specs + tests → get code.
+5. Give the Tester prompt + code + tests → get results.
+6. If everything passes: move the feature to `story-dev.yaml`.
+7. If it fails: give the Specifier (or Leader) prompt + error data → adjust and repeat.
 
 ---
 
-## Adaptación a lenguajes
+## Language Adaptation
 
-El arnés no asume ningún lenguaje. Cada agente adapta su output al lenguaje especificado en `meta/language` de `current-dev.yaml`.
+The harness assumes no specific language. Each agent adapts its output to the language specified in `meta/language` of `current-dev.yaml`.
 
-Ejemplos de adaptaciones automáticas:
+Examples of automatic adaptations:
 
-| Concepto          | Python           | JavaScript/TS     | Java/Kotlin         | Rust              |
+| Concept           | Python           | JavaScript/TS     | Java/Kotlin         | Rust              |
 |-------------------|------------------|-------------------|---------------------|-------------------|
-| Manejo de errores | try/except       | try/catch         | try/catch           | Result<T, E>      |
+| Error handling    | try/except       | try/catch         | try/catch           | Result<T, E>      |
 | Logging           | logging.getLogger| console.error / winston | Logger (SLF4J) | log::error!       |
-| Módulos           | módulos/paquetes | módulos ES / CommonJS | paquetes/clases | crates/módulos    |
-| Constantes        | SCREAMING_SNAKE  | SCREAMING_SNAKE   | static final        | const SCREAMING   |
+| Modules           | modules/packages | ES modules / CommonJS | packages/classes | crates/modules    |
+| Constants         | SCREAMING_SNAKE  | SCREAMING_SNAKE   | static final        | const SCREAMING   |
 
 ---
-## Base de Conocimiento (Knowledge Base)
+## Knowledge Base
 
-Para mantener a los agentes alineados con las reglas y restricciones específicas de tu proyecto (especialmente de seguridad y dependencias obsoletas), puedes dejar notas en formato Markdown dentro de `agentbox/knowledge_base/`.
-Por defecto, el script de inicialización crea un archivo `security-guidelines.md`. El **Implementer** y el **Tester** están obligados a leer el contenido de esta carpeta antes de escribir o evaluar código.
+To keep agents aligned with your project's specific rules and restrictions (especially security and deprecated dependencies), you can leave Markdown notes inside `utilities/knowledge_base/`.
+By default, the initialization script creates a `security-guidelines.md` file. The **Implementer** and **Tester** are required to read the contents of this folder before writing or evaluating code.
 
 ---
 
-## Skills y Auditoría de Seguridad
+## Skills & Security Auditing
 
-El arnés obliga al Tester a ejecutar comandos de auditoría del ecosistema (ej. `npm audit`, `cargo audit`) siempre que se enfrente a un test de seguridad.
+The harness forces the Tester to run ecosystem audit commands (e.g. `npm audit`, `cargo audit`) whenever it faces a security test.
 
-Adicionalmente, si usas un sistema de skills (como el de Claude), el Leader indicará en cada traspaso de batuta qué skills debe revisar el subagente. Añade tus skills en la carpeta `agentbox/skills/` y referéncialos en `current-dev.yaml`.
-**Por defecto se incluye el skill `cve-check`**, el cual el Trapper inyectará automáticamente si hay dependencias externas, instruyendo al Tester para que investigue vulnerabilidades (CVEs) en internet.
+Additionally, if you use a skill system (like Claude's), the Leader will indicate in each handoff which skills the sub-agent should review. Add your skills to the `utilities/skills/` folder and reference them in `current-dev.yaml`.
+**The `cve-check` skill is included by default**, which the Trapper will automatically inject when there are third-party dependencies, instructing the Tester to search for vulnerabilities (CVEs) online.
 
 ```yaml
 skills_required:
@@ -164,17 +164,17 @@ skills_required:
 
 ---
 
-## Principios de diseño
+## Design Principles
 
-- **Contexto mínimo por agente**: cada subagente recibe solo lo que necesita para su tarea.
-- **Trazabilidad**: todo cambio queda registrado en los YAML con timestamps.
-- **Separación de responsabilidades**: tareas, errores y soluciones viven en archivos distintos.
-- **Seguridad por defecto**: toda función tiene pruebas de seguridad antes de implementarse.
-- **Modularidad coherente**: el código se divide por lógica, no por límite de líneas.
-- **Idioma del usuario**: todos los agentes responden en el idioma del usuario.
+- **Minimal context per agent**: each sub-agent receives only what it needs for its task.
+- **Traceability**: every change is recorded in the YAML files with timestamps.
+- **Separation of concerns**: tasks, errors and solutions live in separate files.
+- **Security by default**: every feature has security tests before being implemented.
+- **Coherent modularity**: code is divided by logic, not by line limits.
+- **User language**: all agents respond in the user's language.
 
 ---
 
-## Licencia
-Copyright (c) 2026 MMRos. Todos los derechos reservados.
-Este software es propietario. Consulta el archivo [LICENSE](./LICENSE) para más detalles sobre las restricciones de uso y distribución.
+## License
+Copyright (c) 2026 MMRos. All rights reserved.
+This software is proprietary. See the [LICENSE](./LICENSE) file for details on usage and distribution restrictions.
