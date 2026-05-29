@@ -6,7 +6,7 @@
 # Mantiene intactos tus archivos de proyecto (current-dev.yaml, story-dev.yaml)
 # ==============================================================================
 
-AGENTBOX_REPO="https://github.com/MMRos/agentbox-v0.git"
+AGENTBOX_REPO="https://github.com/MMRos/forgeAB.git"
 REMOTE_NAME="agentbox-upstream"
 BRANCH="master"
 
