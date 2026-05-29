@@ -1,3 +1,58 @@
+# DIRECTRICES GLOBALES DEL PROYECTO
+
+```yaml
+# guidelines.yaml
+# Directrices y reglas globales del proyecto.
+# Leídas automáticamente por el empaquetador de contexto ab.py para alinear a todos los agentes.
+
+project_guidelines:
+  meta:
+    description: "Reglas globales de desarrollo, seguridad y flujo del arnés AgentBox."
+
+  package_manager:
+    enforced: "pnpm"
+    prohibited: "npm"
+    rules:
+      - "NUNCA utilices 'npm install' o 'npm run'. Siempre usa 'pnpm add', 'pnpm install' o 'pnpm <comando>'."
+      - "En caso de tests de seguridad del ecosistema, utiliza 'pnpm audit' para validar vulnerabilidades."
+
+  workflow:
+    core_philosophy: "El usuario está en el centro. La IA es una extensión del desarrollador y no debe tomar decisiones críticas de forma autónoma."
+    specifier_loop:
+      - "Toda nueva funcionalidad o cambio DEBE pasar primero por el Specifier para acordar asunciones."
+      - "Si el usuario escribe solo un número de asunción (ej: '2'), preséntale 4 alternativas claras + Otra."
+      - "Si el usuario escribe un número más un comentario (ej: '2 usar sqlite'), itera sobre ese punto de forma precisa."
+      - "NUNCA programes ni escribas código sin el 'OK general' explícito del usuario."
+    stages_order:
+      - "1. Specifier (Pactar especificaciones y asunciones)"
+      - "2. Planner (Diseñar arquitectura y diagramas Mermaid)"
+      - "3. Trapper (Crear suite de pruebas antes de escribir código)"
+      - "4. Implementer (Codificar la funcionalidad basándose en la arquitectura y tests)"
+      - "5. Tester (Ejecutar pruebas reales y validar que todo pasa sin errores)"
+
+  code_style:
+    naming:
+      variables: "camelCase"
+      functions: "camelCase"
+      classes: "PascalCase"
+      constants: "SCREAMING_SNAKE_CASE"
+      files: "kebab-case o camelCase según convención local"
+    quality:
+      - "Escribe funciones pequeñas y de propósito único."
+      - "No agregues dependencias externas a menos que sea estrictamente necesario y estén auditadas."
+      - "Todo código de producción debe incluir comentarios claros documentando su comportamiento y asunciones asociadas."
+
+  error_handling:
+    policy:
+      - "Todas las llamadas a sistemas de archivos, red o bases de datos deben estar envueltas en bloques try-catch estructurados."
+      - "Al capturar una excepción inesperada, se debe loggear de forma detallada incluyendo stack trace y contexto si está disponible."
+      - "Si una excepción altera el flujo del negocio, debe propagarse mediante excepciones personalizadas o tipos Result de forma controlada."
+```
+
+================================================================================
+
+# INSTRUCCIONES DEL ROL (SPECIFIER)
+
 # AGENT — SPECIFIER
 
 > [!IMPORTANT]
@@ -172,3 +227,75 @@ Si el Tester, al ejecutar pruebas visuales, aporta ideas para mejorar la fluidez
 
 ## Idioma
 Responde siempre en el idioma del usuario.
+
+================================================================================
+
+# ÍNDICE DE FUNCIONES YA COMPLETADAS (MAPA DE UBICACIONES)
+
+```yaml
+Ninguna función completada aún.
+```
+
+================================================================================
+
+# CONTEXTO DE LA FUNCIÓN ACTIVA (F001)
+
+```yaml
+F001:
+  name: nombre_explicativo_de_la_funcion
+  priority: 1
+  status: Waiting
+  specifications:
+    description: Qué hace esta función
+    inputs:
+    - name: ''
+      type: ''
+      required: true
+      description: ''
+    outputs:
+    - name: ''
+      type: ''
+      description: ''
+    constraints: []
+    assumptions: []
+    ui_spec:
+      components: []
+      states: []
+      interactions: []
+      mockup_approved: false
+  dependencies: []
+  skills_required: []
+  implementation:
+    module: ''
+    file: ''
+    notes: Decisiones tomadas, desviaciones del flujo del Planner si las hay
+  tests:
+    T001-U:
+      type: unit
+      status: Pending
+      result: ''
+      name: Nombre descriptivo
+      scenario: Dado X, cuando Y, entonces Z
+      setup: Precondiciones
+      expected: Resultado esperado
+      log_integration: true
+    T001-F:
+      type: functional
+      status: Pending
+      result: ''
+      name: Nombre descriptivo
+      scenario: ''
+      setup: ''
+      expected: ''
+      log_integration: true
+  error_log: []
+```
+
+
+---
+🔁 BATUTA → SPECIFIER
+Función: F001 — nombre_explicativo_de_la_funcion
+Archivo XML/YAML actualizado: current-dev.yaml (status cambiado a "Waiting")
+Skills a revisar: []
+Contexto adjunto: Especificaciones detalladas y plan de pruebas aislados de F001.
+---
