@@ -8,7 +8,7 @@
 
 AGENTBOX_REPO="https://github.com/MMRos/forgeAB.git"
 REMOTE_NAME="forgeab-upstream"
-BRANCH="main"
+BRANCH="master"
 
 echo "🚀 Starting forgeAB update..."
 
