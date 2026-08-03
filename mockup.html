@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup App Roleo</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, system-ui, sans-serif;
+      background: #080b14;
+      color: #ede5da;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, rgba(132, 56, 181, 0.25), transparent 28%),
+                  linear-gradient(180deg, #090c16 0%, #05080f 100%);
+    }
+    .page {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      padding: 24px;
+      min-height: 100vh;
+      transition: grid-template-columns .3s ease;
+    }
+    .page.sidebar-collapsed {
+      /* When collapsed, sidebar becomes overlay (fixed). Let main content use full width */
+      grid-template-columns: 1fr;
+    }
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      width: 320px;
+      background: rgba(13, 14, 22, 0.98);
+      border-right: 1px solid rgba(255,255,255,.06);
+      box-shadow: 0 0 80px rgba(0,0,0,.35);
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      z-index: 40;
+      transition: width .28s ease, padding .28s ease, transform .28s ease;
+      box-sizing: border-box;
+      overflow: auto;
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+    .sidebar::-webkit-scrollbar { display: none; width: 0; height: 0; }
+    .sidebar.collapsed {
+      width: 64px;
+      padding: 18px 10px;
+      align-items: center;
+      transform: translateX(0);
+    }
+    .sidebar.collapsed {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .sidebar.collapsed .brand-text,
+    .sidebar.collapsed .nav-button span,
+    .sidebar.collapsed .section-card {
+      display: none !important;
+    }
+    .sidebar.collapsed .brand {
+      justify-content: center;
+    }
+    .sidebar.collapsed .nav-button {
+      padding: 14px;
+      justify-content: center;
+      border-radius: 16px;
+    }
+    .sidebar-toggle {
+      position: absolute;
+      top: 24px;
+      right: -16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(219,178,79,.9), rgba(157,78,227,.9));
+      display: grid;
+      place-items: center;
+      color: #11131c;
+      font-size: .85rem;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 22;
+      box-shadow: 0 4px 12px rgba(0,0,0,.3);
+    }
+    .main {
+      display: grid;
+      gap: 22px;
+      transition: margin-left .3s ease;
+    }
+    .sidebar .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #dbb24f, #9c5aee);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: #11131c;
+      box-shadow: 0 18px 44px rgba(0,0,0,.28);
+    }
+    .brand-text h1 {
+      margin: 0;
+      font-size: 1.08rem;
+      letter-spacing: .03em;
+    }
+    .brand-text p {
+      margin: 0;
+      font-size: .82rem;
+      color: #b8a180;
+    }
+    .nav-group {
+      display: grid;
+      gap: 12px;
+    }
+    .nav-button {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+      color: #f6efe6;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform .2s ease, background .2s ease;
+    }
+    .nav-button:hover {
+      transform: translateX(2px);
+      background: rgba(219, 178, 79, 0.12);
+    }
+    .nav-button.active {
+      background: linear-gradient(135deg, rgba(219,178,79,.22), rgba(157,78,227,.16));
+      border-color: rgba(219,178,79,.3);
+    }
+    .section-card {
+      background: rgba(14, 17, 26, 0.92);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 28px;
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+    .section-card h2 {
+      margin: 0;
+      font-size: 1rem;
+      color: #f8f1dc;
+    }
+    .section-card p {
+      margin: 0;
+      color: #b7a080;
+      font-size: .88rem;
+      line-height: 1.6;
+    }
+    .chat-list,
+    .status-list {
+      display: grid;
+      gap: 12px;
+    }
+    .chat-item {
+      position: relative;
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border-radius: 24px;
+      overflow: hidden;
+      min-height: 96px;
+      background: linear-gradient(180deg, rgba(12,17,27,.88), rgba(28,8,48,.95));
+      border: 1px solid rgba(255,255,255,.06);
+      color: #f6f2e9;
+    }
+    .chat-item::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.18;
+      filter: brightness(0.45) saturate(1.4);
+    }
+    .chat-item:nth-child(1)::before { background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80'); }
+    .chat-item:nth-child(2)::before { background-image: url('https://images.unsplash.com/photo-1519999482648-25049ddd37b1?auto=format&fit=crop&w=800&q=80'); }
+    .chat-item:nth-child(3)::before { background-image: url('https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80'); }
+    .chat-item > * { position: relative; z-index: 1; }
+    .chat-item strong {
+      color: #fff7e7;
+      font-size: 1rem;
+    }
+    .chat-item span {
+      color: #e2c78c;
+      font-size: .82rem;
+    }
+    .status-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+    .status-item strong,
+    .status-item span {
+      color: #f6efe6;
+    }
+    .main {
+      display: grid;
+      gap: 22px;
+      margin-left: 320px; /* leave room for fixed sidebar */
+      transition: margin-left .28s ease;
+    }
+
+    /* When collapsed, let main occupy full width and sidebar overlays */
+    .page.sidebar-collapsed .main {
+      margin-left: 64px;
+    }
+    .hero {
+      display: grid;
+      gap: 20px;
+      padding: 32px;
+      border-radius: 36px;
+      background: linear-gradient(180deg, rgba(20, 18, 36, 0.98), rgba(13, 9, 23, 0.95));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 34px 90px rgba(0,0,0,.35);
+    }
+    .sidebar-toggle {
+      position: absolute;
+      top: 18px;
+      right: -20px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(219,178,79,.22), rgba(157,78,227,.18));
+      display: grid;
+      place-items: center;
+      color: #f6efe6;
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 22;
+    }
+    .popup-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(4px);
+      z-index: 30;
+      display: none; /* Cambiado de grid a none para que empiece cerrada */
+      place-items: center;
+      padding: 24px;
+    }
+    /* Icon buttons for header (share/save/fav) */
+    .icon-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .icon-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      cursor: pointer;
+      color: #fde9c8;
+    }
+    .icon-button:hover { background: rgba(219,178,79,0.08); }
+    .popup-backdrop.active {
+      display: grid;
+    }
+    /* Estilo para el modal de personajes emergente */
+    .character-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(6px);
+      z-index: 40;
+      display: none;
+      place-items: center;
+      padding: 24px;
+    }
+    .character-modal-backdrop.active {
+      display: grid;
+    }
+    .character-modal {
+      width: min(520px, 100%);
+      background: rgba(14, 15, 24, 0.98);
+      border: 1px solid rgba(255, 221, 123, 0.25);
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.6);
+      padding: 28px;
+      display: grid;
+      gap: 20px;
+    }
+    .character-modal h3 {
+      margin: 0;
+      color: #ffe3a1;
+      font-size: 1.3rem;
+    }
+    .character-modal p {
+      margin: 0;
+      color: #c3b2a0;
+      font-size: .92rem;
+      line-height: 1.6;
+    }
+    .character-modal .options-list {
+      display: grid;
+      gap: 12px;
+    }
+    .character-modal .char-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      cursor: pointer;
+      transition: border .2s ease, background .2s ease;
+    }
+    .character-modal .char-option:hover {
+      background: rgba(219, 178, 79, 0.08);
+      border-color: rgba(219, 178, 79, 0.3);
+    }
+    .character-modal .char-option.custom {
+      border-style: dashed;
+      background: rgba(157, 78, 227, 0.05);
+      border-color: rgba(157, 78, 227, 0.4);
+    }
+    .character-modal .char-option.custom:hover {
+      background: rgba(157, 78, 227, 0.12);
+    }
+    .character-modal .char-option strong {
+      color: #fff5d4;
+    }
+    .character-modal .char-option span {
+      font-size: .8rem;
+      color: #b7a289;
+    }
+    .character-modal .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .scenario-popup {
+      position: relative;
+      width: min(1040px, 100%);
+      max-height: calc(100vh - 80px);
+      background: rgba(9, 9, 16, 0.98);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 32px;
+      box-shadow: 0 40px 100px rgba(0,0,0,.55);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 0;
+    }
+    .scenario-popup .popup-cover {
+      position: relative;
+      min-height: 420px;
+      background: linear-gradient(180deg, rgba(54, 17, 78, .95), rgba(16, 10, 27, .95)), url('https://images.unsplash.com/photo-1585630271179-447bbf4db7c3?auto=format&fit=crop&w=1400&q=80');
+      background-size: cover;
+      background-position: center;
+      color: #fff5d4;
+      padding: 30px;
+      display: grid;
+      gap: 18px;
+      justify-content: start;
+      align-content: end;
+    }
+    .scenario-popup .popup-cover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.88));
+    }
+    .scenario-popup .popup-cover * {
+      position: relative;
+      z-index: 1;
+    }
+    .scenario-popup .popup-cover h2 {
+      margin: 0;
+      font-size: 2rem;
+      color: #ffe3a1;
+    }
+    .scenario-popup .popup-cover p {
+      margin: 0;
+      color: #e7d9bb;
+      max-width: 460px;
+      line-height: 1.65;
+    }
+    .scenario-popup .popup-content {
+      padding: 32px;
+      display: grid;
+      gap: 20px;
+      overflow-y: auto;
+    }
+    .scenario-popup .popup-content header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+    }
+    .scenario-popup .popup-content header h3 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: #ffedc5;
+    }
+    .scenario-popup .popup-content header .action-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .scenario-popup .popup-content .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .scenario-popup .popup-content .tag-row span {
+      background: rgba(255,255,255,.06);
+      color: #f9e6be;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: .82rem;
+    }
+    .scenario-popup .popup-content .description {
+      color: #c8b49c;
+      line-height: 1.75;
+      font-size: .94rem;
+    }
+    .scenario-popup .popup-content .popup-block {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+    .scenario-popup .popup-content .popup-block h4 {
+      margin: 0;
+      color: #f8e5b1;
+      font-size: 1rem;
+    }
+    .scenario-popup .popup-content .popup-block p {
+      margin: 0;
+      color: #d1c0a2;
+      line-height: 1.7;
+      font-size: .92rem;
+    }
+    .scenario-popup .popup-content .controls {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .popup-button {
+      border: none;
+      border-radius: 20px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, rgba(219,178,79,.22), rgba(157,78,227,.16));
+      color: #fde9c8;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 140px;
+    }
+    .popup-button.secondary {
+      background: rgba(255,255,255,.08);
+      color: #f6f0dd;
+    }
+    .popup-button.favorite {
+      background: linear-gradient(135deg, rgba(255,200,64,.25), rgba(196,113,27,.15));
+      color: #fff8df;
+    }
+    .popup-button.close {
+      background: rgba(255,255,255,.06);
+      color: #e7dbbf;
+    }
+    .popup-window-close {
+      position: absolute;
+      right: 22px;
+      top: 22px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.45);
+      color: #ffe9c8;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 2;
+    }
+    @media (max-width: 980px) {
+      .scenario-popup { grid-template-columns: 1fr; }
+      .scenario-popup .popup-cover { min-height: 280px; }
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      letter-spacing: -.04em;
+      color: #ffdd7b;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 1rem;
+      color: #d1c0a2;
+      max-width: 700px;
+      line-height: 1.75;
+    }
+    .hero .search {
+      display: grid;
+      grid-template-columns: 1fr 220px 160px;
+      gap: 14px;
+      align-items: center;
+    }
+    .hero input,
+    .hero select {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(31, 24, 51, 0.92);
+      color: #f9f1e3;
+      outline: none;
+    }
+    .hero button {
+      padding: 16px 18px;
+      border: none;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #d99f2b, #6f3ebc);
+      color: #0f101d;
+      font-weight: 700;
+      cursor: pointer;
+      transition: filter .2s ease;
+    }
+    .hero button:hover { filter: brightness(1.08); }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .scenario-card {
+      border-radius: 30px;
+      overflow: hidden;
+      background: rgba(14, 16, 26, 0.96);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 24px 60px rgba(0,0,0,.28);
+      position: relative;
+      min-width: 280px;
+      max-width: 440px;
+    }
+    .scenario-card summary {
+      list-style: none;
+      cursor: pointer;
+    }
+    .scenario-card summary::-webkit-details-marker { display: none; }
+    .scenario-card summary {
+      display: grid;
+      grid-template-rows: 160px auto;
+      gap: 0;
+    }
+    .scenario-card .cover {
+      display: grid;
+      place-items: center;
+      color: #fde6b3;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      padding: 18px;
+      min-height: 160px;
+      background: linear-gradient(145deg, rgba(106, 45, 128, 0.88), rgba(38, 46, 73, 0.9));
+      background-size: cover;
+      background-position: center;
+    }
+    .scenario-card .content {
+      padding: 22px;
+      display: grid;
+      gap: 12px;
+    }
+    .scenario-card .content h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: #fff5d4;
+    }
+    .scenario-card .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .scenario-card .tag {
+      font-size: .78rem;
+      color: #fbe3a2;
+      background: rgba(209, 161, 68, 0.16);
+      padding: 6px 11px;
+      border-radius: 999px;
+    }
+    .scenario-card .summary {
+      color: #c5b39c;
+      font-size: .92rem;
+      line-height: 1.6;
+    }
+    .scenario-card .detail-panel {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 10, 20, 0.98);
+      padding: 24px;
+      overflow-y: auto;
+      color: #f4e9d4;
+      z-index: 2;
+    }
+    .scenario-card[open] .detail-panel {
+      display: grid;
+      gap: 18px;
+    }
+    .scenario-card .detail-panel h4 {
+      margin: 0;
+      color: #f9e9c3;
+      font-size: 1.05rem;
+    }
+    .scenario-card .detail-panel p {
+      margin: 0;
+      color: #c3b2a0;
+      line-height: 1.7;
+      font-size: .92rem;
+    }
+    .scenario-card .detail-panel .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .scenario-card .detail-panel .button {
+      border: none;
+      border-radius: 18px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #d6aa40, #6a37c3);
+      color: #0a0a13;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 150px;
+    }
+    .scenario-card .detail-panel .button.secondary {
+      background: rgba(255,255,255,.08);
+      color: #f1e8d8;
+    }
+    .scenario-card .detail-panel .button[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .scenario-card .detail-panel .detail-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .scenario-card .detail-panel .detail-row span {
+      background: rgba(255,255,255,.06);
+      color: #e7d7af;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: .82rem;
+    }
+    .scenario-card .detail-panel .characters {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 22px;
+    }
+    .scenario-card .detail-panel .characters div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.18);
+      color: #f2e3c7;
+    }
+    .overview-panels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+    }
+    .stat-panel {
+      background: rgba(13,18,31,.98);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 28px;
+      padding: 22px;
+      display: grid;
+      gap: 12px;
+    }
+    .stat-panel strong {
+      display: block;
+      font-size: 1.4rem;
+      color: #ffe6a0;
+    }
+    .stat-panel span {
+      color: #b7a289;
+      font-size: .88rem;
+    }
+    .footer-note {
+      color: #8d7f68;
+      text-align: center;
+      font-size: .88rem;
+      margin-top: 22px;
+    }
+    @media (max-width: 1110px) {
+      .page { grid-template-columns: 1fr; }
+      .page.sidebar-collapsed { grid-template-columns: 1fr; }
+      /* On small screens the sidebar becomes overlay and does not affect layout */
+      .sidebar { position: fixed; left: 16px; top: 16px; width: calc(100vw - 32px); max-height: calc(100vh - 32px); border-radius: 12px; }
+      .sidebar.collapsed { left: 12px; top: 12px; width: 56px; border-radius: 12px; }
+      .main { margin-left: 0; }
+    }
+    @media (max-width: 700px) {
+      .hero .search { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="sidebar" id="appSidebar">
+      <div class="sidebar-toggle" id="sidebarToggle">«</div>
+      <div class="brand">
+        <div class="brand-icon">Ptah</div>
+        <div class="brand-text">
+          <h1>Ptah</h1>
+          <p>Roleplay Studio</p>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a class="nav-button active" href="#"><span>Inicio</span></a>
+        <a class="nav-button" href="#"><span>Mi perfil</span></a>
+        <a class="nav-button" href="#"><span>Creación</span></a>
+        <a class="nav-button" href="#"><span>Nuevo chat</span></a>
+      </div>
+      <div class="section-card">
+        <h2>Chats activos</h2>
+        <div class="chat-list">
+          <div class="chat-item"><strong>Odisea urbana</strong><span>Último mensaje: 5 min</span></div>
+          <div class="chat-item"><strong>Bestias del Velo</strong><span>Último mensaje: 19 min</span></div>
+          <div class="chat-item"><strong>GM: Crónicas</strong><span>Último mensaje: 1 h</span></div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="status-list">
+          <div class="status-item"><strong>Dark mode</strong><span>Activado</span></div>
+          <div class="status-item"><strong>Contextos</strong><span>3 escenarios</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Backdrop para el Escenario Flotante -->
+    <div class="popup-backdrop" id="scenarioBackdrop">
+      <div class="scenario-popup">
+        <div class="popup-window-close" id="closeScenarioPopup">×</div>
+        <div class="popup-cover">
+          <h2>El Umbral del Vídrio</h2>
+          <p>Un laberinto de torres de vidrio.</p>
+        </div>
+        <div class="popup-content">
+          <div style="display:flex; justify-content: space-between; align-items:center; gap:12px;">
+            <div style="flex:1"></div>
+            <div class="icon-actions">
+              <button class="icon-button" title="Compartir" id="shareBtn">🔗</button>
+              <button class="icon-button" title="Guardar" id="saveBtn">💾</button>
+              <button class="icon-button" title="Favorito" id="favBtn">★</button>
+            </div>
+          </div>
+
+          <p class="description" style="margin-top:6px; max-width: 720px;">Breve introducción (máx 200 caracteres). Aquí se resume el escenario para que el usuario decida si empezar o personalizar.</p>
+
+          <div class="controls" style="margin-top:12px;">
+            <button class="popup-button" id="startChatButton">Empezar chat</button>
+            <button class="popup-button secondary" id="customizeButton" disabled>Personalizar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backdrop para Selección de Personaje -->
+    <div class="character-modal-backdrop" id="charModalBackdrop">
+      <div class="character-modal">
+        <h3>Elegir Personaje Jugable</h3>
+        <p>Selecciona uno de los personajes definidos para este escenario o utiliza un personaje personalizado de tu perfil.</p>
+        <div class="options-list">
+          <div class="char-option" onclick="alert('Iniciando chat con Ysabel')">
+            <div>
+              <strong>Ysabel, la Archivista</strong>
+              <span>Conocimiento místico y sigilo corporativo</span>
+            </div>
+            <span>→</span>
+          </div>
+          <div class="char-option" onclick="alert('Iniciando chat con Corvus')">
+            <div>
+              <strong>Corvus, el Mercader</strong>
+              <span>Contactos en el mercado negro y carisma</span>
+            </div>
+            <span>→</span>
+          </div>
+          <div class="char-option custom" onclick="alert('Iniciando chat con Personaje Personalizado')">
+            <div>
+              <strong>Usar personaje propio</strong>
+              <span>Cargar ficha personalizada desde tu perfil</span>
+            </div>
+            <span>+</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="popup-button close" id="closeCharModal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="main" id="appMain">
+      <section class="hero">
+        <h1>Explora escenarios, chats y creación modular</h1>
+        <p>Encuentra tu próxima sesión de roleo con IA y gestiona tus contextos. Las tarjetas ofrecen vista completa del escenario sin salir del tablero.</p>
+        <div class="search">
+          <input type="search" placeholder="Buscar escenarios, tags o personajes..." />
+          <select>
+            <option>Ordenar por: Temática</option>
+            <option>Ordenar por: Últimos</option>
+            <option>Ordenar por: Populares</option>
+          </select>
+          <button>Buscar</button>
+        </div>
+      </section>
+      <section class="overview-panels">
+        <div class="stat-panel"><strong>12</strong><span>Escenarios disponibles</span></div>
+        <div class="stat-panel"><strong>8</strong><span>Chats activos</span></div>
+        <div class="stat-panel"><strong>24</strong><span>Elementos creados</span></div>
+      </section>
+      <section class="cards-grid">
+        <div class="scenario-card" onclick="openScenarioDetails()">
+          <div class="cover">Nómadas del Ether</div>
+          <div class="content">
+            <h3>El Umbral del Vídrio</h3>
+            <div class="tags"><span class="tag">#cyberpunk</span><span class="tag">#misterio</span><span class="tag">#sociedad</span></div>
+            <p class="summary">Un escenario oscuro donde las facciones compiten por el control del conocimiento místico en las calles iluminadas.</p>
+          </div>
+        </div>
+        <div class="scenario-card" onclick="openScenarioDetails()">
+          <div class="cover">Ruinas sagradas</div>
+          <div class="content">
+            <h3>La Corte de los Bosques</h3>
+            <div class="tags"><span class="tag">#fantasía</span><span class="tag">#política</span><span class="tag">#amor</span></div>
+            <p class="summary">Un tablero narrativo con alianzas y traiciones en un reino antiguo gobernado por espíritus.</p>
+          </div>
+        </div>
+        <div class="scenario-card" onclick="openScenarioDetails()">
+          <div class="cover">Templo de ceniza</div>
+          <div class="content">
+            <h3>Senda del Alba</h3>
+            <div class="tags"><span class="tag">#terror</span><span class="tag">#misterio</span><span class="tag">#aventura</span></div>
+            <p class="summary">Una peregrinación hacia un templo olvidado donde las sombras pueden convertirse en aliados o en presas.</p>
+          </div>
+        </div>
+      </section>
+      <section class="section-card">
+        <h2>Vista rápida</h2>
+        <p>Las tarjetas no crecen indefinidamente: se adaptan al ancho con un mínimo/máximo fijo y cambian de 1 a 4-6 por fila según el tamaño de pantalla. El escenario se abre como ventana flotante con sus acciones propias.</p>
+      </section>
+      <div class="footer-note">Mockup actualizado: sidebar retractable y ventana flotante de escenario con cerrar, compartir, guardar y favorito.</div>
+    </main>
+  </div>
+
+  <script>
+    // Interactividad básica para validar el flujo
+    const sidebar = document.getElementById('appSidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const scenarioBackdrop = document.getElementById('scenarioBackdrop');
+    const closeScenarioPopup = document.getElementById('closeScenarioPopup');
+    const startChatButton = document.getElementById('startChatButton');
+    const charModalBackdrop = document.getElementById('charModalBackdrop');
+    const closeCharModal = document.getElementById('closeCharModal');
+
+    const pageEl = document.querySelector('.page');
+    // Sidebar
+    sidebarToggle.addEventListener('click', () => {
+      const collapsed = sidebar.classList.toggle('collapsed');
+      // On desktop, also adjust page layout columns
+      if (window.matchMedia('(min-width: 1111px)').matches) {
+        pageEl.classList.toggle('sidebar-collapsed', collapsed);
+      }
+      sidebarToggle.innerText = collapsed ? '»' : '«';
+    });
+
+    // Abrir detalle de escenario al pulsar la tarjeta
+    function openScenarioDetails() {
+      scenarioBackdrop.classList.add('active');
+    }
+
+    // Cerrar detalle de escenario
+    closeScenarioPopup.addEventListener('click', () => {
+      scenarioBackdrop.classList.remove('active');
+    });
+
+    // Cerrar si se hace click fuera del popup
+    scenarioBackdrop.addEventListener('click', (e) => {
+      if (e.target === scenarioBackdrop) scenarioBackdrop.classList.remove('active');
+    });
+
+    // Abrir selección de personaje al pulsar Empezar Chat
+    startChatButton.addEventListener('click', () => {
+      charModalBackdrop.classList.add('active');
+    });
+
+    // Icon actions (demo handlers)
+    const shareBtn = document.getElementById('shareBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const favBtn = document.getElementById('favBtn');
+    const customizeButton = document.getElementById('customizeButton');
+
+    if (shareBtn) shareBtn.addEventListener('click', () => alert('Compartir escenario (demo)'));
+    if (saveBtn) saveBtn.addEventListener('click', () => alert('Guardar escenario (demo)'));
+    if (favBtn) favBtn.addEventListener('click', () => alert('Marcar como favorito (demo)'));
+
+    // Cerrar modal de personaje
+    closeCharModal.addEventListener('click', () => {
+      charModalBackdrop.classList.remove('active');
+    });
+  </script>
+</body>
+</html>
