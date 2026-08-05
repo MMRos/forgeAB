@@ -8,12 +8,12 @@ import '../pages/create.css';
 const CARD_TYPES = ['Historia', 'Personaje', 'Raza', 'Facción', 'Regla', 'Criatura', 'Objeto', 'Lugar', 'Otros'];
 const CATEGORIES = ['Aventura', 'Comedia', 'Terror', 'Drama', 'Ciencia ficción', 'Misterio'];
 
-export default function CreateModal({ 
-  isOpen = false, 
-  onClose = () => {}, 
+export default function CreateModal({
+  isOpen = false,
+  onClose = () => { },
   initialType = 'Historia',
-  appData = {}, 
-  onSaveItem = () => {} 
+  appData = {},
+  onSaveItem = () => { }
 }) {
   const [itemType, setItemType] = useState(initialType);
   const [title, setTitle] = useState('');
@@ -25,7 +25,7 @@ export default function CreateModal({
   const [tags, setTags] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
   const [isScenario, setIsScenario] = useState(false);
-  
+
   // Crop state inside modal
   const [cropSrc, setCropSrc] = useState('');
   const [isCropperOpen, setIsCropperOpen] = useState(false);
@@ -38,51 +38,51 @@ export default function CreateModal({
       return;
     }
 
-      const newItem = {
-        id: `card-${Date.now()}`,
-        type: itemType,
+    const newItem = {
+      id: `card-${Date.now()}`,
+      type: itemType,
+      title: title.trim(),
+      intro: intro.trim(),
+      text: text.trim(),
+      cover: cover.trim(),
+      nsfw,
+      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+      connectedCards: selectedCards,
+      createdAt: new Date().toISOString()
+    };
+
+    let scenarioData = null;
+    if (isScenario) {
+      scenarioData = {
+        id: `scenario-from-card-${Date.now()}`,
         title: title.trim(),
-        intro: intro.trim(),
-        text: text.trim(),
+        category,
+        intro: intro.trim() || text.trim().substring(0, 80) + '...',
         cover: cover.trim(),
-        nsfw,
+        presentation: '',
+        baseContext: `[${itemType}]: ${text.trim()}`,
+        aiInstructions: '',
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-        connectedCards: selectedCards,
+        nsfw,
+        cards: [newItem.id],
+        narrator: null,
         createdAt: new Date().toISOString()
       };
+    }
 
-      let scenarioData = null;
-      if (isScenario) {
-        scenarioData = {
-          id: `scenario-from-card-${Date.now()}`,
-          title: title.trim(),
-          category,
-          intro: intro.trim() || text.trim().substring(0, 80) + '...',
-          cover: cover.trim(),
-          presentation: '',
-          baseContext: `[${itemType}]: ${text.trim()}`,
-          aiInstructions: '',
-          tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-          nsfw,
-          cards: [newItem.id],
-          narrator: null,
-          createdAt: new Date().toISOString()
-        };
-      }
-
-      onSaveItem({ type: 'card', data: newItem, createScenarioAlso: scenarioData });
+    onSaveItem({ type: 'card', data: newItem, createScenarioAlso: scenarioData });
     onClose();
   };
 
   return (
     <div className="char-backdrop" role="dialog" aria-modal="true" style={{ zIndex: 1200 }}>
-      <div className="char-modal" style={{ 
-        width: itemType === 'Escenario' ? '80vw' : '100%', 
-        maxWidth: itemType === 'Escenario' ? '1200px' : '580px', 
-        maxHeight: '88vh', 
-        overflowY: 'auto', 
-        overflowX: 'hidden', 
-        boxSizing: 'border-box' 
+      <div className="char-modal" style={{
+        width: itemType === 'Escenario' ? '80vw' : '100%',
+        maxWidth: itemType === 'Escenario' ? '1200px' : '580px',
+        maxHeight: '88vh',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        boxSizing: 'border-box'
       }}>
         <button className="char-close" onClick={onClose}>
           <FontAwesomeIcon icon={faTimes} />
@@ -92,8 +92,8 @@ export default function CreateModal({
 
         <div className="field-group" style={{ marginBottom: '12px' }}>
           <label style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)' }}>Tipo de elemento</label>
-          <select 
-            value={itemType} 
+          <select
+            value={itemType}
             onChange={(e) => setItemType(e.target.value)}
             style={{ width: '100%', padding: '8px 10px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff' }}
           >
@@ -108,10 +108,10 @@ export default function CreateModal({
 
         <div className="field-group" style={{ marginBottom: '12px' }}>
           <label style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)' }}>Nombre / Título</label>
-          <input 
-            value={title} 
-            onChange={(e) => setTitle(e.target.value)} 
-            placeholder="Título del escenario o tarjeta..." 
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Título del escenario o tarjeta..."
             style={{ width: '100%', padding: '8px 10px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff' }}
           />
         </div>
@@ -119,8 +119,8 @@ export default function CreateModal({
         {itemType === 'Escenario' && (
           <div className="field-group" style={{ marginBottom: '12px' }}>
             <label style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)' }}>Categoría</label>
-            <select 
-              value={category} 
+            <select
+              value={category}
               onChange={(e) => setCategory(e.target.value)}
               style={{ width: '100%', padding: '8px 10px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff' }}
             >
@@ -131,19 +131,19 @@ export default function CreateModal({
 
         <div className="field-group" style={{ marginBottom: '12px' }}>
           <label style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)' }}>Imagen de portada (URL o Local)</label>
-          <input 
-            value={cover} 
-            onChange={(e) => setCover(e.target.value)} 
-            placeholder="https://..." 
+          <input
+            value={cover}
+            onChange={(e) => setCover(e.target.value)}
+            placeholder="https://..."
             style={{ width: '100%', padding: '8px 10px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff' }}
           />
         </div>
 
         <div className="field-group" style={{ marginBottom: '12px' }}>
           <label style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)' }}>Subir imagen de portada</label>
-          <input 
-            type="file" 
-            accept="image/*" 
+          <input
+            type="file"
+            accept="image/*"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (!file) return;
@@ -155,7 +155,7 @@ export default function CreateModal({
                 }
               };
               reader.readAsDataURL(file);
-            }} 
+            }}
             style={{ color: '#fff', fontSize: '0.8rem' }}
           />
         </div>
@@ -167,10 +167,10 @@ export default function CreateModal({
 
         <div className="field-group" style={{ marginBottom: '12px' }}>
           <label style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)' }}>Introducción (Máx. 200 caracteres)</label>
-          <textarea 
-            value={intro} 
-            onChange={(e) => setIntro(e.target.value)} 
-            rows={2} 
+          <textarea
+            value={intro}
+            onChange={(e) => setIntro(e.target.value)}
+            rows={2}
             maxLength={200}
             style={{ width: '100%', padding: '8px 10px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff' }}
           />
@@ -178,28 +178,28 @@ export default function CreateModal({
 
         <div className="field-group" style={{ marginBottom: '12px' }}>
           <label style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)' }}>Descripción / Contexto base</label>
-          <textarea 
-            value={text} 
-            onChange={(e) => setText(e.target.value)} 
-            rows={3} 
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={3}
             style={{ width: '100%', padding: '8px 10px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff' }}
           />
         </div>
 
         <div className="field-group" style={{ marginBottom: '12px' }}>
           <label style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)' }}>Etiquetas (Tags)</label>
-          <input 
-            value={tags} 
-            onChange={(e) => setTags(e.target.value)} 
-            placeholder="mision, oscuro, magia" 
+          <input
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="mision, oscuro, magia"
             style={{ width: '100%', padding: '8px 10px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff' }}
           />
         </div>
 
         <div style={{ marginTop: '16px' }}>
-          <ConnectionSelector 
-            availableCards={appData.cards || []} 
-            selectedCardIds={selectedCards} 
+          <ConnectionSelector
+            availableCards={appData.cards || []}
+            selectedCardIds={selectedCards}
             onSelectCard={(id) => setSelectedCards(prev => [...prev, id])}
             onRemoveCard={(id) => setSelectedCards(prev => prev.filter(cId => cId !== id))}
           />
@@ -214,10 +214,10 @@ export default function CreateModal({
           </button>
         </div>
 
-        <ImageCropperModal 
+        <ImageCropperModal
           isOpen={isCropperOpen}
           imageSrc={cropSrc}
-          aspectRatio={itemType === 'Personaje' ? 3/4 : 16/9}
+          aspectRatio={itemType === 'Personaje' ? 3 / 4 : 16 / 9}
           onClose={() => setIsCropperOpen(false)}
           onCropComplete={(croppedImage) => setCover(croppedImage)}
         />
