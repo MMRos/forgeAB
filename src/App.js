@@ -21,6 +21,15 @@ function App() {
   const [charOpen, setCharOpen] = useState(false);
   const [popupScenario, setPopupScenario] = useState(null);
 
+  const [initialModalType, setInitialModalType] = useState('Historia');
+  const [editItem, setEditItem] = useState(null);
+
+  const openCreateModal = (type = 'Historia', item = null) => {
+    setInitialModalType(type);
+    setEditItem(item);
+    setCreateModalOpen(true);
+  };
+
   const openScenario = (scenario) => { setPopupScenario(scenario); setScenarioOpen(true); };
   const closeScenario = () => { setScenarioOpen(false); setPopupScenario(null); };
 
@@ -202,7 +211,7 @@ function App() {
 
   const handleModifyScenario = (scenario) => {
     setScenarioOpen(false);
-    setView('create');
+    openCreateModal('Escenario', scenario);
   };
 
   const [chatSettings, setChatSettings] = useState({
@@ -292,7 +301,7 @@ function App() {
               appData={appData} 
               onUpdateAppData={updateAppData} 
               onOpenScenario={openScenario} 
-              onOpenCreateModal={() => setCreateModalOpen(true)}
+              onOpenCreateModal={openCreateModal}
             />
           </div>
         )}
@@ -331,23 +340,45 @@ function App() {
         isOpen={charOpen} 
         onClose={closeChar} 
         onSelect={handleSelectChar} 
-        onOpenCreateCard={() => setCreateModalOpen(true)}
+        onOpenCreateCard={() => openCreateModal('Personaje')}
         userCards={appData.cards || []}
         scenarioCharacters={popupScenario?.characters || []}
       />
       <CreateModal 
         isOpen={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
-        initialType="Escenario"
+        onClose={() => {
+          setCreateModalOpen(false);
+          setEditItem(null);
+        }}
+        initialType={initialModalType}
+        editItem={editItem}
         appData={appData}
-        onSaveItem={({ type, data: newItem }) => {
+        onSaveItem={({ type, data: newItem, createScenarioAlso }) => {
+          let nextData = { ...appData };
+
           if (type === 'scenario') {
-            const nextScenarios = [newItem, ...(appData.scenarios || [])];
-            updateAppData({ ...appData, scenarios: nextScenarios });
+            const exists = (appData.scenarios || []).some(s => s.id === newItem.id);
+            nextData.scenarios = exists
+              ? appData.scenarios.map(s => s.id === newItem.id ? newItem : s)
+              : [newItem, ...(appData.scenarios || [])];
+          } else if (type === 'narrator') {
+            const exists = (appData.narrators || []).some(n => n.id === newItem.id);
+            nextData.narrators = exists
+              ? appData.narrators.map(n => n.id === newItem.id ? newItem : n)
+              : [newItem, ...(appData.narrators || [])];
           } else {
-            const nextCards = [newItem, ...(appData.cards || [])];
-            updateAppData({ ...appData, cards: nextCards });
+            // Tarjeta
+            const exists = (appData.cards || []).some(c => c.id === newItem.id);
+            nextData.cards = exists
+              ? appData.cards.map(c => c.id === newItem.id ? newItem : c)
+              : [newItem, ...(appData.cards || [])];
+
+            if (createScenarioAlso) {
+              nextData.scenarios = [createScenarioAlso, ...(appData.scenarios || [])];
+            }
           }
+
+          updateAppData(nextData);
         }}
       />
     </div>
