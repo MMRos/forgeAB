@@ -28,6 +28,7 @@ export default function TopBar({
   chatSettings = {},
   onUpdateChatSettings = () => {},
   activeChat = null,
+  dmName = null,
   onOpenScenarioPopup = () => {},
   onExportChat = () => {},
   onOpenCharModal = () => {},
@@ -67,7 +68,25 @@ export default function TopBar({
       {/* Título de la cabecera del escenario (pequeña e interactiva) si estamos en un chat */}
       {isChatView && activeChat ? (
         <div className="top-bar-title-click" onClick={() => onOpenScenarioPopup(activeChat)}>
-          <span className="top-bar-scenario-name">{activeChat.scenario || 'Escenario Ptah'}</span>
+          <span className="top-bar-scenario-name">
+            {activeChat.scenario || 'Escenario Ptah'}
+            {dmName && (
+              <span style={{ 
+                marginLeft: '10px', 
+                fontSize: '0.78rem', 
+                color: '#ffd36b', 
+                background: 'rgba(255, 211, 107, 0.1)', 
+                padding: '2px 8px', 
+                borderRadius: '4px', 
+                border: '1px solid rgba(255, 211, 107, 0.2)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                🧙 DM: {dmName}
+              </span>
+            )}
+          </span>
           <span className="top-bar-scenario-meta">👁️ 534 • ★ 7.0/10</span>
         </div>
       ) : <div />}

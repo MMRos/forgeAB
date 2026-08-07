@@ -316,3 +316,83 @@
     display: none;
   }
 }
+
+/* Fila superior de personajes destacados estilo IsekaiZero */
+.premium-featured-characters-row {
+  margin-top: 10px;
+  background: rgba(13, 14, 22, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pfc-title-area h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.05rem;
+  color: #ffd36b;
+  font-weight: 700;
+  text-align: center;
+}
+
+.pfc-title-area p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+
+.pfc-slider-row {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  justify-content: center;
+}
+
+.pfc-slider-row::-webkit-scrollbar {
+  height: 4px;
+}
+
+.pfc-char-card {
+  min-width: 90px;
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.pfc-char-card:hover {
+  transform: translateY(-4px);
+}
+
+.pfc-char-cover {
+  width: 72px;
+  height: 96px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pfc-char-card:hover .pfc-char-cover {
+  border-color: #ffd36b;
+  box-shadow: 0 4px 12px rgba(255, 211, 107, 0.2);
+}
+
+.pfc-char-name {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}

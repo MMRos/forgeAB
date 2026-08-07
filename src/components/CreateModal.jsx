@@ -124,6 +124,7 @@ export default function CreateModal({
   const [text, setText] = useState('');
   const [cover, setCover] = useState('');
   const [nsfw, setNsfw] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
   const [selectedCards, setSelectedCards] = useState([]);
   const [isScenario, setIsScenario] = useState(false); // Para "convertir tarjeta en escenario" al crear
 
@@ -154,6 +155,16 @@ export default function CreateModal({
   const [cropSrc, setCropSrc] = useState('');
   const [isCropperOpen, setIsCropperOpen] = useState(false);
 
+  // States para creación de tarjeta anidada (in-situ)
+  const [nestedCardType, setNestedCardType] = useState(null);
+  const [nestedCardTitle, setNestedCardTitle] = useState('');
+  const [nestedCardIntro, setNestedCardIntro] = useState('');
+  const [nestedCardText, setNestedCardText] = useState('');
+  const [nestedCardCover, setNestedCardCover] = useState('');
+  const [nestedCardTraits, setNestedCardTraits] = useState([]);
+  const [nestedTraitQuery, setNestedTraitQuery] = useState('');
+  const [showNestedTraitDropdown, setShowNestedTraitDropdown] = useState(false);
+
   // Sincronizar estados cuando se abre el modal o cambia el item a editar
   useEffect(() => {
     if (isOpen) {
@@ -181,6 +192,7 @@ export default function CreateModal({
           setSelectedTags(editItem.tags || []);
           setSelectedCards(editItem.cards || []);
           setScenarioNarrator(editItem.narrator || '');
+          setIsPublic(!!editItem.public);
           setIsScenario(false);
         } else {
           // Es una Tarjeta
@@ -193,6 +205,7 @@ export default function CreateModal({
           setSelectedTags(editItem.tags || []);
           setSelectedCards(editItem.connectedCards || []);
           setSelectedTraits(editItem.traits || []);
+          setIsPublic(!!editItem.public);
           setIsScenario(false);
         }
       } else {
@@ -212,6 +225,7 @@ export default function CreateModal({
         setScenarioNarrator('');
         setIsScenario(false);
         setNsfw(false);
+        setIsPublic(false);
 
         // Narrador vacíos
         setBio('');
@@ -260,6 +274,7 @@ export default function CreateModal({
         aiInstructions: aiInstructions.trim(),
         tags: selectedTags,
         nsfw: nsfw,
+        public: isPublic,
         cards: selectedCards,
         narrator: scenarioNarrator || null,
         createdAt: editItem ? editItem.createdAt : new Date().toISOString()
@@ -278,6 +293,7 @@ export default function CreateModal({
         tags: selectedTags,
         connectedCards: selectedCards,
         traits: itemType === 'Personaje' ? selectedTraits : [],
+        public: isPublic,
         createdAt: editItem ? editItem.createdAt : new Date().toISOString()
       };
 
@@ -294,6 +310,7 @@ export default function CreateModal({
           aiInstructions: '',
           tags: selectedTags,
           nsfw: nsfw,
+          public: isPublic,
           cards: [cardData.id],
           narrator: null,
           createdAt: new Date().toISOString()
@@ -304,6 +321,40 @@ export default function CreateModal({
 
     setIsDirty(false);
     onClose();
+  };
+
+  const handleSaveNestedCard = () => {
+    const trimmedTitle = nestedCardTitle.trim();
+    if (!trimmedTitle) {
+      alert('El nombre de la tarjeta es obligatorio.');
+      return;
+    }
+    const newCard = {
+      id: `card-${Date.now()}`,
+      type: nestedCardType,
+      title: trimmedTitle,
+      intro: nestedCardIntro.trim(),
+      text: nestedCardText.trim(),
+      cover: nestedCardCover.trim(),
+      nsfw: false,
+      public: false,
+      tags: [],
+      connectedCards: [],
+      traits: nestedCardType === 'Personaje' ? nestedCardTraits : [],
+      createdAt: new Date().toISOString()
+    };
+    // Guardar globalmente
+    onSaveItem({ type: 'card', data: newCard, isEdit: false });
+    // Conectar al escenario actual
+    setSelectedCards(prev => [...prev, newCard.id]);
+    setIsDirty(true);
+    // Limpiar estados y cerrar sub-modal
+    setNestedCardType(null);
+    setNestedCardTitle('');
+    setNestedCardIntro('');
+    setNestedCardText('');
+    setNestedCardCover('');
+    setNestedCardTraits([]);
   };
 
   const handleCloseAttempt = () => {
@@ -499,28 +550,52 @@ export default function CreateModal({
             </button>
           </div>
           
-          {/* Fila inferior: NSFW debajo de la X */}
+          {/* Fila inferior: Público y NSFW debajo de la X */}
           {itemType !== 'Narrador' && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(255, 255, 255, 0.03)',
-              padding: '4px 8px',
-              borderRadius: '6px',
-              border: '1px solid rgba(255,255,255,0.08)',
-              marginTop: '4px'
-            }}>
-              <input
-                type="checkbox"
-                id="headerNsfwCheck"
-                checked={nsfw}
-                onChange={(e) => handleFieldChange(setNsfw, e.target.checked)}
-                style={{ cursor: 'pointer', accentColor: '#ffd36b' }}
-              />
-              <label htmlFor="headerNsfwCheck" style={{ cursor: 'pointer', color: '#ffd36b', fontWeight: '700', fontSize: '0.8rem', userSelect: 'none' }}>
-                NSFW
-              </label>
+            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+              {/* Checkbox Público */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'rgba(255, 255, 255, 0.03)',
+                padding: '4px 8px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255,255,255,0.08)'
+              }}>
+                <input
+                  type="checkbox"
+                  id="headerPublicCheck"
+                  checked={isPublic}
+                  onChange={(e) => handleFieldChange(setIsPublic, e.target.checked)}
+                  style={{ cursor: 'pointer', accentColor: '#ffd36b' }}
+                />
+                <label htmlFor="headerPublicCheck" style={{ cursor: 'pointer', color: '#ffd36b', fontWeight: '700', fontSize: '0.8rem', userSelect: 'none' }}>
+                  Público
+                </label>
+              </div>
+
+              {/* Checkbox NSFW */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'rgba(255, 255, 255, 0.03)',
+                padding: '4px 8px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255,255,255,0.08)'
+              }}>
+                <input
+                  type="checkbox"
+                  id="headerNsfwCheck"
+                  checked={nsfw}
+                  onChange={(e) => handleFieldChange(setNsfw, e.target.checked)}
+                  style={{ cursor: 'pointer', accentColor: '#ffd36b' }}
+                />
+                <label htmlFor="headerNsfwCheck" style={{ cursor: 'pointer', color: '#ffd36b', fontWeight: '700', fontSize: '0.8rem', userSelect: 'none' }}>
+                  NSFW
+                </label>
+              </div>
             </div>
           )}
         </div>
@@ -950,15 +1025,157 @@ export default function CreateModal({
               </div>
             )}
 
-            {/* Selector de Conexiones */}
-            <div style={{ marginTop: '10px' }}>
-              <ConnectionSelector
-                availableCards={appData.cards || []}
-                selectedCardIds={selectedCards}
-                onSelectCard={(id) => handleFieldChange(setSelectedCards, [...selectedCards, id])}
-                onRemoveCard={(id) => handleFieldChange(setSelectedCards, selectedCards.filter(cId => cId !== id))}
-              />
-            </div>
+            {/* Selector de Conexiones / Lore Pieces Grid (FictionLab style) */}
+            {itemType === 'Escenario' ? (
+              <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '20px' }}>
+                <h4 style={{ margin: '0 0 16px 0', color: '#ffd36b', fontSize: '1.05rem', fontWeight: '700' }}>
+                  Construcción del Escenario (Lore Pieces)
+                </h4>
+
+                {/* Buscador Rápido para Importar Tarjetas Existentes */}
+                <div style={{ marginBottom: '24px' }}>
+                  <ConnectionSelector
+                    availableCards={appData.cards || []}
+                    selectedCardIds={selectedCards}
+                    onSelectCard={(id) => handleFieldChange(setSelectedCards, [...selectedCards, id])}
+                    onRemoveCard={(id) => handleFieldChange(setSelectedCards, selectedCards.filter(cId => cId !== id))}
+                  />
+                </div>
+
+                {/* Cuadrículas agrupadas por tipo */}
+                {['Personaje', 'Lugar', 'Facción', 'Raza', 'Objeto', 'Otros'].map(type => {
+                  const linkedCardsOfType = (appData.cards || []).filter(c => {
+                    if (!selectedCards.includes(c.id)) return false;
+                    if (c.type === type) return true;
+                    if (type === 'Otros' && !['Personaje', 'Lugar', 'Facción', 'Raza', 'Objeto'].includes(c.type)) return true;
+                    return false;
+                  });
+                  const typeLabel = type === 'Personaje' ? 'Personajes' : type === 'Lugar' ? 'Lugares' : type === 'Facción' ? 'Facciones' : type === 'Raza' ? 'Razas' : type === 'Objeto' ? 'Objetos' : 'Otros / Personalizados';
+
+                  return (
+                    <div key={type} style={{ marginBottom: '24px' }}>
+                      <h5 style={{ margin: '0 0 10px 0', color: '#ffffff', fontSize: '0.88rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>{typeLabel} ({linkedCardsOfType.length})</span>
+                      </h5>
+
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+                        gap: '12px'
+                      }}>
+                        {/* Tarjetas conectadas de este tipo */}
+                        {linkedCardsOfType.map(card => {
+                          return (
+                            <div
+                              key={card.id}
+                              style={{
+                                background: 'rgba(255, 255, 255, 0.02)',
+                                border: '1px solid rgba(255, 255, 255, 0.08)',
+                                borderRadius: '10px',
+                                overflow: 'hidden',
+                                position: 'relative',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                height: '170px',
+                                transition: 'all 0.2s'
+                              }}
+                            >
+                              {/* Botón de Desenlazar (x) */}
+                              <button
+                                type="button"
+                                onClick={() => handleFieldChange(setSelectedCards, selectedCards.filter(id => id !== card.id))}
+                                style={{
+                                  position: 'absolute',
+                                  top: '6px',
+                                  right: '6px',
+                                  background: 'rgba(0, 0, 0, 0.6)',
+                                  border: 'none',
+                                  color: '#ff6b6b',
+                                  width: '20px',
+                                  height: '20px',
+                                  borderRadius: '50%',
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontSize: '0.8rem',
+                                  fontWeight: 'bold',
+                                  zIndex: 5
+                                }}
+                                title="Desenlazar del escenario"
+                              >
+                                ×
+                              </button>
+
+                              {/* Portada */}
+                              <div style={{
+                                height: '80px',
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                backgroundImage: `url(${card.cover || 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=300&q=80'})`,
+                                backgroundColor: '#1a1a24'
+                              }} />
+
+                              {/* Info */}
+                              <div style={{ padding: '8px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={card.title}>
+                                  {card.title}
+                                </div>
+                                <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                                  {card.type}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                        {/* Ranura Dotted "Crear Nuevo" */}
+                        <div
+                          onClick={() => setNestedCardType(type)}
+                          style={{
+                            border: '2px dashed rgba(255, 211, 107, 0.3)',
+                            borderRadius: '10px',
+                            height: '170px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            color: '#ffd36b',
+                            fontSize: '0.78rem',
+                            fontWeight: '600',
+                            gap: '6px',
+                            transition: 'all 0.2s',
+                            background: 'rgba(255,211,107,0.01)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.border = '2px dashed rgba(255, 211, 107, 0.6)';
+                            e.currentTarget.style.background = 'rgba(255,211,107,0.04)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.border = '2px dashed rgba(255, 211, 107, 0.3)';
+                            e.currentTarget.style.background = 'rgba(255,211,107,0.01)';
+                          }}
+                        >
+                          <span style={{ fontSize: '1.3rem' }}>+</span>
+                          <span>Crear {type}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* Selector de Conexiones en Tarjetas */
+              <div style={{ marginTop: '10px' }}>
+                <ConnectionSelector
+                  availableCards={appData.cards || []}
+                  selectedCardIds={selectedCards}
+                  onSelectCard={(id) => handleFieldChange(setSelectedCards, [...selectedCards, id])}
+                  onRemoveCard={(id) => handleFieldChange(setSelectedCards, selectedCards.filter(cId => cId !== id))}
+                />
+              </div>
+            )}
 
           </div>
         )}
@@ -970,6 +1187,160 @@ export default function CreateModal({
           onClose={() => setIsCropperOpen(false)}
           onCropComplete={(croppedImage) => handleFieldChange(setCover, croppedImage)}
         />
+
+        {/* Sub-modal Flotante para Crear Tarjeta In-Situ (FictionLab Style) */}
+        {nestedCardType && (
+          <div style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(2, 4, 10, 0.85)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1400
+          }}>
+            <div style={{
+              background: '#14141f',
+              padding: '24px',
+              borderRadius: '16px',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              maxWidth: '500px',
+              width: '90%',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.9)',
+              position: 'relative'
+            }}>
+              <button
+                type="button"
+                onClick={() => setNestedCardType(null)}
+                style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#fff',
+                  fontSize: '18px',
+                  cursor: 'pointer'
+                }}
+              >
+                ×
+              </button>
+
+              <h4 style={{ margin: '0 0 16px 0', color: '#ffd36b', fontSize: '1.1rem', fontWeight: '700' }}>
+                Crear Nuevo {nestedCardType} (In-Situ)
+              </h4>
+
+              {/* Portada URL */}
+              <div style={{ marginBottom: '14px' }}>
+                <label style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', display: 'block', marginBottom: '6px' }}>Portada URL</label>
+                <input
+                  type="text"
+                  value={nestedCardCover}
+                  onChange={(e) => setNestedCardCover(e.target.value)}
+                  placeholder="https://ejemplo.com/imagen.jpg"
+                  style={{ width: '100%', padding: '8px 12px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff', boxSizing: 'border-box', fontSize: '0.82rem' }}
+                />
+              </div>
+
+              {/* Nombre */}
+              <div style={{ marginBottom: '14px' }}>
+                <label style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', display: 'block', marginBottom: '6px' }}>Nombre / Título</label>
+                <input
+                  type="text"
+                  value={nestedCardTitle}
+                  onChange={(e) => setNestedCardTitle(e.target.value)}
+                  placeholder={`Nombre del ${nestedCardType}...`}
+                  style={{ width: '100%', padding: '8px 12px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff', boxSizing: 'border-box', fontSize: '0.82rem' }}
+                />
+              </div>
+
+              {/* Resumen */}
+              <div style={{ marginBottom: '14px' }}>
+                <label style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', display: 'block', marginBottom: '6px' }}>Resumen breve</label>
+                <textarea
+                  value={nestedCardIntro}
+                  onChange={(e) => setNestedCardIntro(e.target.value)}
+                  rows={2}
+                  placeholder="Breve sumario descriptivo..."
+                  style={{ width: '100%', padding: '8px 12px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff', boxSizing: 'border-box', resize: 'vertical', fontSize: '0.82rem' }}
+                />
+              </div>
+
+              {/* Detalles / Lore */}
+              <div style={{ marginBottom: '14px' }}>
+                <label style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', display: 'block', marginBottom: '6px' }}>Lore / Detalles</label>
+                <textarea
+                  value={nestedCardText}
+                  onChange={(e) => setNestedCardText(e.target.value)}
+                  rows={3}
+                  placeholder="Descripción completa del lore..."
+                  style={{ width: '100%', padding: '8px 12px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff', boxSizing: 'border-box', resize: 'vertical', fontSize: '0.82rem' }}
+                />
+              </div>
+
+              {/* Rasgos de personaje (sólo si es Personaje) */}
+              {nestedCardType === 'Personaje' && (
+                <div style={{ marginBottom: '14px' }}>
+                  <label style={{ fontSize: '0.78rem', color: '#ffd36b', fontWeight: '700', display: 'block', marginBottom: '6px' }}>Traits (Rasgos de Personalidad)</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                    {nestedCardTraits.length === 0 ? (
+                      <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontStyle: 'italic' }}>Sin rasgos aún.</span>
+                    ) : (
+                      nestedCardTraits.map(t => (
+                        <span key={t} style={{ background: 'rgba(255,211,107,0.15)', border: '1px solid rgba(255,211,107,0.3)', borderRadius: '12px', padding: '2px 8px', fontSize: '0.75rem', color: '#ffd36b', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          {t}
+                          <button type="button" onClick={() => setNestedCardTraits(prev => prev.filter(x => x !== t))} style={{ background: 'transparent', border: 'none', color: '#ffd36b', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}>×</button>
+                        </span>
+                      ))
+                    )}
+                  </div>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      value={nestedTraitQuery}
+                      onChange={(e) => {
+                        setNestedTraitQuery(e.target.value);
+                        setShowNestedTraitDropdown(true);
+                      }}
+                      onFocus={() => setShowNestedTraitDropdown(true)}
+                      onBlur={() => setTimeout(() => setShowNestedTraitDropdown(false), 200)}
+                      placeholder="Buscar o añadir rasgo..."
+                      style={{ width: '100%', padding: '8px 12px', background: '#1e1e2c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', color: '#fff', boxSizing: 'border-box', fontSize: '0.82rem' }}
+                    />
+                    {showNestedTraitDropdown && (
+                      <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#14141f', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', zIndex: 1500, maxHeight: '120px', overflowY: 'auto', marginTop: '4px' }}>
+                        {CHARACTER_TRAITS.filter(tr => tr.toLowerCase().includes(nestedTraitQuery.toLowerCase()) && !nestedCardTraits.includes(tr)).map(tr => (
+                          <div key={tr} onMouseDown={() => { setNestedCardTraits(prev => [...prev, tr]); setNestedTraitQuery(''); setShowNestedTraitDropdown(false); }} style={{ padding: '8px', color: '#fff', cursor: 'pointer', fontSize: '0.82rem' }}>
+                            {tr}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Botones */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px' }}>
+                <button
+                  type="button"
+                  onClick={() => setNestedCardType(null)}
+                  style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.82rem' }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveNestedCard}
+                  style={{ background: 'linear-gradient(90deg, #ffd36b, #ff9f6b)', border: 'none', color: '#000', fontWeight: '700', padding: '8px 20px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.82rem' }}
+                >
+                  Guardar Tarjeta
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Diálogo de confirmación para cambios sin guardar */}

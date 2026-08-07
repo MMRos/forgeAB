@@ -117,7 +117,20 @@ export default function Profile({ appData = {}, onNavigate, onOpenChat, onOpenSc
                 <div className="pcard-cover" style={{ backgroundImage: `url(${sc.cover || 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80'})` }} />
                 <div className="pcard-info">
                   <h4>{sc.title || sc.name}</h4>
-                  <small>{sc.category || sc.type || 'Escenario'}</small>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                    <small>{sc.category || sc.type || 'Escenario'}</small>
+                    <span style={{
+                      fontSize: '0.65rem',
+                      fontWeight: '700',
+                      padding: '1px 6px',
+                      borderRadius: '4px',
+                      background: sc.public ? 'rgba(255, 211, 107, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                      color: sc.public ? '#ffd36b' : 'rgba(255,255,255,0.4)',
+                      border: sc.public ? '1px solid rgba(255, 211, 107, 0.25)' : '1px solid rgba(255,255,255,0.08)'
+                    }}>
+                      {sc.public ? 'Público' : 'Privado'}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))

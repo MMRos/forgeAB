@@ -14,6 +14,7 @@ import { getAllChats } from './utils/db';
 import { loadAppData, saveAppData, requestDirectoryHandle, loadDirectoryHandle, loadAppDataFromFolder, saveAppDataToFolder, saveChatToFolder } from './utils/storage';
 
 import Profile from './pages/Profile';
+import MusicView from './pages/MusicView';
 
 function App() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -243,6 +244,18 @@ function App() {
           chatSettings={chatSettings}
           onUpdateChatSettings={setChatSettings}
           activeChat={selectedChat}
+          dmName={
+            selectedChat 
+              ? (() => {
+                  const sc = (appData.scenarios || []).find(s => s.id === selectedChat.scenarioId);
+                  if (sc && sc.narrator) {
+                    const narr = (appData.narrators || []).find(n => n.id === sc.narrator);
+                    return narr ? narr.name : null;
+                  }
+                  return null;
+                })()
+              : null
+          }
           onOpenScenarioPopup={(chat) => {
             const sc = (appData.scenarios || []).find(s => s.id === chat.scenarioId) || { title: chat.scenario, intro: 'Escenario activo' };
             openScenario(sc);
@@ -274,6 +287,12 @@ function App() {
           </div>
         )}
 
+        {view === 'music' && (
+          <div className="page-container">
+            <MusicView appData={appData} onUpdateAppData={updateAppData} />
+          </div>
+        )}
+
         {view === 'chats' && !selectedChat && (
           <div className="page-container">
             <ChatsList 
@@ -292,6 +311,8 @@ function App() {
               setView('chats');
             }} 
             folderHandle={folderHandle}
+            appData={appData}
+            onUpdateAppData={updateAppData}
           />
         )}
 

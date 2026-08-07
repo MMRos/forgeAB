@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { faBars, faAngleDoubleLeft, faUser, faHome, faPlusSquare, faList, faEye, faCopy, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faAngleDoubleLeft, faUser, faHome, faPlusSquare, faList, faEye, faCopy, faTrash, faMusic } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './sidebar.css';
 import { getAllChats } from '../utils/db';
@@ -64,6 +64,7 @@ function Sidebar({ appData = {}, onNavigate = () => {}, onOpenChat = () => {}, o
           <button className="nav-item" title="Inicio" aria-label="Inicio" onClick={() => onNavigate('home')}><FontAwesomeIcon icon={faHome} /> <span>Inicio</span></button>
           <button className="nav-item" title="Perfil" aria-label="Perfil" onClick={() => onNavigate('profile')}><FontAwesomeIcon icon={faUser} /> <span>Perfil</span></button>
           <button className="nav-item" title="Creación" aria-label="Creación" onClick={() => onNavigate('create')}><FontAwesomeIcon icon={faPlusSquare} /> <span>Creación</span></button>
+          <button className="nav-item" title="Música" aria-label="Música" onClick={() => onNavigate('music')}><FontAwesomeIcon icon={faMusic} /> <span>Música</span></button>
           <button className="nav-item" title="Chats" aria-label="Chats" onClick={() => onNavigate('chats')}><FontAwesomeIcon icon={faList} /> <span>Chats</span></button>
         </nav>
 

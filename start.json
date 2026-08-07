@@ -1,0 +1,23 @@
+{
+  "daemon": true,
+  "run": [
+    {
+      "method": "shell.run",
+      "params": {
+        "message": "node start.js",
+        "on": [
+          {
+            "event": "/(http:\\/\\/localhost:3000)/",
+            "done": true
+          }
+        ]
+      }
+    },
+    {
+      "method": "browser.open",
+      "params": {
+        "url": "http://localhost:3000"
+      }
+    }
+  ]
+}

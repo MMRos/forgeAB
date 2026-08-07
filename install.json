@@ -1,0 +1,23 @@
+{
+  "run": [
+    {
+      "method": "shell.run",
+      "params": {
+        "message": "python -m venv env"
+      }
+    },
+    {
+      "method": "shell.run",
+      "params": {
+        "venv": "env",
+        "message": "pip install -r kokoro_server/requirements.txt"
+      }
+    },
+    {
+      "method": "shell.run",
+      "params": {
+        "message": "pnpm install"
+      }
+    }
+  ]
+}

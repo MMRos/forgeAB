@@ -1,0 +1,22 @@
+{
+  "run": [
+    {
+      "method": "fs.rm",
+      "params": {
+        "path": "env"
+      }
+    },
+    {
+      "method": "fs.rm",
+      "params": {
+        "path": "node_modules"
+      }
+    },
+    {
+      "method": "shell.run",
+      "params": {
+        "message": "install.json"
+      }
+    }
+  ]
+}

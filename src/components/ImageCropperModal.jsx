@@ -46,31 +46,36 @@ export default function ImageCropperModal({
     const img = imgRef.current;
 
     if (img && ctx) {
-      ctx.fillStyle = '#0d0e16';
-      ctx.fillRect(0, 0, targetW, targetH);
+      try {
+        ctx.fillStyle = '#0d0e16';
+        ctx.fillRect(0, 0, targetW, targetH);
 
-      // Calcular relación de escala entre la vista previa (300px alto) y el canvas final
-      const viewportH = 300;
-      const viewportW = viewportH * aspectRatio;
-      const scaleFactor = targetW / viewportW;
+        // Calcular relación de escala entre la vista previa (300px alto) y el canvas final
+        const viewportH = 300;
+        const viewportW = viewportH * aspectRatio;
+        const scaleFactor = targetW / viewportW;
 
-      // Calcular ancho/alto renderizado de la imagen en el viewport
-      const displayedWidth = img.clientWidth || (img.naturalWidth * zoom);
-      const displayedHeight = img.clientHeight || (img.naturalHeight * zoom);
+        // Calcular ancho/alto renderizado de la imagen en el viewport
+        const displayedWidth = img.clientWidth || (img.naturalWidth * zoom);
+        const displayedHeight = img.clientHeight || (img.naturalHeight * zoom);
 
-      ctx.save();
-      // Dibujar imagen escalada a la resolución HD final con la posición exacta elegida
-      ctx.drawImage(
-        img,
-        position.x * scaleFactor,
-        position.y * scaleFactor,
-        displayedWidth * scaleFactor * zoom,
-        displayedHeight * scaleFactor * zoom
-      );
-      ctx.restore();
+        ctx.save();
+        // Dibujar imagen escalada a la resolución HD final con la posición exacta elegida
+        ctx.drawImage(
+          img,
+          position.x * scaleFactor,
+          position.y * scaleFactor,
+          displayedWidth * scaleFactor * zoom,
+          displayedHeight * scaleFactor * zoom
+        );
+        ctx.restore();
 
-      const croppedUrl = canvas.toDataURL('image/jpeg', 0.92);
-      onCropComplete(croppedUrl);
+        const croppedUrl = canvas.toDataURL('image/jpeg', 0.92);
+        onCropComplete(croppedUrl);
+      } catch (err) {
+        console.warn('Canvas export failed due to cross-origin resource limitations. Falling back to raw image.', err);
+        onCropComplete(imageSrc);
+      }
     } else {
       onCropComplete(imageSrc);
     }
