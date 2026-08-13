@@ -22,7 +22,7 @@ error_log:
     #     input_data: "Datos exactos"
     #     system_state: "Estado relevante"
     #     stack_trace: ""
-    #   structural_impact: "none | requires_diagram_update | requires_spec_change"
+    #   structural_impact: "none | requires_diagram_update | requires_spec_change | dry_violation | crap_threshold_exceeded"
     #   resolution:
     #     status: "open | in_progress | resolved"
     #     solution_applied: "Descripción de la solución"

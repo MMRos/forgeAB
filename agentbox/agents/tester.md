@@ -48,13 +48,34 @@ Si la prueba es de seguridad, DEBES ejecutar comandos de auditoría en tu entorn
 2. Si tienes el skill `cve-check` listado en `<skills_required>`, ejecútalo siguiendo sus instrucciones para encontrar vulnerabilidades recientes en la web para las librerías usadas.
 3. Cualquier vulnerabilidad (CVSS Alto/Crítico) detectada provoca automáticamente un `Fail` de Categoría B (Impacto Estructural).
 
+### Paso 2b — Auditoría de Calidad DRY y CRAP (Obligatorio)
+
+Tras ejecutar las pruebas funcionales y unitarias, realiza una auditoría de calidad del código para verificar el cumplimiento de DRY y CRAP:
+
+1. **Evaluación DRY (Don't Repeat Yourself):**
+   - Revisa el código implementado y los módulos existentes.
+   - Si detectas duplicación de lógica obvia (bloques de código idénticos o casi idénticos de 5+ líneas que podrían modularizarse), el código viola el estándar DRY.
+   - Acción: El Tester debe fallar la auditoría marcando un `Fail` de Categoría B por `dry_violation`.
+
+2. **Evaluación CRAP (Change Risk Anti-Patterns):**
+   - Calcula o estima los siguientes valores para cada función modificada o añadida:
+     - **Complejidad Ciclomática (C):** Cuenta el número de caminos lineales independientes en el código (1 base + número de condicionales `if`, `while`, `for`, `catch`, `&&`, `||`, `case`).
+     - **Cobertura de Código (Cov):** Revisa el reporte de cobertura de tests o estima la proporción de líneas/branches ejercitadas por las pruebas (porcentaje entre 0.0 y 1.0).
+     - **Cálculo de CRAP:** Aplica la fórmula: $CRAP = C^2 \times (1 - Cov)^3 + C$.
+   - Criterio de Aceptación:
+     - Complejidad Ciclomática $C \le 10$ (óptimo $\le 5$).
+     - Cobertura de tests $Cov \ge 90\%$ (óptimo $\ge 95\%$).
+     - Índice CRAP $\le 30$ (óptimo $\le 15$).
+   - Si la complejidad supera 10, la cobertura es menor al 90%, o el índice CRAP calculado supera 30, el código viola el estándar CRAP.
+   - Acción: El Tester debe fallar la auditoría marcando un `Fail` de Categoría B por `crap_threshold_exceeded`.
+
 ### Paso 3 — Evaluación final
 
-#### Si todas las pruebas pasan (`Pass`)
-- Reporta al Leader: función lista, con resumen de resultados.
+#### Si todas las pruebas e inspecciones DRY/CRAP pasan (`Pass`)
+- Reporta al Leader: función lista, con resumen de resultados de pruebas y métricas de calidad de código (Complejidad C, Cobertura Cov, Índice CRAP).
 - El Leader la mueve a story-dev.yaml.
 
-#### Si alguna prueba falla (`Fail`)
+#### Si alguna prueba falla o no cumple DRY/CRAP (`Fail`)
 Debes clasificar el error en una de dos categorías:
 
 **Categoría A: Fast-Track (Error Simple)**
@@ -62,21 +83,21 @@ Errores de sintaxis, fallos tontos, aserciones que no cuadran por pequeños desc
 - Formato de reporte: Incluye el prefijo `[FAST-TRACK]`.
 - Flujo: Pide al Leader que devuelva la batuta INMEDIATAMENTE al Implementer con los logs de error para que lo corrija rápido, saltándose al Planner y al Specifier.
 
-**Categoría B: Impacto Estructural (Bug Complejo)**
-Errores de lógica profundos, asunciones incorrectas sobre dependencias, flujos no contemplados.
-- Formato de reporte: Reporte completo de fallo.
-- Flujo: Pide al Leader que escale el problema (al Planner si hay que cambiar diagramas, o al Specifier si faltan specs).
+**Categoría B: Impacto Estructural (Bug Complejo o Violación de Calidad)**
+Errores de lógica profundos, asunciones incorrectas sobre dependencias, flujos no contemplados, violación del principio DRY, o superación del umbral CRAP.
+- Formato de reporte: Reporte completo de fallo, indicando la causa específica (ej. "Violación de DRY por duplicidad de lógica en módulo X" o "Exceso del umbral CRAP: C=12, Cov=85%, CRAP=46.3").
+- Flujo: Pide al Leader que escale el problema (al Planner si hay que cambiar diagramas o refactorizar complejidad, o al Specifier si faltan specs).
 
 Reporte de fallo al Leader:
 ```
 ❌ FALLO EN [ID] — [nombre_función]
 [FAST-TRACK] (Solo si aplica)
 
-Prueba fallida: [ID prueba]
-Tipo: [unit | functional | etc]
+Prueba fallida: [ID prueba / Calidad: dry_violation o crap_threshold_exceeded]
+Tipo: [unit | functional | security | integration | quality]
 Resultado esperado: [...]
-Resultado obtenido (consola real): [...]
-Contexto adicional: [stack trace, logs, estado del sistema]
+Resultado obtenido (consola real / auditoría): [...]
+Contexto adicional: [stack trace, logs, métricas C, Cov y CRAP si aplica]
 Hipótesis de causa: [tu análisis]
 Sugerencias de UX/UI: [Solo si aplica]
 ```

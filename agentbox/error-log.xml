@@ -44,7 +44,7 @@
 
       <structural_impact>
         <!-- ¿Este error implica cambios en la arquitectura o diagramas?
-             none | requires_diagram_update | requires_spec_change -->
+             none | requires_diagram_update | requires_spec_change | dry_violation | crap_threshold_exceeded -->
         none
       </structural_impact>
 

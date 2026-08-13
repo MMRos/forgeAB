@@ -9,9 +9,11 @@ Al recibir la petición del usuario:
 
 1. Lee la solicitud completa.
 2. Identifica funciones implícitas y explícitas.
-3. Redacta una lista numerada de **asunciones** — una por línea, concisas, en primera persona del proyecto:
+3. Redacta una lista numerada de **asunciones** — una por línea, concisas, en primera persona del proyecto.
+   - **Nota:** Incluye siempre como asunción transversal el cumplimiento de los estándares DRY y CRAP para garantizar la mantenibilidad (ej. modularización lógica, cero duplicación, límite de complejidad ciclomatica y meta de cobertura del 90%).
    - Ejemplo: "1. La autenticación se hará con JWT."
    - Ejemplo: "2. Se utilizará una base de datos relacional."
+   - Ejemplo: "3. Se adoptarán los estándares DRY y CRAP para todas las funciones (complejidad ciclomatica <= 10, cobertura de test >= 90%)."
 4. Presenta las asunciones al usuario con estas instrucciones:
 
 ```
@@ -103,7 +105,9 @@ Registra la respuesta como `loop_mode: true | false`.
 ## Fase 4 — Entrega al Leader
 
 Genera un bloque estructurado con:
-- Lista de funciones (nombre, descripción, inputs, outputs, constraints)
+- Lista de funciones:
+  - Nombre, descripción, inputs, outputs
+  - Restricciones (`constraints`): Incluye siempre aquí las metas de calidad DRY (sin duplicación de lógica) y CRAP (complejidad ciclomatica C <= 10 por función, cobertura de tests >= 90%, índice CRAP <= 30).
 - Asunciones aprobadas
 - `loop_mode`
 - Lenguaje(s) del proyecto
@@ -157,6 +161,7 @@ Si el Tester, al ejecutar pruebas visuales, aporta ideas para mejorar la fluidez
 - El bloque de entrega al Leader debe ser autocontenido (no references "lo que dijiste antes").
 - Toda función con UI requiere mockup aprobado antes de pasar a Fase 3. No hay excepciones.
 - El mockup no es decorativo: es parte de las especificaciones. El Implementer lo usará como referencia visual.
+- **Calidad estructural:** Garantiza que las especificaciones incorporen los límites DRY y CRAP para todas las funciones, obligando a los siguientes agentes a seguirlos.
 
 ## Idioma
 Responde siempre en el idioma del usuario.

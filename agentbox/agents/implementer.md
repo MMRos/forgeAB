@@ -35,22 +35,30 @@ Antes de escribir nada:
 - Las dependencias listadas en el doc-primitive: impórtalas, no busques otras
 - Los IDs de prueba: cada test que escribas debe corresponder a uno del Trapper
 
-### Paso 2 — Tests primero
+### Paso 2 — Orden estricto de programación (Obligatorio)
 
-Implementa los cuerpos de los tests en el orden que el Planner ha especificado:
-1. Tests unitarios
-2. Tests funcionales
-3. Tests de seguridad
-4. Tests de integración
+Para asegurar la calidad del código, sigue exactamente esta secuencia al implementar cada función:
 
-No escribas código de producción hasta haber completado los esqueletos de test. Este orden es obligatorio.
+1. **Preparar tests (Tests primero):** Implementa los cuerpos de los tests en el archivo de pruebas en el orden especificado:
+   - 1. Tests unitarios
+   - 2. Tests funcionales
+   - 3. Tests de seguridad
+   - 4. Tests de integración
+   No escribas código de producción hasta haber completado todos los tests requeridos.
+2. **Notas explicando la función:** Antes de programar la lógica del negocio, escribe notas técnicas en `@implementation_notes` (dentro del archivo `doc-[modulo].js`) y/o comentarios iniciales, detallando los inputs, outputs y decisiones de diseño técnico.
+3. **Try-Catches y Logging:** Configura la estructura básica de try-catch y logging (manejo de errores obligatorio) para la función antes de escribir la lógica.
+4. **La programación del código de negocio:** Rellena finalmente el cuerpo de la función con la lógica de negocio real, dentro del bloque try-catch, siguiendo el `@flow` del doc-primitive paso a paso.
 
-### Paso 3 — Código de producción
+### Paso 3 — Estándares DRY, CRAP y Limpieza de Código
 
-Rellena el cuerpo de la función siguiendo el `@flow` del doc-primitive paso a paso. Completa también los bloques `[IMPLEMENTER]` del doc-primitive:
-- `@implementation_notes`: decisiones técnicas tomadas, trade-offs
-- `@example`: ejemplo de uso real con inputs y output concretos
-- `@status`: cambia a `development`
+#### Estándar DRY (Don't Repeat Yourself)
+- Queda prohibida la duplicación de código.
+- Si identificas lógica repetitiva o similar, refactorízala y extráela a utilidades comunes o funciones privadas reutilizables.
+
+#### Estándar CRAP (Change Risk Anti-Patterns)
+- **Complejidad Ciclomática (C):** Mantén la complejidad de la función por debajo de 10 (idealmente <= 5) dividiéndola en subtareas.
+- **Cobertura de Pruebas (Cov):** Diseña y ejecuta tests para lograr una cobertura >= 90% en la lógica de negocio de la función.
+- **Meta del Índice CRAP:** Mantén el índice CRAP de cada función modificada o añadida por debajo de 30 (óptimo <= 15).
 
 #### Nombrado
 - Funciones/métodos: verbos descriptivos (`calcular_impuesto`, `fetch_user_by_email`)
@@ -60,7 +68,7 @@ Rellena el cuerpo de la función siguiendo el `@flow` del doc-primitive paso a p
 - Evita abreviaciones salvo convenciones del lenguaje (`i` en for, `e` en except)
 
 #### Manejo de errores (obligatorio)
-Cada función pública debe tener try-catch que registre en el log automáticamente:
+Cada función pública debe tener un try-catch que registre en el log automáticamente:
 
 ```python
 # Ejemplo Python
@@ -90,7 +98,7 @@ Adapta el patrón al lenguaje del proyecto (try/catch en JS/Java/C#, Result en R
 
 #### Modularización
 - Una función = una responsabilidad clara.
-- Divide en sub-funciones privadas cuando la cohesión lógica lo requiera, no por límite de líneas.
+- Divide en sub-funciones privadas cuando la cohesión lógica lo requiera, no por límite de líneas (ayuda a mantener baja la complejidad CRAP).
 - Si una sub-función no estaba en el `@flow` del Planner, indícalo en `@implementation_notes`.
 
 ### Paso 4 — Actualizar bloque `<implementation>` en current-dev.yaml
@@ -105,14 +113,17 @@ Adapta el patrón al lenguaje del proyecto (try/catch en JS/Java/C#, Result en R
 
 ## Reglas de calidad
 
+- [ ] ¿Se ha seguido el orden estricto de programación: preparar tests > notas explicando funciones > try-catches > la programación?
 - [ ] ¿Los tests están escritos antes del código de producción?
 - [ ] ¿Cada test implementado corresponde a un ID del Trapper?
 - [ ] ¿Los bloques `[IMPLEMENTER]` del doc-primitive están rellenos?
 - [ ] ¿Los nombres de todos los identificadores son autoexplicativos?
-- [ ] ¿Existe try-catch en cada función pública?
+- [ ] ¿Existe try-catch en cada función pública configurado antes de la lógica?
 - [ ] ¿El log registra: nombre de función, inputs (sin datos sensibles), tipo de error?
 - [ ] ¿El `@flow` del Planner se ha seguido en el orden definido?
 - [ ] ¿Las dependencias son exactamente las que el Planner listó (sin añadir nuevas sin justificación)?
+- [ ] ¿Se respeta el principio DRY (cero duplicidad de código)?
+- [ ] ¿Se respeta el límite CRAP (complejidad ciclomatica C <= 10 por función, cobertura >= 90%, índice CRAP <= 30)?
 
 ## Al terminar
 

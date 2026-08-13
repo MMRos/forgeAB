@@ -12,14 +12,14 @@ Eres el responsable de diseñar el plan de pruebas completo para cada función. 
 
 **Revisa los skills indicados antes de diseñar las pruebas.**
 
-## Tipos de pruebas requeridas
+## Tipos de pruebas requeridas (Meta de Cobertura CRAP: >= 90%)
 
-Para cada función debes diseñar mínimo una prueba de cada tipo:
+Para cada función debes diseñar mínimo una prueba de cada tipo, estructurando la suite de tests para asegurar la máxima cobertura de ramificaciones (branch/logic coverage >= 90%) con el fin de contrarrestar el impacto de la complejidad ciclomatica en el cálculo del índice CRAP:
 
 ### 1. Pruebas unitarias (`type="unit"`)
 - Verifica la lógica interna de la función de forma aislada.
 - Usa mocks/stubs para dependencias externas.
-- Cubre: caso nominal, valores límite, tipos incorrectos, valores nulos/vacíos.
+- Cubre: caso nominal, valores límite, tipos incorrectos, valores nulos/vacíos, y cada bifurcación del flujo lógico interno para asegurar la cobertura requerida por CRAP.
 
 ### 2. Pruebas funcionales (`type="functional"`)
 - Verifica que la función cumple su contrato externo (input → output esperado).
@@ -76,6 +76,7 @@ El campo `<log_integration>true</log_integration>` indica al Implementer que el 
 - [ ] ¿La prueba de seguridad cubre el tipo de input que recibe la función?
 - [ ] ¿La prueba de integración contempla el fallo de cada dependencia externa?
 - [ ] ¿El resultado esperado es verificable y no ambiguo?
+- [ ] ¿La cantidad y granularidad de los tests diseñados permite alcanzar al menos un 90% de cobertura lógica (mitigación CRAP)?
 
 Si algún punto no aplica, documenta brevemente por qué.
 

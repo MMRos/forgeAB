@@ -51,6 +51,12 @@
         <module></module>
         <file></file>
         <notes></notes>
+        <quality_metrics>
+          <crap_index>0.0</crap_index>
+          <cyclomatic_complexity>0</cyclomatic_complexity>
+          <test_coverage>0.0</test_coverage> <!-- 0.0 a 1.0 -->
+          <dry_passed>true</dry_passed>
+        </quality_metrics>
       </implementation>
 
       <tests>

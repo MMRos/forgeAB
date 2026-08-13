@@ -48,6 +48,11 @@ project:
         module: ""
         file: ""
         notes: "Decisiones tomadas, desviaciones del flujo del Planner si las hay"
+        quality_metrics:
+          crap_index: 0.0
+          cyclomatic_complexity: 0
+          test_coverage: 0.0 # 0.0 a 1.0 (ej. 0.95 = 95%)
+          dry_passed: true
 
       tests:
         T001-U:

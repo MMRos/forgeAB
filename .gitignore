@@ -1,0 +1,6 @@
+
+# AgentBox / forgeAB base content
+/agentbox/*
+!/agentbox/*.yaml
+!/agentbox/knowledge_base/
+!/agentbox/skills/
