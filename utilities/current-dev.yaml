@@ -51,11 +51,14 @@ project:
         module:
         file:
         notes:
+<<<<<<< HEAD:agentbox/current-dev.yaml
         quality_metrics:
           crap_index: 0.0
           cyclomatic_complexity: 0
           test_coverage: 0.0 # 0.0 a 1.0
           dry_passed: true
+=======
+>>>>>>> 21276dc8aa0f50b5c3ffec0616df34d19cfb7186:utilities/current-dev.yaml
       
 
       tests:

@@ -8,7 +8,15 @@
 story:
   meta:
     project:<!-- Nombre del proyecto -->
+<<<<<<< HEAD:agentbox/story-dev.yaml
     language:JavaScript/TypeScript
+=======
+<<<<<<< HEAD:agentbox/story-dev.yaml
+    language:"Python"
+=======
+    language:JavaScript/TypeScript
+>>>>>>> 45a68d9c86f042b27914d499f160f86b5560ea18:utilities/story-dev.yaml
+>>>>>>> 21276dc8aa0f50b5c3ffec0616df34d19cfb7186:utilities/story-dev.yaml
   
 
   completed_functions:

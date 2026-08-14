@@ -8,7 +8,15 @@
 error_log:
   meta:
     project:<!-- Nombre del proyecto -->
+<<<<<<< HEAD:agentbox/error-log.yaml
     language:JavaScript/TypeScript
+=======
+<<<<<<< HEAD:agentbox/error-log.yaml
+    language:"Python"
+=======
+    language:JavaScript/TypeScript
+>>>>>>> 45a68d9c86f042b27914d499f160f86b5560ea18:utilities/error-log.yaml
+>>>>>>> 21276dc8aa0f50b5c3ffec0616df34d19cfb7186:utilities/error-log.yaml
   
 
   errors:
@@ -44,7 +52,11 @@ error_log:
 
       structural_impact:
         <!-- ¿Este error implica cambios en la arquitectura o diagramas?
+<<<<<<< HEAD:agentbox/error-log.yaml
              none | requires_diagram_update | requires_spec_change | dry_violation | crap_threshold_exceeded -->
+=======
+             none | requires_diagram_update | requires_spec_change -->
+>>>>>>> 21276dc8aa0f50b5c3ffec0616df34d19cfb7186:utilities/error-log.yaml
         none
       
 

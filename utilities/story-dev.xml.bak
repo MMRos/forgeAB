@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  story-dev.xml
+  Registro histórico de funciones completadas.
+  El Leader mueve aquí cada función una vez que pasa todos los tests.
+  NO se modifica manualmente; solo el Leader escribe en este archivo.
+-->
+<story>
+  <meta>
+    <project><!-- Nombre del proyecto --></project>
+    <language>JavaScript/TypeScript</language>
+  </meta>
+
+  <completed_functions>
+
+    <!-- EJEMPLO — cada entrada proviene de current-dev.xml + resultados de tests -->
+    <!--
+    <function id="F001">
+      <name>nombre_de_la_funcion</name>
+      <priority>1</priority>
+
+      <specifications> ... copia íntegra del bloque de current-dev ... </specifications>
+      <implementation> ... </implementation>
+
+      <test_results>
+        <test type="unit"        id="T001-U" status="Pass" result="Descripción breve del resultado"/>
+        <test type="functional"  id="T001-F" status="Pass" result=""/>
+        <test type="security"    id="T001-S" status="Pass" result=""/>
+        <test type="integration" id="T001-I" status="Pass" result=""/>
+        <extra_tests_added><!-- Si el Tester pidió pruebas adicionales al Trapper --></extra_tests_added>
+      </test_results>
+
+      <timestamps>
+        <started>2024-01-01T10:00:00Z</started>
+        <testing_started>2024-01-01T11:30:00Z</testing_started>
+        <completed>2024-01-01T12:15:00Z</completed>
+        <duration_minutes>135</duration_minutes>
+      </timestamps>
+
+      <notes><!-- Observaciones del equipo de agentes, errores encontrados y soluciones aplicadas --></notes>
+    </function>
+    -->
+
+  </completed_functions>
+</story>
