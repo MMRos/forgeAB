@@ -1,14 +1,13 @@
+# Backups and temporary files
+*.bak
+*.tmp
+*.log
 
-<<<<<<< HEAD
-# AgentBox / forgeAB base content
-/agentbox/*
-!/agentbox/*.yaml
-!/agentbox/knowledge_base/
-!/agentbox/skills/
-=======
-# forgeAB utilities content
+# Project logs
+project-logs/
+
+# forgeAB utilities content when embedded
 /forgeAB/
 !/forgeAB/utilities/*.yaml
 !/forgeAB/utilities/knowledge_base/
 !/forgeAB/utilities/skills/
->>>>>>> 21276dc8aa0f50b5c3ffec0616df34d19cfb7186
