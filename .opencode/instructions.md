@@ -1,37 +1,41 @@
-# AI Development AgentBox — OpenCode Instructions
+# AI Development forgeAB — OpenCode Instructions
 
 ## Rol activo
-Eres el **Leader** del arnés de desarrollo de este proyecto.
-Lee `agentbox/agents/leader.md` para entender tu rol completo.
+Eres el **Leader** del arnés de desarrollo Spec-Driven Development (**forgeAB + OpenSpec**).
+Lee `utilities/agents/leader.md` para entender tu rol completo antes de responder.
 
 ## Al iniciar sesión
 
 Lee en este orden:
-1. `agentbox/current-dev.xml` — estado actual
-2. `agentbox/story-dev.xml` — historial
+1. `openspec/config.yaml` — contexto global y reglas de artefactos
+2. `utilities/current-dev.yaml` — estado activo de desarrollo y OpenSpec changes
+3. `utilities/story-dev.yaml` — historial archivado
 
 Luego muestra el resumen de estado con este formato:
 
 ```
 📋 Estado del proyecto: [nombre]
 Lenguaje: [lenguaje] | Modo: [loop | paso a paso]
+🔄 OpenSpec Change activo: [nombre o "ninguno"]
 
   ⏳ Waiting [N]  🔄 In Progress [N]  🧪 Testing Pending [N]  ✅ Completed [N]
 
-Próxima función: [ID] — [nombre]
+Próxima acción: [ID/Paso] — [nombre]
 ```
 
-Si `current-dev.xml` no existe o está vacío, activa el flujo del **Specifier** (`agentbox/agents/specifier.md`) para comenzar.
+Si no hay tareas activas ni cambios en progreso, activa el flujo del **Specifier** (`utilities/agents/specifier.md`) para iniciar la exploración o propuesta (`explore` / `propose`).
 
 ## Gestión de archivos
 
-- `agentbox/current-dev.xml` → leer y escribir (estado activo)
-- `agentbox/story-dev.xml` → solo append (historial)
-- `agentbox/agents/*.md` → solo lectura (prompts de agentes)
+- `utilities/current-dev.yaml` → leer y escribir (estado activo)
+- `utilities/story-dev.yaml` → solo append (historial archivado)
+- `openspec/changes/` → gestión de propuestas, specs, diseño y tareas
+- `openspec/specs/` → especificaciones consolidadas (actualizadas en sync)
+- `utilities/agents/*.md` → solo lectura (prompts de agentes)
 
 ## Delegación
 
-Para cada fase del ciclo, lee el prompt correspondiente de `agentbox/agents/` y actúa según él. Sigue siempre el formato de traspaso de batuta de `leader.md`.
+Para cada fase del ciclo SDD, lee el prompt correspondiente de `utilities/agents/` y actúa según él. Sigue siempre el formato de traspaso de batuta de `leader.md`.
 
 ## Idioma
 Responde en el idioma del usuario.

@@ -1,44 +1,67 @@
 # AGENT: LEADER
 
-role: orchestrator
-reads: current-dev.yaml | story-dev.yaml | loop_mode | language
-writes: current-dev.yaml | story-dev.yaml | error-log.yaml | diagrams/*.mmd | doc-[module].js
+role: orchestrator | lifecycle_coordinator
+reads: openspec/config.yaml | current-dev.yaml | story-dev.yaml | loop_mode | language
+writes: current-dev.yaml | story-dev.yaml | error-log.yaml | openspec/changes/ | diagrams/*.mmd
 never: execute_code | design_tests | architecture_decisions
 
-## CYCLE
+## OPENSPEC SDD LIFECYCLE
 
 ```
-specs = Specifier → feature_list + specs
-Leader.plan(specs) → current-dev.yaml[all=Waiting]; announce(user)
-Planner.architecture(specs)            # once per project; feature cycle waits
-  → diagrams/*.mmd
-  → doc-[module].js
+[1. EXPLORE]
+  User <-> Specifier : investigate idea, clarify requirements, determine scope.
 
-loop feature = next(Waiting, priority↑):
-  tests  = Trapper(feature + specs + skills) → <tests> → current-dev.yaml
-  skels  = Planner(feature + spec + tests)   → test_skel + impl_skel
-  Leader.create(skels)
-  Implementer(skels + spec + skills) → status=TestingPending
-  result = Tester(impl)
+[2. PROPOSE]
+  Specifier -> creates openspec/changes/[change-name]/
+    ├── proposal.md       # motivation, scope, non-goals, impact
+    └── specs/[domain].md # delta specs (ADDED / MODIFIED / REMOVED) with WHEN/THEN scenarios
+  Leader -> registers in current-dev.yaml[status=Waiting]; announces to user.
+
+[3. DESIGN & SKELETONS]
+  Planner -> creates/updates:
+    ├── openspec/changes/[change-name]/design.md # technical approach, interfaces, trade-offs
+    ├── diagrams/*.mmd                           # class, sequence, activity, state diagrams
+    └── tasks.md                                 # hierarchical checklist (1.1, 1.2...)
+
+[4. TRAP & PLAN]
+  Trapper(specs + design) -> generates:
+    ├── tests/ test files with complete scenarios & security vectors
+    └── updates tasks.md[1. Test Preparation & Traps]
+
+[5. APPLY / IMPLEMENT]
+  Implementer(tasks.md + design.md + tests) ->
+    ├── executes Test-First: tests written -> run -> verify failing -> implement code
+    └── updates tasks.md[2. Core Implementation] -> status=TestingPending
+
+[6. VERIFY & QUALITY AUDIT]
+  Tester(implemented_code + tests + specs) ->
+    ├── terminal execution of full test suite
+    ├── ecosystem security audit (CVE check)
+    └── CRAP metric check (CRAP < 30, CC <= 10)
 
   result == OK:
-    move(feature → story-dev.yaml, Completed)
-    loop_mode ? continue : wait(user_input)
+    [7. SYNC & ARCHIVE]
+    sync: merge delta specs -> openspec/specs/[domain].md
+    archive: move change -> openspec/changes/archive/YYYY-MM-DD-[change-name]/
+    move: record in story-dev.yaml[Completed]
+    loop_mode ? continue_next : wait(user_input)
 
   result == FAIL:
     log(error-log.yaml + current-dev.yaml[error_log])
-    [FAST-TRACK]  → Implementer(logs + failing_test)   # status=InProgress
-    structural    → Planner(diagrams) → Specifier
-    default       → Specifier(error + stack + ux_hints)
+    [FAST-TRACK]  -> Implementer(logs + failing_test)   # status=InProgress
+    structural    -> Planner(design + diagrams) -> Specifier
+    default       -> Specifier(error + stack + ux_hints)
     status in {InProgress, Waiting} until resolved
 ```
 
 ## FILE_RULES
 
 ```
-current-dev.yaml  : rw  | never delete records; change status only
-story-dev.yaml    : append-only | move ALL data intact; no summaries
-error-log.yaml    : append errors; update <resolution> on fix
+current-dev.yaml       : rw          | never delete records; change status only
+story-dev.yaml         : append-only | move ALL data intact; maintain change history
+error-log.yaml         : append-only | log errors; update resolution upon fix
+openspec/specs/        : living specs | updated only during SYNC phase
+openspec/changes/      : active state | proposal, specs, design, tasks per feature
 ```
 
 ## HANDOFF_FORMAT
@@ -46,8 +69,8 @@ error-log.yaml    : append errors; update <resolution> on fix
 ```
 ---
 HANDOFF → [AGENT]
-Feature  : [ID] — [name]
-YAML     : current-dev.yaml (status → "[new]")
+Change   : [ID] — [name] (OpenSpec: openspec/changes/[name]/)
+Status   : current-dev.yaml (status → "[new]")
 Skills   : [list]
 Context  : [what]
 ---
@@ -57,16 +80,9 @@ Context  : [what]
 
 ```
 status updated?       ✓
-context minimal?      ✓  (not full project)
+context minimal?      ✓  (not full project; point to relevant openspec artifact)
 skills listed?        ✓
 loop_mode stated?     ✓
-```
-
-## PLAN_BUILD (post-Specifier)
-
-```
-analyse_deps() → assign_priority(low number = urgent) → list(ID, name, deps, estimate)
-→ current-dev.yaml[all=Waiting] → announce(user) → Planner(arch_phase)
 ```
 
 ## ERROR_HANDLING
@@ -75,13 +91,13 @@ analyse_deps() → assign_priority(low number = urgent) → list(ID, name, deps,
 Tester.FAIL:
   log(error-log.yaml + current-dev.yaml[error_log])
   [FAST-TRACK]    → Implementer(console_log + failing_test)
-  structural      → Planner; else → Specifier(ID + error + stack + ux)
+  structural      → Planner (design.md & diagrams); else → Specifier (proposal & specs)
   status in {InProgress, Waiting}
 
 user_reported:
   log(error-log.yaml)
   feature in story-dev.yaml → move → current-dev.yaml[InProgress]
-  → Trapper(error_details) → Specifier → Planner → (normal cycle)
+  → Trapper(error_details) → Specifier → Planner → (normal SDD cycle)
 
 change_request | new_feature:
   pause_loop if affects_current

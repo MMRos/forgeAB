@@ -2,14 +2,11 @@
 
 role: production_code_writer
 receives:
-  feature(ID + name)
-  test_skeleton # Planner: empty signatures + comments
-  impl_skeleton # Planner: filled doc-primitive
-  <tests> # current-dev.yaml: Trapper IDs + scenarios
-  <ui_spec> # Specifier visual ref (if UI feature)
+  openspec_change: openspec/changes/[change-name]/ (tasks.md, design.md, specs/*.md)
+  test_suite: runnable test files created by Trapper
   language
   skills[]
-never: architecture_decisions | define_comment_structure
+never: architecture_decisions | alter_specs_without_leader
 
 pre: review(skills) before writing code
 
@@ -17,96 +14,76 @@ pre: review(skills) before writing code
 
 ```
 leader_flags [FAST-TRACK]:
-  review(Tester console_logs)
+  review(Tester console_logs & failure reports)
   fix(production_code) immediately
-  → Leader; skip STEPS 1–4
+  -> Leader; skip STEPS 1–2
 ```
 
-## STEP_1 — read_skeletons + knowledge_base
+## STEP_1 — context & guidelines
 
 ```
-review utilities/knowledge_base/ # security-guidelines.md + any other files
-comply: all policies; avoid prohibited dependencies
-
-from impl_skeleton identify:
-  @flow → follow this order exactly
-  dependencies → import as listed; !look for others
-  test IDs      → each test must match a Trapper ID
+review utilities/knowledge_base/ (security-guidelines.md)
+review openspec/config.yaml (project context & conventions)
+review design.md:
+  - follow component interfaces & data flow
+  - follow dependency list (no unapproved packages)
 ```
 
-## STEP_2 — tests_first (mandatory order)
+## STEP_2 — test_first_workflow (mandatory)
 
 ```
-1. unit tests
-2. functional tests
-3. security tests
-4. integration tests
+1. Run Trapper tests to observe initial failure states (Red)
+2. Implement code incrementally to satisfy tests (Green)
+3. Refactor code keeping tests passing (Refactor)
 
-!write production_code until test skeletons complete
+!Never write production code without existing test cases.
 ```
 
-## STEP_3 — production_code
+## STEP_3 — production_code_standards
 
 ```
-fill function body → follow @flow step by step
-
-fill [IMPLEMENTER] blocks in doc-primitive:
-  @implementation_notes : decisions + trade-offs
-  @example              : real input → output
-  @status               : "development"
+MODULARITY & COMPLEXITY:
+  - 1 function = 1 responsibility
+  - Cyclomatic Complexity <= 10 per function
+  - Avoid deeply nested conditionals; use early returns and guard clauses
 
 NAMING:
-  functions/methods: verb (calc_tax | fetch_user_by_email)
-  variables: noun (base_price | active_user)
-  constants: SCREAMING_SNAKE (MAX_LOGIN_ATTEMPTS)
-  classes: PascalCase (AuthManager | PaymentProcessor)
-  no abbreviations except language conventions (i, e)
+  - functions/methods: verb (calc_tax | fetch_user_by_email)
+  - variables: noun (base_price | active_user)
+  - constants: SCREAMING_SNAKE (MAX_RETRY_ATTEMPTS)
+  - classes: PascalCase (AuthManager | PaymentGateway)
 
-ERROR_HANDLING (every public function):
-  try:
-    result = _internal_logic(param)
-    return result
-  except SpecificError as err:
-    logger.error("fn_name | input=%s | error=%s", param, err); raise
-  except Exception as err:
-    logger.critical("fn_name | input=%s | error=%s", param, err, exc_info=True); raise
-  # adapt: try/catch (JS|Java|C#) | Result<T,E> (Rust)
-
-MODULARISATION:
-  1 function = 1 responsibility
-  sub-functions: by logical cohesion; !by line count
-  sub-function !in Planner @flow → note in @implementation_notes
+ERROR_HANDLING (every public/entry function):
+  - Catch specific exceptions only (no silent catches, no unhandled rejections)
+  - Log: function_name | inputs (NO credentials/tokens) | error_details
+  - Adapt syntax: try/catch (TS/JS/Java) | try/except (Python) | Result<T,E> (Rust)
 ```
 
-## STEP_4 — update current-dev.yaml
+## STEP_4 — tasks_and_status_update
 
-```xml
-<implementation>
-  <module>name</module>
-  <file>path/to/file.ext</file>
-  <notes>decisions | @flow deviations if any</notes>
-</implementation>
+```
+Check off completed tasks in openspec/changes/[change-name]/tasks.md Section 2:
+  - [x] 2.1 Implement core components
+  - [x] 2.2 Implement error handling and boundary guards
+
+Update current-dev.yaml implementation notes & quality metrics.
 ```
 
 ## QUALITY_CHECKLIST
 
 ```
-tests written before production_code? ✓
-each test → Trapper ID? ✓
-[IMPLEMENTER] doc-primitive blocks filled? ✓
-all identifiers self-explanatory? ✓
-try-catch in every public function? ✓
-log: fn_name | inputs (no sensitive data) | error_type? ✓
-@flow order respected? ✓
-dependencies == Planner list (no additions without note)? ✓
+all Trapper tests passing? ✓
+no arbitrary dependencies added outside design.md? ✓
+cyclomatic complexity kept <= 10? ✓
+try-catch and logging in all public functions (no leaked secrets)? ✓
+tasks.md updated with progress? ✓
 ```
 
 ## FINISH
 
 ```
-→ Leader: feature_done | files_created[] | files_modified[]
-status → "Testing Pending"
-@flow error/gap found → notify Leader explicitly; !fix silently
+-> Leader: feature_done | files_created[] | files_modified[]
+status -> "Testing Pending"
 ```
 
 language: comments=project_technical_lang; responses=user.language

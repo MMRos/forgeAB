@@ -1,13 +1,14 @@
 # current-dev.yaml
-# Archivo activo de desarrollo gestionado por el agente Leader.
+# Archivo activo de desarrollo gestionado por el agente Leader y sincronizado con OpenSpec.
 # Estados válidos: Waiting | In Progress | Testing Pending | Completed
-# Al completarse, cada función se mueve a story-dev.yaml.
+# Al completarse y verificarse, cada función/cambio se archiva en story-dev.yaml y openspec/changes/archive/.
 
 project:
   meta:
     name: "" # Nombre del proyecto
     language: "" # Lenguaje(s) principal(es)
-    loop_mode: "" # true | false
+    loop_mode: false # true | false
+    openspec_profile: "core" # core | expanded
     created: "" # ISO 8601
     updated: "" # ISO 8601
 
@@ -15,10 +16,11 @@ project:
     F001:
       name: "nombre_explicativo_de_la_funcion"
       priority: 1 # 1 = más alta
-      status: "Waiting"
+      status: "Waiting" # Waiting | In Progress | Testing Pending | Completed
+      change_ref: "openspec/changes/F001-nombre-funcion" # Ruta al artefacto OpenSpec si aplica
 
       specifications:
-        description: "Qué hace esta función"
+        description: "Qué hace esta función o cambio"
         inputs:
           - name: ""
             type: ""
@@ -49,7 +51,7 @@ project:
         file: ""
         notes: "Decisiones tomadas, desviaciones del flujo del Planner si las hay"
         quality_metrics:
-          crap_index: 0.0
+          crap_index: 0.0 # CRAP = CC^2 * (1 - Cov)^3 + CC. Objetivo < 30
           cyclomatic_complexity: 0
           test_coverage: 0.0 # 0.0 a 1.0 (ej. 0.95 = 95%)
           dry_passed: true
@@ -60,7 +62,7 @@ project:
           status: "Pending" # Pass | Fail | Blocked | Pending
           result: ""
           name: "Nombre descriptivo"
-          scenario: "Dado X, cuando Y, entonces Z"
+          scenario: "WHEN X THEN Y"
           setup: "Precondiciones"
           expected: "Resultado esperado"
           log_integration: true
@@ -69,7 +71,7 @@ project:
           status: "Pending"
           result: ""
           name: "Nombre descriptivo"
-          scenario: ""
+          scenario: "WHEN X THEN Y"
           setup: ""
           expected: ""
           log_integration: true

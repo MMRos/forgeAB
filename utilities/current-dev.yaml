@@ -1,84 +1,85 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  current-dev.xml
-  Archivo activo de desarrollo gestionado por el agente Leader.
-  Estados válidos: Waiting | In Progress | Testing Pending | Completed
-  Al completarse, cada función se mueve a story-dev.xml.
--->
+# current-dev.yaml
+# Archivo activo de desarrollo gestionado por el agente Leader y sincronizado con OpenSpec.
+# Estados válidos: Waiting | In Progress | Testing Pending | Completed
+# Al completarse y verificarse, cada función/cambio se archiva en story-dev.yaml y openspec/changes/archive/.
+
 project:
   meta:
-    name:<!-- Nombre del proyecto -->
-    language:"Python"
-    loop_mode:<!-- true | false -->
-    created:<!-- ISO 8601 -->
-    updated:<!-- ISO 8601 -->
-  
+    name: "" # Nombre del proyecto
+    language: "" # Lenguaje(s) principal(es)
+    loop_mode: false # true | false
+    openspec_profile: "core" # core | expanded
+    created: "" # ISO 8601
+    updated: "" # ISO 8601
 
   functions:
-
-    <!-- PLANTILLA — copiar y rellenar para cada función -->
-    <function id="F001">
-      name:<!-- nombre_explicativo_de_la_funcion -->
-      priority:<!-- 1 = más alta -->
-      status:Waiting
+    F001:
+      name: "nombre_explicativo_de_la_funcion"
+      priority: 1 # 1 = más alta
+      status: "Waiting" # Waiting | In Progress | Testing Pending | Completed
+      change_ref: "openspec/changes/F001-nombre-funcion" # Ruta al artefacto OpenSpec si aplica
 
       specifications:
-        description:<!-- Qué hace esta función -->
+        description: "Qué hace esta función o cambio"
         inputs:
-          <input name="" type="" required="true" description=""/>
-        
+          - name: ""
+            type: ""
+            required: true
+            description: ""
         outputs:
-          <output name="" type="" description=""/>
-        
-        constraints:
-          <!-- Límites, reglas de negocio, condiciones de borde -->
-        
-        assumptions:
-          <!-- Asunciones del Specifier aprobadas por el usuario -->
-        
-      
+          - name: ""
+            type: ""
+            description: ""
+        constraints: []
+          # - Límites, reglas de negocio, condiciones de borde
+        assumptions: []
+          # - Asunciones del Specifier aprobadas por el usuario
+        ui_spec: # Opcional, si aplica UI
+          components: []
+          states: []
+          interactions: []
+          mockup_approved: false
 
-      dependencies:
-        <!-- IDs de funciones que deben completarse antes -->
-      
+      dependencies: []
+        # - IDs de funciones que deben completarse antes
 
-      skills_required:
-        <!-- Nombres de skills pertinentes que cada subagente debe revisar -->
-      
+      skills_required: []
+        # - Nombres de skills pertinentes que cada subagente debe revisar
 
       implementation:
-        <!-- Rellena el Implementer: módulo, archivo, clase, línea de inicio -->
-        module:
-        file:
-        notes:
-<<<<<<< HEAD:agentbox/current-dev.yaml
+        module: ""
+        file: ""
+        notes: "Decisiones tomadas, desviaciones del flujo del Planner si las hay"
         quality_metrics:
-          crap_index: 0.0
+          crap_index: 0.0 # CRAP = CC^2 * (1 - Cov)^3 + CC. Objetivo < 30
           cyclomatic_complexity: 0
-          test_coverage: 0.0 # 0.0 a 1.0
+          test_coverage: 0.0 # 0.0 a 1.0 (ej. 0.95 = 95%)
           dry_passed: true
-=======
->>>>>>> 21276dc8aa0f50b5c3ffec0616df34d19cfb7186:utilities/current-dev.yaml
-      
 
       tests:
-        <!-- Rellena el Trapper; el Tester marca cada resultado -->
-        <test type="unit"        id="T001-U" status="Pending" result=""/>
-        <test type="functional"  id="T001-F" status="Pending" result=""/>
-        <test type="security"    id="T001-S" status="Pending" result=""/>
-        <test type="integration" id="T001-I" status="Pending" result=""/>
-      
+        T001-U:
+          type: "unit"
+          status: "Pending" # Pass | Fail | Blocked | Pending
+          result: ""
+          name: "Nombre descriptivo"
+          scenario: "WHEN X THEN Y"
+          setup: "Precondiciones"
+          expected: "Resultado esperado"
+          log_integration: true
+        T001-F:
+          type: "functional"
+          status: "Pending"
+          result: ""
+          name: "Nombre descriptivo"
+          scenario: "WHEN X THEN Y"
+          setup: ""
+          expected: ""
+          log_integration: true
 
-      error_log:
-        <!-- Entradas automáticas del try-catch del Implementer -->
-      
+      error_log: []
+        # Entradas automáticas del try-catch del Implementer
 
       timestamps:
-        started:
-        testing_started:
-        completed:
-      
-    
-
-  
-
+        started: ""
+        testing_started: ""
+        completed: ""

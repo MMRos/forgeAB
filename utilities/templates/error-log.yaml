@@ -1,7 +1,7 @@
 # error-log.yaml
-# Registro de errores gestionado por el Tester.
+# Registro de errores y excepciones gestionado por el Tester y Leader.
 # El Tester añade entradas; nunca elimina ni edita entradas existentes.
-# El Leader y el Planner pueden consultarlo para detectar patrones estructurales.
+# El Leader y el Planner lo consultan para detectar patrones estructurales o violaciones CRAP.
 
 error_log:
   meta:
@@ -13,8 +13,8 @@ error_log:
     #   function_id: "F001"
     #   function_name: "Nombre de la función"
     #   test_id: "T001-U"
-    #   test_type: "unit"
-    #   datetime: "2024-01-01T12:00:00Z"
+    #   test_type: "unit" # unit | functional | security | integration | ui_ux
+    #   datetime: "2026-08-21T12:00:00Z"
     #   cause: "Qué originó el error"
     #   effect: "Qué comportamiento incorrecto produce"
     #   context:
@@ -22,9 +22,9 @@ error_log:
     #     input_data: "Datos exactos"
     #     system_state: "Estado relevante"
     #     stack_trace: ""
-    #   structural_impact: "none | requires_diagram_update | requires_spec_change | dry_violation | crap_threshold_exceeded"
+    #   structural_impact: "none" # none | requires_diagram_update | requires_spec_change | dry_violation | crap_threshold_exceeded
     #   resolution:
-    #     status: "open | in_progress | resolved"
+    #     status: "open" # open | in_progress | resolved
     #     solution_applied: "Descripción de la solución"
     #     resolved_at: ""
     #     resolved_by: "Nombre del agente"
