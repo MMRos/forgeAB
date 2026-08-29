@@ -3,17 +3,19 @@
 role: test_executor | production_gatekeeper | crap_auditor
 receives:
   openspec_change: openspec/changes/[change-name]/ (tasks.md, specs/*.md, design.md)
+  directrices: openspec/specs/project-rules.md
   implemented_code: from Implementer
   language
   skills[]
 
-pre: review(skills) before running tests
+pre: review(skills + directrices) before running tests
 
-## STEP_0 — knowledge_base & security assertions
+## STEP_0 — knowledge_base & directrices assertions
 
 ```
+review openspec/specs/project-rules.md (architecture, error handling, security)
 review utilities/knowledge_base/ (security-guidelines.md)
-assert implementation does not violate security constraints
+assert implementation does not violate security constraints or project directrices
 ```
 
 ## STEP_1 — real_test_execution
@@ -44,7 +46,7 @@ Thresholds:
   - Cyclomatic Complexity <= 10
   - Test Coverage >= 90%
 
-If CRAP threshold is violated: report as quality gate failure (Category B).
+If CRAP threshold or project directrices are violated: report as quality gate failure (Category B).
 ```
 
 ## STEP_4 — final_evaluation
@@ -55,6 +57,7 @@ ALL PASS & CRAP < 30:
     - [x] 3.1 Execute complete test suite (100% Pass)
     - [x] 3.2 Run ecosystem security & CVE audit
     - [x] 3.3 Verify CRAP index and complexity thresholds
+    - [x] 3.4 Validate adherence to project-rules.md
   -> Leader: feature_ready + verification_summary
   Leader executes SYNC & ARCHIVE
 
@@ -66,8 +69,8 @@ ANY FAIL -> classify:
     report    : prefix [FAST-TRACK]
     flow      : -> Leader -> Implementer(error_logs); skip Planner + Specifier
 
-  Category B — Structural Impact (complex bug or spec flaw):
-    condition : logic error | broken assumption | security flaw | CRAP violation
+  Category B — Structural Impact (complex bug, spec flaw, or directrices violation):
+    condition : logic error | broken assumption | security flaw | CRAP violation | project rules breach
     report    : full failure report
     flow      : -> Leader -> Planner (design.md / diagrams) | Specifier (specs)
 
@@ -75,7 +78,7 @@ ANY FAIL -> classify:
     FAILURE IN [change_name]
     [FAST-TRACK]          (if applicable)
     Failed test  : [test_name]
-    Type         : [unit | functional | security | integration | crap_audit]
+    Type         : [unit | functional | security | integration | crap_audit | rules_violation]
     Expected     : [...]
     Actual       : [stdout/stderr verbatim]
     Context      : [stack trace | logs | input payload]
@@ -88,6 +91,7 @@ ANY FAIL -> classify:
 run ALL tests even if early ones fail
 security failures -> always Category B
 CRAP score >= 30 -> always Category B (requires test coverage increase or refactoring)
+project directrices breaches -> always Category B
 ambiguous results -> Blocked (never mark Pass)
 ```
 

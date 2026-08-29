@@ -7,10 +7,12 @@ Lee `utilities/agents/leader.md` para entender tu rol de coordinación antes de 
 ## Inicialización y Flujo SDD
 
 Al cargar este proyecto:
-1. Lee `openspec/config.yaml` para comprender el contexto y las reglas del proyecto.
+1. Lee `openspec/config.yaml` y `openspec/specs/project-rules.md` para comprender el contexto, arquitectura y reglas del proyecto.
 2. Lee `utilities/current-dev.yaml` (o `project-logs/current-dev.yaml`).
-3. Si no existe ningún cambio activo → inicia el flujo del **Specifier** (`utilities/agents/specifier.md`) para explorar ideas (`explore`) o crear propuestas (`propose`).
-4. Si existen cambios en progreso → muestra el resumen de estado y consulta al usuario la siguiente acción.
+3. Si el proyecto no está configurado o no existen directrices maestras → inicia la fase `[0. BOOTSTRAP / RULES SETUP]` con el **Specifier** (`utilities/agents/specifier.md`) para definir arquetipo y reglas, y el **Skill Creator** (`utilities/agents/skill_creator.md`) para configurar las skills a medida.
+4. Si no existe ningún cambio activo pero las reglas ya están definidas → inicia el flujo del **Specifier** para explorar ideas (`explore`) o crear propuestas (`propose`).
+5. Si existen cambios en progreso → muestra el resumen de estado y consulta al usuario la siguiente acción.
+6. Permite invocar al **Critic** (`utilities/agents/critic.md`) bajo demanda en cualquier momento para revisiones objetivas y no complacientes.
 
 ### Formato de resumen
 
@@ -28,15 +30,19 @@ forgeAB/
 ├── openspec/                  ← OpenSpec Spec-Driven Development
 │   ├── config.yaml            ← Contexto global y reglas de artefactos
 │   ├── specs/                 ← Especificaciones vivas consolidadas
+│   │   └── project-rules.md   ← Directrices maestras del proyecto
 │   └── changes/               ← Propuestas activas (proposal, specs, design, tasks)
 ├── diagrams/                  ← Diagramas arquitectónicos Mermaid (.mmd)
 ├── utilities/                 ← Sistema de agentes y utilidades
 │   ├── current-dev.yaml       ← Estado activo de desarrollo
 │   ├── story-dev.yaml         ← Historial completado y archivado
 │   ├── error-log.yaml         ← Registro de excepciones y errores
+│   ├── templates/             ← Plantillas base (project-rules, openspec, etc.)
 │   └── agents/                ← Prompts de agentes especialistas
 │       ├── leader.md          ← Coordinación y ciclo SDD
-│       ├── specifier.md       ← Propuestas y Delta Specs
+│       ├── specifier.md       ← Reglas de proyecto, propuestas y Delta Specs
+│       ├── critic.md          ← Auditoría y juicio adversarial no complaciente (on-demand)
+│       ├── skill_creator.md   ← Creador de skills a medida del stack y entorno
 │       ├── planner.md         ← Diseño técnico y tareas
 │       ├── trapper.md         ← Diseño de tests y trampas de calidad (Anti-CRAP)
 │       ├── implementer.md     ← Implementación Test-First

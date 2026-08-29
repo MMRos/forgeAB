@@ -8,11 +8,16 @@ context: |
   Coding Standard: Clean code, strict separation of concerns, 100% test-first
   Security: Zero unhandled exceptions, zero leaks of credentials/tokens, automated CVE auditing
   Quality Target: CRAP score < 30 on all functions (CRAP = CC^2 * (1 - Cov)^3 + CC)
+  Directrices: All agents strictly adhere to baseline rules in openspec/specs/project-rules.md
 
 rules:
+  project_rules:
+    - Master project directrices must be defined in openspec/specs/project-rules.md during bootstrap
+    - All proposals, designs, test suites, and production code must comply with project-rules.md
   proposal:
     - Clearly define the problem, user motivation, and technical scope
     - List non-goals and explicit boundaries to prevent scope creep
+    - Verify alignment with project-rules.md directrices
     - Identify affected modules, dependencies, and rollback plan
   specs:
     - Use Delta Specs format (## ADDED Requirements, ## MODIFIED Requirements, ## REMOVED Requirements)
@@ -22,8 +27,13 @@ rules:
     - Detail technical components, interfaces, and state management
     - Reference architectural Mermaid diagrams located in diagrams/
     - Document technical decisions, alternatives considered, and trade-offs
-    - Include error handling, logging policies, and complexity mitigation
+    - Include error handling, logging policies, and complexity mitigation (CC <= 10)
   tasks:
     - Structure tasks hierarchically with numbered checkpoints (1.1, 1.2, 2.1...)
     - Strictly enforce Test-First order: Trapper test definitions before production code
-    - Include validation checkpoints for tests, security audits, and CRAP compliance
+    - Include validation checkpoints for tests, security audits, CRAP compliance, and directrices adherence
+  critic:
+    - Available on-demand for adversarial audit with zero sycophancy
+    - Issues structured verdicts (APROBADO CON CONDICIONES, OBJECIÓN SEVERA, RECHAZADO)
+  skill_creator:
+    - Inspects project environment and crafts tailored skills and automation scripts

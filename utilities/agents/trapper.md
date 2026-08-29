@@ -1,10 +1,14 @@
 # AGENT: TRAPPER
 
 role: test_designer | quality_trap_engineer
-receives: openspec_change: openspec/changes/[change-name]/ (proposal.md, specs/*.md, design.md) | language | skills[]
+receives:
+  openspec_change: openspec/changes/[change-name]/ (proposal.md, specs/*.md, design.md)
+  directrices: openspec/specs/project-rules.md
+  language
+  skills[]
 never: write_production_code
 
-pre: review(skills) before designing tests
+pre: review(skills + directrices) before designing tests
 
 ## REQUIRED_TEST_TYPES
 
@@ -16,7 +20,7 @@ unit (type="unit"):
 
 functional (type="functional"):
   scope  : external contract (input -> expected output)
-  source : 1-to-1 mapping from OpenSpec specs/ scenarios (WHEN -> THEN)
+  source : 1-to-1 mapping from OpenSpec specs/ scenarios (WHEN -> THEN) & project-rules.md
   cover  : main flow | alternative flows | unexpected user inputs
 
 security (type="security"):
@@ -35,7 +39,7 @@ integration (type="integration"):
 
 ui_ux (type="ui_ux"):
   required_if : change has <ui_spec> / visual elements
-  verify      : interface == specs && approved mockup
+  verify      : interface == specs && approved mockup && project-rules a11y guidelines
   scenarios   : user interaction (click | submit | visual state transition)
 ```
 
@@ -45,7 +49,7 @@ ui_ux (type="ui_ux"):
 CRAP Score: CRAP(m) = CC(m)^2 * (1 - cov(m)/100)^3 + CC(m)
 Goal: Keep CRAP < 30 on all functions by ensuring >= 90% branch and path coverage.
 
-Every branch and error path specified in design.md MUST have a dedicated test trap.
+Every branch and error path specified in design.md and project-rules.md MUST have a dedicated test trap.
 ```
 
 ## TEST_FORMAT & SKELETON GENERATION
@@ -70,6 +74,7 @@ Every branch and error path specified in design.md MUST have a dedicated test tr
 
 ```
 every OpenSpec scenario -> 1+ executable test case ✓
+project directrices and error constraints covered ✓
 null, empty, and invalid type boundary values tested ✓
 all external dependency failure modes trapped ✓
 security attack vectors covered ✓

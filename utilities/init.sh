@@ -148,7 +148,13 @@ else
   ok "skills/cve-check.md verified"
 fi
 
-# ── 5. IDE Configuration ─────────────────────────────────────────────────────
+# ── 5. Project Rules Templates ───────────────────────────────────────────────
+info "Verifying Project Rules archetypes..."
+if [ -d "$TEMPLATES_DIR/project-rules" ]; then
+  ok "project-rules templates verified"
+fi
+
+# ── 6. IDE Configuration ─────────────────────────────────────────────────────
 info "Verifying IDE configurations..."
 
 # Claude Code
@@ -177,7 +183,7 @@ else
   ok ".antigravity/context.md verified"
 fi
 
-# ── 6. Final verification summary ────────────────────────────────────────────
+# ── 7. Final verification summary ────────────────────────────────────────────
 echo ""
 info "Resulting Structure:"
 echo ""
@@ -185,6 +191,7 @@ echo "  $PROJECT_ROOT/"
 echo "  ├── openspec/                  ← OpenSpec Spec-Driven Development"
 echo "  │   ├── config.yaml            ← Global context & artifact rules"
 echo "  │   ├── specs/                 ← Consolidated living specifications"
+echo "  │   │   └── project-rules.md   ← Master project directrices"
 echo "  │   └── changes/               ← Active proposals, delta specs, tasks"
 echo "  ├── diagrams/                  ← Architecture diagrams (.mmd)"
 echo "  ├── project-logs/              ← Development tracking (YAML)"
@@ -195,8 +202,8 @@ echo "  ├── CLAUDE.md                  ← Claude Code entry"
 echo "  ├── .antigravity/context.md    ← Antigravity entry"
 echo "  ├── .opencode/instructions.md  ← OpenCode entry"
 echo "  └── utilities/"
-echo "      ├── agents/                ← Specialist agents (leader ... tester)"
-echo "      └── templates/             ← Base templates"
+echo "      ├── agents/                ← Specialist agents (leader ... critic ... skill_creator)"
+echo "      └── templates/             ← Base templates (project-rules, openspec, etc.)"
 echo ""
-ok "forgeAB (OpenSpec SDD) initialized successfully. Start your session with Leader!"
+ok "forgeAB (OpenSpec SDD v1.4.0) initialized successfully. Start your session with Leader!"
 echo ""

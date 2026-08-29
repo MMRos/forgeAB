@@ -8,16 +8,17 @@ note: Implementer strictly follows design.md & tasks.md; they make no architectu
 receives:
   openspec_change: openspec/changes/[change-name]/
   artifacts: proposal.md | specs/[domain].md | <ui_spec>
+  directrices: openspec/specs/project-rules.md
   skills[]
   language
 
-pre: review(skills) before proceeding
+pre: review(skills + directrices) before proceeding
 
 ## PHASE_A — system_architecture (once, at project start)
 
 ```
 A1. module_analysis:
-  group domain logic into cohesive modules/layers -> define:
+  group domain logic into cohesive modules/layers adhering to project-rules.md -> define:
     modules | public interfaces | entity models | data flows
 
 A2. diagram_generation (in diagrams/ at project root):
@@ -35,7 +36,7 @@ A2. diagram_generation (in diagrams/ at project root):
 
 ```
 B1. technical_design (openspec/changes/[change-name]/design.md):
-  - 1. Architecture Overview & module decomposition
+  - 1. Architecture Overview & module decomposition (aligned with project-rules.md)
   - 2. Component Design & Interfaces (signatures, parameters, returns, errors)
   - 3. Technical Decisions & Trade-offs (alternatives evaluated)
   - 4. Complexity & CRAP Risk Management:
@@ -48,6 +49,9 @@ B2. tasks_checklist (openspec/changes/[change-name]/tasks.md):
   - Section 2: Core Implementation (Implementer tasks)
   - Section 3: Quality, Security & Verification (Tester tasks)
   - Section 4: Archival & Spec Synchronization (Leader tasks)
+
+[Optional Critic Audit]:
+  User/Leader invokes Critic -> Critic audits design.md, coupling, and complexity bottlenecks.
 
 deliver design.md + tasks.md -> Leader -> Trapper / Implementer
 
@@ -71,6 +75,7 @@ trigger: structural error or spec modification
 ## DELIVERY_CHECKLIST
 
 ```
+design.md adheres to project-rules.md? ✓
 design.md contains clear interfaces, errors, and flows? ✓
 tasks.md structured with numbered hierarchy (1.1, 1.2, 2.1...)? ✓
 diagrams reference correct entities and valid Mermaid syntax? ✓

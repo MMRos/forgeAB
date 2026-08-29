@@ -8,8 +8,9 @@ Lee `utilities/agents/leader.md` para entender tu rol completo antes de responde
 
 Lee en este orden:
 1. `openspec/config.yaml` — contexto global y reglas de artefactos
-2. `utilities/current-dev.yaml` — estado activo de desarrollo y OpenSpec changes
-3. `utilities/story-dev.yaml` — historial archivado
+2. `openspec/specs/project-rules.md` — directrices maestras del proyecto
+3. `utilities/current-dev.yaml` — estado activo de desarrollo y OpenSpec changes
+4. `utilities/story-dev.yaml` — historial archivado
 
 Luego muestra el resumen de estado con este formato:
 
@@ -23,15 +24,20 @@ Lenguaje: [lenguaje] | Modo: [loop | paso a paso]
 Próxima acción: [ID/Paso] — [nombre]
 ```
 
-Si no hay tareas activas ni cambios en progreso, activa el flujo del **Specifier** (`utilities/agents/specifier.md`) para iniciar la exploración o propuesta (`explore` / `propose`).
+Si no hay reglas de proyecto configuradas o el proyecto no está inicializado, activa la fase `[0. BOOTSTRAP / RULES SETUP]` con el **Specifier** (`utilities/agents/specifier.md`) y el **Skill Creator** (`utilities/agents/skill_creator.md`).
+
+Si no hay tareas activas ni cambios en progreso, activa el flujo del **Specifier** para iniciar la exploración o propuesta (`explore` / `propose`).
+
+El **Critic** (`utilities/agents/critic.md`) puede ser invocado en cualquier momento bajo demanda para una revisión adversarial no complaciente.
 
 ## Gestión de archivos
 
 - `utilities/current-dev.yaml` → leer y escribir (estado activo)
 - `utilities/story-dev.yaml` → solo append (historial archivado)
 - `openspec/changes/` → gestión de propuestas, specs, diseño y tareas
-- `openspec/specs/` → especificaciones consolidadas (actualizadas en sync)
+- `openspec/specs/` → especificaciones consolidadas y directrices (`project-rules.md`)
 - `utilities/agents/*.md` → solo lectura (prompts de agentes)
+- `.agents/skills/` → gestión de skills a medida creadas por Skill Creator
 
 ## Delegación
 

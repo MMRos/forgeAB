@@ -1,5 +1,24 @@
 # Changelog - forgeAB
 
+## [1.4.0] - 2026-08-29
+### Added
+- **Project Rules & Archetypes System (Bootstrap Phase 0)**:
+  - Interactive directrices generator based on project archetype (`backend-api`, `frontend-web`, `cli-tool`, `library-sdk`, `microservice-event`, `custom`).
+  - Master directrices stored in `openspec/specs/project-rules.md` and injected into `openspec/config.yaml`.
+  - Strict compliance checks across all agents (`Planner`, `Trapper`, `Implementer`, `Tester`, `Critic`).
+  - Preconfigured archetype templates in `utilities/templates/project-rules/`.
+- **Critic Agent (`utilities/agents/critic.md`)**:
+  - Non-complacent, adversarial review agent available on-demand.
+  - Zero sycophancy persona dedicated to identifying hidden assumptions, architectural fragility, missing test traps, and rule violations.
+  - Structured verdict engine: `[APROBADO CON CONDICIONES]`, `[OBJECIÓN SEVERA]`, `[RECHAZADO]`.
+- **Skill Creator Agent (`utilities/agents/skill_creator.md`)**:
+  - Environment analyzer that discovers tech stacks, package managers, test runners, and linters.
+  - Generates custom, modular agent skills (`.agents/skills/<name>/SKILL.md` or `utilities/skills/<name>.md`) and automation scripts under `scripts/`.
+  - Injects skill requirements into `current-dev.yaml` and agent pre-checklists.
+- **Multi-IDE Integration Updates**:
+  - Updated agents and workflows in `.github/agents/`, `.antigravity/context.md`, `CLAUDE.md`, and `.opencode/instructions.md`.
+  - Upstream synchronization support in `init.sh` and `update.sh`.
+
 ## [1.3.0] - 2026-08-21
 ### Added
 - **OpenSpec (Fission-AI) Spec-Driven Development Integration**:

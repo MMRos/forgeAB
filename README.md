@@ -10,6 +10,7 @@ A coordinated agent system for developing software in a structured, traceable, a
 openspec/                          ← OpenSpec Spec-Driven Development Framework
 ├── config.yaml                    ← Global context, tech stack rules & CRAP limits
 ├── specs/                         ← Living consolidated system specifications
+│   └── project-rules.md           ← Master project directrices & architecture rules
 └── changes/                       ← Active changes (proposals, delta specs, tasks)
     └── archive/                   ← Historical verified changes
 
@@ -32,10 +33,13 @@ utilities/                         ← Core agent prompts, templates, and script
 ├── CLAUDE.md                      ← Entry instructions for Claude Code
 ├── .antigravity/context.md        ← Entry instructions for Antigravity
 ├── .opencode/instructions.md      ← Entry instructions for OpenCode
-├── templates/                     ← Base templates (openspec, state, diagrams)
+├── templates/                     ← Base templates (project-rules, openspec, state, diagrams)
+│   └── project-rules/             ← Archetype presets (backend, frontend, cli, lib, event)
 └── agents/                        ← Specialist agent prompts
     ├── leader.md                  ← Director agent (SDD lifecycle & orchestration)
-    ├── specifier.md               ← Requirements & OpenSpec proposals/delta specs
+    ├── specifier.md               ← Requirements, project rules bootstrap & delta specs
+    ├── critic.md                  ← Adversarial, non-complacent judge on-demand
+    ├── skill_creator.md           ← Custom agent skill & workspace tooling architect
     ├── planner.md                 ← Technical design, diagrams & tasks checklist
     ├── trapper.md                 ← Test design & anti-CRAP trap engineer
     ├── implementer.md             ← Production code writer (Test-First)
@@ -49,63 +53,82 @@ utilities/                         ← Core agent prompts, templates, and script
 forgeAB incorporates the best practices of **[OpenSpec](https://github.com/Fission-AI/openspec)** to ensure high-velocity, deterministic AI development:
 
 ```
-                  ┌────────────────────────────────────────────────────────┐
-                  │                 Specifier Agent                        │
-                  │  1. Explore: clarify scope & non-goals                 │
-                  │  2. Propose: proposal.md + specs/ (Delta Specs)        │
-                  └──────────────────────────┬─────────────────────────────┘
-                                             │
-                                             ▼
-                  ┌────────────────────────────────────────────────────────┐
-                  │                  Planner Agent                         │
-                  │  3. Design: design.md + diagrams/*.mmd + tasks.md      │
-                  └──────────────────────────┬─────────────────────────────┘
-                                             │
-                                             ▼
-                  ┌────────────────────────────────────────────────────────┐
-                  │                  Trapper Agent                         │
-                  │  4. Trap: 100% scenario test coverage (Test-First)     │
-                  └──────────────────────────┬─────────────────────────────┘
-                                             │
-                                             ▼
-                  ┌────────────────────────────────────────────────────────┐
-                  │                Implementer Agent                       │
-                  │  5. Apply: tests-first -> code implementation          │
-                  └──────────────────────────┬─────────────────────────────┘
-                                             │
-                                             ▼
-                  ┌────────────────────────────────────────────────────────┐
-                  │                  Tester Agent                          │
-                  │  6. Verify: real execution + CVE scan + CRAP < 30      │
-                  └──────┬──────────────────────────────────────────┬──────┘
-                         │ (Pass)                                   │ (Fail)
-                         ▼                                          ▼
-      ┌────────────────────────────────────┐             ┌─────────────────────┐
-      │           Leader Agent             │             │   Fast-Track Fix    │
-      │  7. Sync: openspec/specs/          │             │         OR          │
-      │  8. Archive: openspec/changes/     │             │ Structural Revision │
-      │  9. Update: story-dev.yaml         │             └─────────────────────┘
-      └────────────────────────────────────┘
+                   ┌────────────────────────────────────────────────────────┐
+                   │             0. Bootstrap & Project Rules               │
+                   │  Specifier: select archetype & define project-rules.md │
+                   │  Skill Creator: generate custom skills & tool scripts  │
+                   └──────────────────────────┬─────────────────────────────┘
+                                              │
+                                              ▼
+                   ┌────────────────────────────────────────────────────────┐
+                   │                 Specifier Agent                        │
+                   │  1. Explore: clarify scope & non-goals                 │
+                   │  2. Propose: proposal.md + specs/ (Delta Specs)        │
+                   └──────────────────────────┬─────────────────────────────┘
+                                              │
+                        (Optional Critic) ◄───┼───► (Critic Review)
+                                              │
+                                              ▼
+                   ┌────────────────────────────────────────────────────────┐
+                   │                  Planner Agent                         │
+                   │  3. Design: design.md + diagrams/*.mmd + tasks.md      │
+                   │     (Strict adherence to project-rules.md)             │
+                   └──────────────────────────┬─────────────────────────────┘
+                                              │
+                                              ▼
+                   ┌────────────────────────────────────────────────────────┐
+                   │                  Trapper Agent                         │
+                   │  4. Trap: 100% scenario test coverage (Test-First)     │
+                   └──────────────────────────┬─────────────────────────────┘
+                                              │
+                                              ▼
+                   ┌────────────────────────────────────────────────────────┐
+                   │                Implementer Agent                       │
+                   │  5. Apply: tests-first -> code implementation          │
+                   └──────────────────────────┬─────────────────────────────┘
+                                              │
+                                              ▼
+                   ┌────────────────────────────────────────────────────────┐
+                   │                  Tester Agent                          │
+                   │  6. Verify: real execution + CVE scan + CRAP < 30      │
+                   └──────┬──────────────────────────────────────────┬──────┘
+                          │ (Pass)                                   │ (Fail)
+                          ▼                                          ▼
+       ┌────────────────────────────────────┐             ┌─────────────────────┐
+       │           Leader Agent             │             │   Fast-Track Fix    │
+       │  7. Sync: openspec/specs/          │             │         OR          │
+       │  8. Archive: openspec/changes/     │             │ Structural Revision │
+       │  9. Update: story-dev.yaml         │             └─────────────────────┘
+       └────────────────────────────────────┘
 ```
 
-### Delta Specs & Scenario Standard
+---
 
-All requirements are written using RFC 2119 keywords with verifiable `WHEN / THEN` scenarios:
+## Core Capabilities (v1.4.0)
 
-```markdown
-## ADDED Requirements
+### 1. Project Rules & Archetypes (Phase 0)
+When starting a project, forgeAB offers interactive preset directrices based on project archetypes:
+* **Backend API / Microservice**: Hexagonal architecture, DTO validation, DB transaction boundaries, standard error payloads.
+* **Frontend Web App**: Component hierarchy, state separation, 4 UI states (empty, loading, error, success), WCAG a11y.
+* **CLI / Developer Tool**: POSIX arguments/flags, standard exit codes, pipe-friendly stdout/stderr, signal trapping.
+* **Library / SDK**: Minimal dependencies, zero side-effects on import, strict typing, SemVer.
+* **Microservice / Event-Driven**: Message schema contracts, idempotency, retry policies with backoff/jitter, DLQ, tracing.
+* **Custom**: Define rules completely from scratch.
 
-### Requirement: User Authentication
-The system SHALL authenticate users using verified JWT credentials.
+Master rules are saved in `openspec/specs/project-rules.md` and enforced by all agents.
 
-#### Scenario: Valid credential authentication
-- **WHEN** user submits valid username and password
-- **THEN** system responds with 200 OK and valid JWT token
+### 2. Critic Agent (`critic.md`)
+An uncompromising, adversarial review agent available **on-demand** with zero sycophancy:
+* Scrutinizes proposals for hidden assumptions and scope creep.
+* Audits architectural designs for bottlenecks, excessive coupling, and complexity ($CC > 10$).
+* Exposes blind spots in test suites (false positives, missing boundaries).
+* Emits structured verdicts: `[APROBADO CON CONDICIONES]`, `[OBJECIÓN SEVERA]`, `[RECHAZADO]`.
 
-#### Scenario: Invalid credential rejection
-- **WHEN** user submits incorrect password
-- **THEN** system responds with 401 Unauthorized and logs warning
-```
+### 3. Skill Creator Agent (`skill_creator.md`)
+An intelligent environment engineer that crafts project-specific tooling:
+* Discovers the exact runtime, test runner, linters, and frameworks.
+* Generates modular agent skills (`.agents/skills/<name>/SKILL.md` or `utilities/skills/<name>.md`).
+* Writes helper scripts under `scripts/` (e.g. running test runners with CRAP score calculation).
 
 ---
 
@@ -131,13 +154,6 @@ To initialize or verify the work environment, run from your project root:
 bash utilities/init.sh
 ```
 
-**During initialization, the script:**
-1. Validates the execution environment and write permissions.
-2. Initializes `openspec/` with `config.yaml`, living specs, and change structures.
-3. Generates YAML state files (`current-dev.yaml`, `story-dev.yaml`, `error-log.yaml`).
-4. Deploys architectural Mermaid diagrams in `diagrams/`.
-5. Configures IDE entries for Antigravity, OpenCode, and Claude Code.
-
 ---
 
 ## Updating forgeAB (`update.sh`)
@@ -147,23 +163,6 @@ To pull the latest agent prompts, OpenSpec templates, and system files while pre
 ```bash
 bash utilities/update.sh
 ```
-
----
-
-## How to Use forgeAB
-
-### Option A — In Antigravity / Claude Code / OpenCode IDEs
-1. Open the project root in your IDE.
-2. The **Leader** agent automatically reads `openspec/config.yaml` and `current-dev.yaml`.
-3. Provide your idea or task to begin the `explore` and `propose` flow with the **Specifier**.
-
-### Option B — Manual / Conversational Prompts
-1. Give the **Specifier** prompt (`utilities/agents/specifier.md`) + describe the feature $\rightarrow$ generates `proposal.md` and `specs/`.
-2. Give the **Planner** prompt (`utilities/agents/planner.md`) $\rightarrow$ generates `design.md`, `tasks.md`, and updates `diagrams/`.
-3. Give the **Trapper** prompt (`utilities/agents/trapper.md`) $\rightarrow$ generates runnable tests matching all OpenSpec scenarios.
-4. Give the **Implementer** prompt (`utilities/agents/implementer.md`) $\rightarrow$ executes Test-First code implementation.
-5. Give the **Tester** prompt (`utilities/agents/tester.md`) $\rightarrow$ executes tests in terminal, verifies CVE & CRAP metrics.
-6. If tests pass: **Leader** moves change to archive and syncs `openspec/specs/`.
 
 ---
 

@@ -3,10 +3,34 @@
 role: requirement_clarifier | openspec_author | re_entry_on_error
 receives: user_request | error_report (via Leader)
 
+## PHASE_0 — project_rules_bootstrap (Once, at project start or re-configuration)
+
+```
+check(!file_exists("openspec/specs/project-rules.md") || project.meta.name == ""):
+  1. Ask project type / archetype:
+     A) Backend API / REST Microservice (Clean Arch, DTO validation, standard errors)
+     B) Frontend / Web Application (Component architecture, UI state, a11y)
+     C) CLI / Developer Tool (POSIX flags, streams stdout/stderr, exit codes)
+     D) Library / SDK (Zero side-effects, strict types, semver, minimal deps)
+     E) Microservice / Event-Driven (Idempotency, contract schemas, DLQ, tracing)
+     F) Custom / From Scratch (User provides custom rules)
+
+  2. Present proposed baseline rules (from utilities/templates/project-rules/[archetype].md):
+     - Offer:
+       * 1. Accept baseline rules as-is
+       * 2. Modify / customize specific directrices
+       * 3. Provide custom rules from scratch
+
+  3. Save consolidated rules to: openspec/specs/project-rules.md
+     Update openspec/config.yaml context & rules.
+     -> Trigger Leader -> Skill Creator (tailor project workspace & skills)
+```
+
 ## PHASE_1 — explore_and_understand
 
 ```
 read(full_request)
+read(openspec/specs/project-rules.md) # Ensure alignment with project directrices
 identify(implicit + explicit features)
 draft numbered_assumptions[]   # concise, project first-person
   e.g. "1. Auth uses JWT."  |  "2. Relational DB with PostgreSQL."
@@ -26,6 +50,7 @@ present(assumptions):
    - Context & Motivation: why we are doing this
    - Proposed Changes: summary of new/modified capabilities
    - Scope & Non-Goals: explicit boundaries to avoid scope creep
+   - Directrices Alignment: verify compliance with project-rules.md
    - Risks, Dependencies & Rollback plan
 
 3. Author specs/[domain].md (Delta Specs):
@@ -36,6 +61,9 @@ present(assumptions):
        - **THEN** [expected result]
    - ## MODIFIED Requirements (if modifying living specs)
    - ## REMOVED Requirements (if deprecating)
+
+4. [Optional Critic Review]:
+   User asks or requests review -> invoke Critic(proposal.md + specs/)
 ```
 
 ## PHASE_2b — UI_mockup (only if feature involves UI)
@@ -101,6 +129,7 @@ assumptions: verifiable && !overlapping
 every requirement MUST have at least 1 concrete Scenario with WHEN / THEN
 Delta Specs format strictly enforced (ADDED / MODIFIED / REMOVED)
 UI feature -> mockup_approved required before implementation
+master directrices in openspec/specs/project-rules.md MUST be adhered to
 ```
 
 language: user.language

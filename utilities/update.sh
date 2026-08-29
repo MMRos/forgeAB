@@ -37,7 +37,7 @@ if ! git fetch "$REMOTE_NAME" "$BRANCH"; then
 fi
 
 # 4. Update system files safely
-SYSTEM_FILES="utilities/agents/*.md CLAUDE.md .antigravity/context.md .opencode/instructions.md utilities/VERSION utilities/CHANGELOG.md utilities/templates/ README.md"
+SYSTEM_FILES="utilities/agents/*.md CLAUDE.md .antigravity/context.md .opencode/instructions.md utilities/VERSION utilities/CHANGELOG.md utilities/templates/ README.md .github/"
 
 echo "🔄 Updating system files..."
 
@@ -49,7 +49,7 @@ if git checkout "$REMOTE_NAME/$BRANCH" -- $SYSTEM_FILES 2>/dev/null; then
     NEW_VERSION=$(cat utilities/VERSION)
     echo -e "\n📦 Installed version: \033[1;32mv$NEW_VERSION\033[0m"
     echo "Recent changes:"
-    head -n 15 utilities/CHANGELOG.md | grep -v "^#"
+    head -n 20 utilities/CHANGELOG.md | grep -v "^#"
   fi
 
   echo ""
