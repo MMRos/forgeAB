@@ -4,15 +4,17 @@
 schema: spec-driven
 
 context: |
-  Architecture: Multi-agent Spec-Driven Development (forgeAB)
-  Coding Standard: Clean code, strict separation of concerns, 100% test-first
-  Security: Zero unhandled exceptions, zero leaks of credentials/tokens, automated CVE auditing
-  Quality Target: CRAP score < 30 on all functions (CRAP = CC^2 * (1 - Cov)^3 + CC)
+  Architecture: Full-Stack (Clean Architecture Backend + Feature-Sliced/Domain Colocation Frontend)
+  Modularity: Anti-monolithic design (<= 150 lines/file, <= 30 lines/function, 1 component per file)
+  Development Cycle: Specifier -> Planner -> Contracts/Skeletons (TSDoc/JSDoc) -> Trapper -> Implementer -> Tester
+  Coding Standard: Clean code, strict separation of concerns, 100% test-first, pnpm package manager
+  Security: Zero unhandled exceptions, zero leaks of credentials/tokens, automated CVE auditing & secret scans
+  Quality Target: CRAP score < 30 on all functions (CRAP = CC^2 * (1 - Cov)^3 + CC), CC <= 10, Cov >= 90%
   Directrices: All agents strictly adhere to baseline rules in openspec/specs/project-rules.md
 
 rules:
   project_rules:
-    - Master project directrices must be defined in openspec/specs/project-rules.md during bootstrap
+    - Master project directrices defined in openspec/specs/project-rules.md
     - All proposals, designs, test suites, and production code must comply with project-rules.md
   proposal:
     - Clearly define the problem, user motivation, and technical scope
@@ -24,14 +26,15 @@ rules:
     - Formulate clear requirements using RFC 2119 keywords (SHALL, MUST, SHOULD)
     - Every requirement MUST include at least one concrete scenario with WHEN / THEN steps
   design:
-    - Detail technical components, interfaces, and state management
+    - Detail technical components, interfaces, feature folder structure, and state management
+    - Generate interface/function skeletons with full TSDoc/JSDoc contracts prior to Trapper
     - Reference architectural Mermaid diagrams located in diagrams/
     - Document technical decisions, alternatives considered, and trade-offs
-    - Include error handling, logging policies, and complexity mitigation (CC <= 10)
+    - Include error handling, logging policies, and complexity mitigation (CC <= 10, file <= 150 lines)
   tasks:
     - Structure tasks hierarchically with numbered checkpoints (1.1, 1.2, 2.1...)
-    - Strictly enforce Test-First order: Trapper test definitions before production code
-    - Include validation checkpoints for tests, security audits, CRAP compliance, and directrices adherence
+    - Strictly enforce Test-First order: Skeletons/contracts -> Trapper test definitions -> Implementer production code
+    - Include sequential validation checkpoints for TypeCheck, ESLint, Tests, CRAP compliance, and CVE security
   critic:
     - Available on-demand for adversarial audit with zero sycophancy
     - Issues structured verdicts (APROBADO CON CONDICIONES, OBJECIÓN SEVERA, RECHAZADO)

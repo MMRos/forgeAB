@@ -18,8 +18,14 @@ pre: review(skills + directrices) before proceeding
 
 ```
 A1. module_analysis:
-  group domain logic into cohesive modules/layers adhering to project-rules.md -> define:
-    modules | public interfaces | entity models | data flows
+  group domain logic into cohesive feature modules adhering to project-rules.md:
+    - Shared UI primitives -> src/shared/components/ui/
+    - Domain features -> src/features/[feature-name]/
+      ├── components/ (private subcomponents)
+      ├── hooks/
+      ├── services/
+      ├── types/
+      └── index.ts (strictly encapsulated public API)
 
 A2. diagram_generation (in diagrams/ at project root):
   class-diagram.mmd  -> always (static architecture & relationships)
@@ -36,24 +42,35 @@ A2. diagram_generation (in diagrams/ at project root):
 
 ```
 B1. technical_design (openspec/changes/[change-name]/design.md):
-  - 1. Architecture Overview & module decomposition (aligned with project-rules.md)
+  - 1. Architecture Overview & feature module decomposition (aligned with project-rules.md)
   - 2. Component Design & Interfaces (signatures, parameters, returns, errors)
-  - 3. Technical Decisions & Trade-offs (alternatives evaluated)
-  - 4. Complexity & CRAP Risk Management:
+  - 3. Anti-Monolith & Complexity Guardrails:
+       * Maximum 150 lines per component/service file
+       * Maximum 30 lines per function
+       * 1 component per file
        * Target Cyclomatic Complexity <= 10 per function
        * Target Test Coverage >= 90%
-       * Anti-patterns to avoid (broad try-catches, monolithic methods)
+  - 4. Technical Decisions & Trade-offs (alternatives evaluated)
 
-B2. tasks_checklist (openspec/changes/[change-name]/tasks.md):
-  - Section 1: Test Preparation & Traps (Trapper tasks)
+B2. skeletons_and_docstring_contracts:
+  - Generate typed interfaces and function/component skeletons (stub files with types and `throw new Error('Not implemented')` or component stubs)
+  - Write complete TSDoc/JSDoc docstring comments for every function, hook, and component:
+    * Description of purpose & behavior
+    * @param {Type} name - detailed parameter specification
+    * @returns {Type} - return value specification
+    * @throws {ErrorType} - explicit error failure cases
+    * Preconditions & Postconditions
+
+B3. tasks_checklist (openspec/changes/[change-name]/tasks.md):
+  - Section 1: Contracts, Skeletons & Test Preparation (Trapper tasks)
   - Section 2: Core Implementation (Implementer tasks)
-  - Section 3: Quality, Security & Verification (Tester tasks)
+  - Section 3: Sequential Quality, Security & Verification (Tester tasks: TypeCheck -> Lint -> Tests -> CRAP -> CVEs)
   - Section 4: Archival & Spec Synchronization (Leader tasks)
 
 [Optional Critic Audit]:
-  User/Leader invokes Critic -> Critic audits design.md, coupling, and complexity bottlenecks.
+  User/Leader invokes Critic -> Critic audits design.md, skeletons, coupling, and complexity bottlenecks.
 
-deliver design.md + tasks.md -> Leader -> Trapper / Implementer
+deliver design.md + skeletons + tasks.md -> Leader -> Trapper / Implementer
 
 ISOLATION_RULE:
   after delivering: discard change details from memory
@@ -67,7 +84,7 @@ trigger: structural error or spec modification
 
 1. analyse structural change
 2. update affected diagrams in diagrams/*.mmd
-3. update design.md
+3. update design.md & skeletons
 4. -> Leader (updated files)
 5. notify if change impacts other Waiting changes
 ```
@@ -75,9 +92,10 @@ trigger: structural error or spec modification
 ## DELIVERY_CHECKLIST
 
 ```
-design.md adheres to project-rules.md? ✓
-design.md contains clear interfaces, errors, and flows? ✓
+design.md adheres to project-rules.md modularity and feature colocation? ✓
+typed skeletons and TSDoc/JSDoc docstrings generated before Trapper? ✓
 tasks.md structured with numbered hierarchy (1.1, 1.2, 2.1...)? ✓
+anti-monolith limits (<= 150 lines/file, <= 30 lines/function) explicitly set? ✓
 diagrams reference correct entities and valid Mermaid syntax? ✓
 CRAP risk and complexity guardrails explicitly stated? ✓
 ```

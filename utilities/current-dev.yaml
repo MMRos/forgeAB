@@ -5,81 +5,11 @@
 
 project:
   meta:
-    name: "" # Nombre del proyecto
-    language: "" # Lenguaje(s) principal(es)
-    loop_mode: false # true | false
-    openspec_profile: "core" # core | expanded
-    created: "" # ISO 8601
-    updated: "" # ISO 8601
+    name: "forgeAB Full-Stack"
+    language: "TypeScript / JavaScript (Backend API + Frontend Web)"
+    loop_mode: false
+    openspec_profile: "core"
+    created: "2026-08-30T11:20:00Z"
+    updated: "2026-09-01T00:16:00Z"
 
-  functions:
-    F001:
-      name: "nombre_explicativo_de_la_funcion"
-      priority: 1 # 1 = más alta
-      status: "Waiting" # Waiting | In Progress | Testing Pending | Completed
-      change_ref: "openspec/changes/F001-nombre-funcion" # Ruta al artefacto OpenSpec si aplica
-
-      specifications:
-        description: "Qué hace esta función o cambio"
-        inputs:
-          - name: ""
-            type: ""
-            required: true
-            description: ""
-        outputs:
-          - name: ""
-            type: ""
-            description: ""
-        constraints: []
-          # - Límites, reglas de negocio, condiciones de borde
-        assumptions: []
-          # - Asunciones del Specifier aprobadas por el usuario
-        ui_spec: # Opcional, si aplica UI
-          components: []
-          states: []
-          interactions: []
-          mockup_approved: false
-
-      dependencies: []
-        # - IDs de funciones que deben completarse antes
-
-      skills_required: []
-        # - Nombres de skills pertinentes que cada subagente debe revisar
-
-      implementation:
-        module: ""
-        file: ""
-        notes: "Decisiones tomadas, desviaciones del flujo del Planner si las hay"
-        quality_metrics:
-          crap_index: 0.0 # CRAP = CC^2 * (1 - Cov)^3 + CC. Objetivo < 30
-          cyclomatic_complexity: 0
-          test_coverage: 0.0 # 0.0 a 1.0 (ej. 0.95 = 95%)
-          dry_passed: true
-
-      tests:
-        T001-U:
-          type: "unit"
-          status: "Pending" # Pass | Fail | Blocked | Pending
-          result: ""
-          name: "Nombre descriptivo"
-          scenario: "WHEN X THEN Y"
-          setup: "Precondiciones"
-          expected: "Resultado esperado"
-          log_integration: true
-        T001-F:
-          type: "functional"
-          status: "Pending"
-          result: ""
-          name: "Nombre descriptivo"
-          scenario: "WHEN X THEN Y"
-          setup: ""
-          expected: ""
-          log_integration: true
-
-      error_log: []
-        # Entradas automáticas del try-catch del Implementer
-
-      timestamps:
-        started: ""
-        testing_started: ""
-        completed: ""
+  functions: {}

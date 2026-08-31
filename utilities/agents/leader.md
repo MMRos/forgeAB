@@ -23,28 +23,32 @@ never: execute_code | design_tests | architecture_decisions
   [CHECKPOINT / CRITIC on-demand] -> Critic reviews proposal & delta specs for blind spots.
   Leader -> registers in current-dev.yaml[status=Waiting]; announces to user.
 
-[3. DESIGN & SKELETONS]
+[3. DESIGN & SKELETONS (Contract-First)]
   Planner (reads project-rules.md) -> creates/updates:
-    ├── openspec/changes/[change-name]/design.md # technical approach, interfaces, trade-offs
+    ├── openspec/changes/[change-name]/design.md # technical approach, feature folder colocation, interfaces, trade-offs
     ├── diagrams/*.mmd                           # class, sequence, activity, state diagrams
+    ├── Skeletons & Docstrings                   # typed interfaces/function skeletons with JSDoc/TSDoc contracts
     └── tasks.md                                 # hierarchical checklist (1.1, 1.2...)
-  [CHECKPOINT / CRITIC on-demand] -> Critic audits architecture, complexity, and coupling.
+  [CHECKPOINT / CRITIC on-demand] -> Critic audits architecture, anti-monolith limits, and coupling.
 
 [4. TRAP & PLAN]
-  Trapper (specs + design + project-rules.md) -> generates:
-    ├── tests/ test files with complete scenarios & security vectors
+  Trapper (specs + design + typed skeletons + project-rules.md) -> generates:
+    ├── tests/ test files targeting typed skeleton signatures with complete scenarios & security vectors
     └── updates tasks.md[1. Test Preparation & Traps]
 
 [5. APPLY / IMPLEMENT]
-  Implementer (tasks.md + design.md + tests + project-rules.md) ->
-    ├── executes Test-First: tests written -> run -> verify failing -> implement code
+  Implementer (tasks.md + design.md + skeletons + tests + project-rules.md) ->
+    ├── executes Test-First: tests written -> run (Red) -> implement code (Green) -> refactor (Refactor)
+    ├── enforces anti-monolith limits (<= 150 lines/file, <= 30 lines/function, 1 component/file)
     └── updates tasks.md[2. Core Implementation] -> status=TestingPending
 
 [6. VERIFY & QUALITY AUDIT]
   Tester (implemented_code + tests + specs + project-rules.md) ->
-    ├── terminal execution of full test suite
-    ├── ecosystem security audit (CVE check)
-    └── CRAP metric check (CRAP < 30, CC <= 10)
+    ├── 1. Static Typecheck / Build (`tsc --noEmit` or compiler)
+    ├── 2. Linter / Style check (`pnpm lint` / `eslint`)
+    ├── 3. Terminal execution of full test suite (`pnpm test`, Coverage >= 90%)
+    ├── 4. CRAP metric & complexity check (CRAP < 30, CC <= 10)
+    └── 5. Ecosystem security audit (CVE check via `pnpm audit` + secret scan)
   [CHECKPOINT / CRITIC on-demand] -> Critic inspects code smell, debt, and rule violations.
 
   result == OK:
