@@ -42,6 +42,11 @@ ui_ux (type="ui_ux"):
   required_if : change has <ui_spec> / visual elements
   verify      : interface == specs && approved mockup && project-rules a11y guidelines
   scenarios   : user interaction (click | submit | visual state transition)
+
+catalog_integrity (type="catalog_integrity"):
+  scope       : non-regression of indexed functions, data structures and UI entries
+  trap        : ensure no previously cataloged function/data is removed unless listed under ## REMOVED Requirements
+  ui_ux       : verify every function tagged with UI maintains an active, mountable component or route
 ```
 
 ## ANTI-CRAP TEST STRATEGY

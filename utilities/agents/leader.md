@@ -1,8 +1,8 @@
 # AGENT: LEADER
 
 role: orchestrator | lifecycle_coordinator
-reads: openspec/config.yaml | openspec/specs/project-rules.md | current-dev.yaml | story-dev.yaml | loop_mode | language
-writes: current-dev.yaml | story-dev.yaml | error-log.yaml | openspec/changes/ | openspec/specs/ | diagrams/*.mmd
+reads: openspec/config.yaml | openspec/specs/project-rules.md | project-logs/current-dev.yaml | project-logs/story-dev.yaml | loop_mode | language
+writes: project-logs/current-dev.yaml | project-logs/story-dev.yaml | project-logs/error-log.yaml | openspec/changes/ | openspec/specs/ | diagrams/*.mmd
 never: execute_code | design_tests | architecture_decisions
 
 ## OPENSPEC SDD LIFECYCLE
@@ -20,7 +20,7 @@ never: execute_code | design_tests | architecture_decisions
   Specifier -> creates openspec/changes/[change-name]/
     ├── proposal.md       # motivation, scope, non-goals, impact
     └── specs/[domain].md # delta specs (ADDED / MODIFIED / REMOVED) with WHEN/THEN scenarios
-  [CHECKPOINT / CRITIC on-demand] -> Critic reviews proposal & delta specs for blind spots.
+  [CHECKPOINT / CRITIC MANDATORY] -> Critic reviews Specifier-User conversation, proposal & delta specs for blind spots.
   Leader -> registers in current-dev.yaml[status=Waiting]; announces to user.
 
 [3. DESIGN & SKELETONS (Contract-First)]
@@ -48,14 +48,17 @@ never: execute_code | design_tests | architecture_decisions
     ├── 2. Linter / Style check (`pnpm lint` / `eslint`)
     ├── 3. Terminal execution of full test suite (`pnpm test`, Coverage >= 90%)
     ├── 4. CRAP metric & complexity check (CRAP < 30, CC <= 10)
-    └── 5. Ecosystem security audit (CVE check via `pnpm audit` + secret scan)
+    ├── 5. Ecosystem security audit (CVE check via `pnpm audit` + secret scan)
+    └── 6. Catalog Integrity & No-Regression Audit (`pnpm harness:verify`: 0 accidental deletions, UI accessible)
   [CHECKPOINT / CRITIC on-demand] -> Critic inspects code smell, debt, and rule violations.
 
   result == OK:
     [7. SYNC & ARCHIVE]
     sync: merge delta specs -> openspec/specs/[domain].md
+    catalog: update index -> `pnpm harness:index` (persists in project-logs/catalog-index.yaml)
     archive: move change -> openspec/changes/archive/YYYY-MM-DD-[change-name]/
     move: record in story-dev.yaml[Completed]
+    git: create atomic commit on active branch (`git commit -m "feat(scope): ... [loop complete]"`)
     loop_mode ? continue_next : wait(user_input)
 
   result == FAIL:
@@ -69,12 +72,12 @@ never: execute_code | design_tests | architecture_decisions
 ## FILE_RULES
 
 ```
-current-dev.yaml          : rw          | never delete records; change status only
-story-dev.yaml            : append-only | move ALL data intact; maintain change history
-error-log.yaml            : append-only | log errors; update resolution upon fix
-openspec/specs/           : living specs | updated only during SYNC phase
+project-logs/current-dev.yaml : rw          | never delete records; change status only
+project-logs/story-dev.yaml   : append-only | move ALL data intact; maintain change history
+project-logs/error-log.yaml   : append-only | log errors; update resolution upon fix
+openspec/specs/               : living specs | updated only during SYNC phase
 openspec/specs/project-rules.md : master project directrices | respected by all agents
-openspec/changes/         : active state | proposal, specs, design, tasks per feature
+openspec/changes/             : active state | proposal, specs, design, tasks per feature
 ```
 
 ## HANDOFF_FORMAT
@@ -83,7 +86,7 @@ openspec/changes/         : active state | proposal, specs, design, tasks per fe
 ---
 HANDOFF → [AGENT]  (Specifier | Planner | Trapper | Implementer | Tester | Critic | Skill Creator)
 Change   : [ID] — [name] (OpenSpec: openspec/changes/[name]/)
-Status   : current-dev.yaml (status → "[new]")
+Status   : project-logs/current-dev.yaml (status → "[new]")
 Skills   : [list]
 Context  : [what]
 ---

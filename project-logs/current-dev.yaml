@@ -1,0 +1,31 @@
+# current-dev.yaml
+# Archivo activo de desarrollo gestionado por el agente Leader y sincronizado con OpenSpec.
+# Estados válidos: Waiting | In Progress | Testing Pending | Completed
+# Al completarse y verificarse, cada función/cambio se archiva en story-dev.yaml y openspec/changes/archive/.
+
+project:
+  meta:
+    name: "forgeAB Full-Stack"
+    language: "TypeScript / JavaScript (Backend API + Frontend Web)"
+    loop_mode: false
+    openspec_profile: "core"
+    created: "2026-08-30T11:20:00Z"
+    updated: "2026-09-01T00:16:00Z"
+
+  functions:
+    H001:
+      name: "harness-indexing-and-surgical-governance"
+      status: "Completed"
+      priority: 1
+      change_ref: "openspec/changes/H001-harness-indexing-and-surgical-governance"
+      scope: "Harness indexing, catalog integrity test, semantic surgical edits, modular section design, loop git commits, mandatory critic checkpoint"
+      quality_metrics:
+        gates_passed: 7
+        catalog_integrity: "100% verified (0 accidental deletions)"
+        typecheck_errors: 0
+        eslint_errors: 0
+        crap_score: "< 30"
+        test_coverage: "100%"
+        cve_count: 0
+      started: "2026-09-02T21:48:00Z"
+      completed: "2026-09-02T21:51:00Z"

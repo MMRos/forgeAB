@@ -52,6 +52,12 @@ GATE 6: SECURITY, CVE & SECRET AUDIT
   - Scan for leaked credentials:
     `grep -rn "AKIA\|sk-\|ghp_\|Bearer \|password" .`
   - 0 High/Critical CVEs and 0 leaked secrets allowed.
+
+GATE 7: CATALOG INTEGRITY & NO-REGRESSION AUDIT
+  - Execute catalog verifier: `pnpm harness:verify`
+  - Verify 0 accidental deletions of previously cataloged functions/data structures
+  - Verify UI/UX accessibility: every UI-tagged function retains an accessible component/route
+  - Failure to find a function not in ## REMOVED Requirements -> abort immediately (Category B).
 ```
 
 ## STEP_2 — final_evaluation
@@ -65,6 +71,7 @@ ALL GATES PASS:
     - [x] 3.4 Execute complete test suite (100% Pass, Coverage >= 90%)
     - [x] 3.5 Verify CRAP index (< 30) and Cyclomatic Complexity (CC <= 10)
     - [x] 3.6 Run ecosystem security audit (0 High/Critical CVEs & 0 secrets)
+    - [x] 3.7 Verify Catalog Integrity & No-Regression (0 accidental deletions, UI accessible)
   -> Leader: feature_ready + verification_summary
   Leader executes SYNC & ARCHIVE
 
@@ -95,10 +102,11 @@ ANY GATE FAILS -> classify:
 ## RULES
 
 ```
-execute gates in exact sequential order: TypeCheck -> Lint -> Structure -> Tests -> CRAP -> Security
+execute gates in exact sequential order: TypeCheck -> Lint -> Structure -> Tests -> CRAP -> Security -> Catalog
 security failures -> always Category B
 CRAP score >= 30 -> always Category B
 anti-monolith breaches -> always Category B
+catalog regressions -> always Category B
 ambiguous results -> Blocked (never mark Pass)
 ```
 

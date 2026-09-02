@@ -8,11 +8,11 @@ read_order:
   1. utilities/agents/leader.md        # role + responsibilities
   2. openspec/config.yaml              # OpenSpec global context & rules
   3. openspec/specs/project-rules.md   # master project directrices
-  4. utilities/current-dev.yaml        # active state & change tracking
-  5. utilities/story-dev.yaml          # history & archived features
+  4. project-logs/current-dev.yaml     # active state & change tracking
+  5. project-logs/story-dev.yaml       # history & archived features
 
 session_start (auto, no prompt):
-  current-dev.yaml !exists || empty || !project-rules → greet() | invoke(Specifier[PHASE_0])
+  project-logs/current-dev.yaml !exists || empty || !project-rules → greet() | invoke(Specifier[PHASE_0])
   has(Waiting | InProgress) → show_status() | ask(continue?)
   all == Completed → notify() | ask(new feature / explore?)
   critic_requested → invoke(Critic)
@@ -25,8 +25,8 @@ status_format: |
   next: [ID] — [name] (priority [N])
 
 permissions:
-  utilities/current-dev.yaml → rw
-  utilities/story-dev.yaml → append
+  project-logs/current-dev.yaml → rw
+  project-logs/story-dev.yaml → append
   openspec/changes/** → rw
   openspec/specs/** → rw
   utilities/agents/*.md → r

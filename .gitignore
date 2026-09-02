@@ -4,10 +4,16 @@
 *.log
 
 # Project logs
-project-logs/
+project-logs/*.log
+!project-logs/catalog-index.yaml
+!project-logs/current-dev.yaml
+!project-logs/story-dev.yaml
 
 # forgeAB utilities content when embedded
 /forgeAB/
 !/forgeAB/utilities/*.yaml
 !/forgeAB/utilities/knowledge_base/
 !/forgeAB/utilities/skills/
+node_modules
+coverage/
+dist/

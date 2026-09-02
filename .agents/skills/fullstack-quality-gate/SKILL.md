@@ -20,7 +20,14 @@ pnpm typecheck   # o `tsc --noEmit`
 pnpm lint        # o `eslint .`
 
 # Ejecución de pruebas con cobertura
-pnpm test -- --coverage
+pnpm test:coverage
+
+# Auditoría integral de las 7 puertas de calidad y cálculo matemático de CRAP
+pnpm quality-gate
+
+# Indexación e Integridad de Catálogo (No-Regresión de Funciones/Datos)
+pnpm harness:index
+pnpm harness:verify
 
 # Auditoría de seguridad y CVEs
 pnpm audit
@@ -41,4 +48,7 @@ pnpm audit
 8. **Índice CRAP**:
    $$CRAP = CC^2 \times (1 - Cov)^3 + CC < 30$$
 9. **Auditoría CVE y Secretos**: Cero vulnerabilidades de nivel Alto o Crítico y cero credenciales expuestas en código o logs.
-10. **4 Estados de UI**: Vistas y componentes con datos asíncronos deben cubrir explícitamente Loading, Empty, Error y Success.
+10. **Integridad de Catálogo y No-Regresión**: Cero funciones o tipos de datos eliminados sin figurar en `## REMOVED Requirements` (`pnpm harness:verify`), con accesibilidad UI/UX preservada.
+11. **Modificación Quirúrgica Semántica**: Aislamiento estricto de propiedad, cero cambios colaterales en variables o estilos adyacentes y contraste de diff.
+12. **Diseño Modular por Secciones**: Descomposición por secciones atómicas y prioridad de reutilización de componentes (`shared/` y `features/`).
+13. **4 Estados de UI**: Vistas y componentes con datos asíncronos deben cubrir explícitamente Loading, Empty, Error y Success.

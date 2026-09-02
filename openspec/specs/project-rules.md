@@ -19,22 +19,29 @@ Todo desarrollo o modificación debe seguir de forma estricta y sin saltos el si
 ```
 [1. SPECIFIER]   → Clarificación de requisitos y redacción de Delta Specs con escenarios WHEN / THEN.
       ↓
-[2. PLANNER]     → Diseño arquitectónico, contratos de interfaces y descomposición en tasks.md.
+[CHECKPOINT      → Auditoría adversarial obligatoria del Critic sobre la conversación y especificaciones.
+ CRITIC]
+      ↓
+[2. PLANNER]     → Diseño arquitectónico por secciones atómicas, reutilización, contratos y tasks.md.
       ↓
 [3. CONTRACTS &  → Generación de esqueletos de funciones/tipos con comentarios JSDoc/TSDoc completos
     DOCSTRINGS]    (descripción, @param, @returns, @throws, pre/postcondiciones) ANTES de implementar.
       ↓
-[4. TRAPPER]     → Diseño e implementación de suite de tests y trampas de seguridad (basadas en
-                   las firmas conocidas y tipadas de los esqueletos).
+[4. TRAPPER]     → Diseño e implementación de suite de tests, trampas de seguridad e integridad de catálogo.
       ↓
-[5. IMPLEMENTER] → Implementación del código de producción bajo Test-First (Red → Green → Refactor).
+[5. IMPLEMENTER] → Implementación Test-First bajo Edición Quirúrgica Semántica (preservación de contexto).
       ↓
-[6. TESTER]      → Ejecución de puertas de calidad en orden secuencial e intransigente:
+[6. TESTER]      → Ejecución de 7 puertas de calidad en orden secuencial e intransigente:
                    1. Static Typecheck / Compilación (`tsc --noEmit` o equivalente)
                    2. Linter / Formato (`pnpm lint` / `eslint`)
-                   3. Test Suite completa (`pnpm test` con Cobertura >= 90%)
-                   4. Auditoría CRAP (< 30) y Complejidad Ciclomática (CC <= 10)
-                   5. Auditoría de Seguridad y CVEs (`pnpm audit` y escaneo de secretos)
+                   3. Límites Anti-Monolito (<= 150 líneas/archivo, <= 30 líneas/función)
+                   4. Test Suite completa (`pnpm test` con Cobertura >= 90%)
+                   5. Auditoría CRAP (< 30) y Complejidad Ciclomática (CC <= 10)
+                   6. Auditoría de Seguridad y CVEs (`pnpm audit` y escaneo de secretos)
+                   7. Integridad de Catálogo (`pnpm harness:verify`: 0 eliminaciones no autorizadas y UI accesible)
+      ↓
+[7. LEADER       → Sincronización de catálogo (`pnpm harness:index`), archivo de cambio y Git Commit
+ SYNC & ARCHIVE]   automático en la rama activa.
 ```
 
 ---
@@ -67,6 +74,11 @@ Todo desarrollo o modificación debe seguir de forma estricta y sin saltos el si
           └── index.ts          ← ÚNICA superficie pública exportada (Barrel de encapsulación)
   ```
 - **Encapsulación Estricta**: Queda prohibido que una feature importe submódulos internos de otra feature de forma profunda (ej. `import ... from '@/features/audio-creator/components/AudioWaveform'`). Toda comunicación inter-feature debe pasar por el `index.ts` público de la feature o ser promovida a `shared/` si es verdaderamente reutilizable.
+
+### 2.3. Diseño por Secciones y Reutilización de Código
+- **Descomposición Obligatoria por Secciones**: Al diseñar o maquetar cualquier vista, página o función compleja, esta DEBE descomponerse conceptualmente en secciones atómicas independientes (ej. HeaderSection, MetricsSection, ControlPanel, DetailGrid).
+- **Prioridad de Reutilización**: Antes de declarar un nuevo componente o función auxiliar, el Planner y el Implementer DEBEN auditar `src/shared/` y las features existentes para reutilizar código probado, reduciendo duplicidad y manteniendo los archivos dentro del límite de 150 líneas.
+- **Acceso UI/UX de Funciones Indexadas**: Toda función o dato que exponga interacción directa con el usuario debe disponer de un componente o control visual accesible en la interfaz.
 
 ---
 
@@ -155,6 +167,11 @@ Todo componente o vista que consuma datos asíncronos DEBE implementar explícit
   - Prohibidos los comentarios obvios o superfluos que solo repiten el nombre de la variable.
 - **Control de Dependencias**: No añadir dependencias externas sin justificación técnica y previa auditoría de seguridad.
 
+### 5.1. Regla de Modificación Quirúrgica Semántica
+- **Aislamiento Estricto de Ámbito**: Si se solicita modificar un aspecto puntual (ej. el color de un modal, o unificar una función de cierre), el agente DEBE identificar exclusivamente las líneas que controlan ese aspecto. Queda terminantemente prohibido alterar propiedades contiguas (tamaños, márgenes, padding, eventos colaterales) que no hayan sido requeridas.
+- **Preservación Inviolable del Entorno Adyacente**: El código circundante debe permanecer inalterado, sin reescrituras masivas, sin reordenamientos injustificados y sin cambios globales de formato que ensucien el historial.
+- **Contraste de Diff Post-Edición**: El agente DEBE contrastar el diff generado para verificar que única y exclusivamente se modificaron las líneas objeto de la solicitud antes de considerar la tarea completada.
+
 ---
 
 ## 6. Seguridad y Gestión de Secretos
@@ -172,9 +189,10 @@ Todo componente o vista que consuma datos asíncronos DEBE implementar explícit
 | :--- | :--- | :--- | :--- |
 | **1** | **TypeCheck / Compilación** | 0 errores de compilación (`tsc --noEmit`) | Tester |
 | **2** | **Linter & Formato** | 0 errores de ESLint / Style | Tester |
-| **3** | **Límites Anti-Monolito** | $\le 150$ líneas/archivo, $\le 30$ líneas/función | Implementer / Critic |
+| **3** | **Límites Anti-Monolito** | $\le 150$ líneas/archivo, $\le 30$ líneas/función, 1 comp/file | Implementer / Critic |
 | **4** | **Complejidad Ciclomática (CC)** | $\le 10$ por función / componente | Implementer / Tester |
 | **5** | **Cobertura de Tests** | $\ge 90\%$ líneas y ramas críticas | Trapper / Tester |
 | **6** | **Índice CRAP** ($CRAP = CC^2 \times (1 - Cov)^3 + CC$) | $< 30$ en todo código de producción | Tester / Critic |
 | **7** | **Auditoría de Seguridad (CVEs)** | 0 vulnerabilidades Altas/Críticas y 0 secretos | Tester |
-| **8** | **Adherencia a Directrices** | 100% de cumplimiento con este archivo | Critic / Leader |
+| **8** | **Integridad de Catálogo** | 0 eliminaciones no autorizadas (`pnpm harness:verify`) | Tester / Trapper |
+| **9** | **Edición Quirúrgica & Adherencia** | 100% cumplimiento de diffs quirúrgicos y directrices | Critic / Leader |

@@ -65,6 +65,12 @@ ERROR_HANDLING (every public/entry function):
   - Log: function_name | inputs (NO credentials/tokens) | error_details
   - Adapt syntax: try/catch (TS/JS/Java) | try/except (Python) | Result<T,E> (Rust)
   - Follow error payload format defined in project-rules.md
+
+SEMANTIC SURGICAL EDITS & CONTEXT PRESERVATION:
+  - Isolate strictly the requested scope: if changing a color or handler, touch ONLY those lines
+  - Inviolable context preservation: NEVER modify adjacent styles, dimensions, variables or events
+  - Prohibited: wholesale file rewrites, unwarranted reordering, or global formatting shifts
+  - Diff check: contrast diff before/after to guarantee zero unintended collateral modifications
 ```
 
 ## STEP_4 — tasks_and_status_update
@@ -74,7 +80,7 @@ Check off completed tasks in openspec/changes/[change-name]/tasks.md Section 2:
   - [x] 2.1 Implement core components and functions within anti-monolith limits
   - [x] 2.2 Implement error handling, boundary guards, and logging
 
-Update current-dev.yaml implementation notes & quality metrics.
+Update project-logs/current-dev.yaml implementation notes & quality metrics.
 ```
 
 ## QUALITY_CHECKLIST
@@ -88,6 +94,7 @@ project-rules.md directrices strictly respected? ✓
 no arbitrary dependencies added outside design.md? ✓
 cyclomatic complexity kept <= 10? ✓
 try-catch and logging in all public functions (no leaked secrets)? ✓
+edits are strictly surgical and context-preserving (zero collateral changes in diff)? ✓
 tasks.md updated with progress? ✓
 ```
 

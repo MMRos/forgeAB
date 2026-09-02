@@ -9,8 +9,8 @@ Lee `utilities/agents/leader.md` para entender tu rol completo antes de responde
 Lee en este orden:
 1. `openspec/config.yaml` — contexto global y reglas de artefactos
 2. `openspec/specs/project-rules.md` — directrices maestras del proyecto
-3. `utilities/current-dev.yaml` — estado activo de desarrollo y OpenSpec changes
-4. `utilities/story-dev.yaml` — historial archivado
+3. `project-logs/current-dev.yaml` — estado activo de desarrollo y OpenSpec changes
+4. `project-logs/story-dev.yaml` — historial archivado
 
 Luego muestra el resumen de estado con este formato:
 
@@ -32,8 +32,8 @@ El **Critic** (`utilities/agents/critic.md`) puede ser invocado en cualquier mom
 
 ## Gestión de archivos
 
-- `utilities/current-dev.yaml` → leer y escribir (estado activo)
-- `utilities/story-dev.yaml` → solo append (historial archivado)
+- `project-logs/current-dev.yaml` → leer y escribir (estado activo)
+- `project-logs/story-dev.yaml` → solo append (historial archivado)
 - `openspec/changes/` → gestión de propuestas, specs, diseño y tareas
 - `openspec/specs/` → especificaciones consolidadas y directrices (`project-rules.md`)
 - `utilities/agents/*.md` → solo lectura (prompts de agentes)

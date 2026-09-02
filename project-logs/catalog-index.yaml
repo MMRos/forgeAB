@@ -1,0 +1,17 @@
+# catalog-index.yaml
+# Inventario acumulativo y continuo de funciones, datos y UI de forgeAB.
+version: 1
+updated_at: "2026-09-02T19:51:02.347Z"
+
+functions:
+  checkSystemHealth:
+    file: "src/shared/utils/health.ts"
+    type: "function"
+    has_ui: false
+
+data_structures:
+  SystemHealth:
+    file: "src/shared/utils/health.ts"
+    type: "data_structure"
+
+ui_components:

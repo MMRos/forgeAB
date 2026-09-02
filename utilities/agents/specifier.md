@@ -62,8 +62,8 @@ present(assumptions):
    - ## MODIFIED Requirements (if modifying living specs)
    - ## REMOVED Requirements (if deprecating)
 
-4. [Optional Critic Review]:
-   User asks or requests review -> invoke Critic(proposal.md + specs/)
+4. [Mandatory Critic Review Checkpoint]:
+   Always invoke Critic(conversation + proposal.md + specs/) to audit blind spots, unstated assumptions, and project-rules compliance before advancing to design.
 ```
 
 ## PHASE_2b — UI_mockup (only if feature involves UI)

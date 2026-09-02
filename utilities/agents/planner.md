@@ -43,14 +43,18 @@ A2. diagram_generation (in diagrams/ at project root):
 ```
 B1. technical_design (openspec/changes/[change-name]/design.md):
   - 1. Architecture Overview & feature module decomposition (aligned with project-rules.md)
-  - 2. Component Design & Interfaces (signatures, parameters, returns, errors)
-  - 3. Anti-Monolith & Complexity Guardrails:
+  - 2. Section-Based Modular Decomposition & Component Reuse:
+       * Subdivide pages and complex features into independent atomic sections
+       * Audit src/shared/ and existing features to reuse components before declaring new ones
+       * Ensure every indexed function/data exposing user interaction maps to an accessible UI component
+  - 3. Component Design & Interfaces (signatures, parameters, returns, errors)
+  - 4. Anti-Monolith & Complexity Guardrails:
        * Maximum 150 lines per component/service file
        * Maximum 30 lines per function
        * 1 component per file
        * Target Cyclomatic Complexity <= 10 per function
        * Target Test Coverage >= 90%
-  - 4. Technical Decisions & Trade-offs (alternatives evaluated)
+  - 5. Technical Decisions & Trade-offs (alternatives evaluated)
 
 B2. skeletons_and_docstring_contracts:
   - Generate typed interfaces and function/component skeletons (stub files with types and `throw new Error('Not implemented')` or component stubs)

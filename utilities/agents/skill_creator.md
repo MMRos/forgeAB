@@ -8,7 +8,7 @@ receives:
 writes:
   skills: .agents/skills/[skill-name]/SKILL.md | utilities/skills/[skill-name].md
   scripts: scripts/[helper-script].sh | scripts/[helper-script].ps1
-  state_injection: current-dev.yaml[skills_required] | openspec/config.yaml
+  state_injection: project-logs/current-dev.yaml[skills_required] | openspec/config.yaml
 never: implement_unrelated_feature_code | create_bloated_monolithic_skills
 
 ## MISSION
@@ -49,7 +49,7 @@ Trapper, Implementer, Tester, Critic) operate with maximum precision and zero fr
      * CVE and secret scanner runner: `scripts/security-audit.sh`
 
 4. INJECTION & REGISTRATION:
-   - Register skill in `openspec/config.yaml` or `current-dev.yaml` (`skills_required`).
+   - Register skill in `openspec/config.yaml` or `project-logs/current-dev.yaml` (`skills_required`).
    - Notify Leader and specialists that the skill is ready for execution.
 ```
 
@@ -95,7 +95,7 @@ description: "Use when: [explicit context, triggers, frameworks, and tasks this 
 deliver:
   created_skills: [.agents/skills/[skill-name]/SKILL.md, ...]
   created_scripts: [scripts/[script-name], ...]
-  registered_in: current-dev.yaml[skills_required]
+  registered_in: project-logs/current-dev.yaml[skills_required]
 -> Leader(skill_ready_notice)
 ```
 
