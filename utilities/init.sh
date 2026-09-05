@@ -154,33 +154,32 @@ if [ -d "$TEMPLATES_DIR/project-rules" ]; then
   ok "project-rules templates verified"
 fi
 
-# ── 6. IDE Configuration ─────────────────────────────────────────────────────
-info "Verifying IDE configurations..."
+# ── 6. IDE & AI Model Dynamic Adaptation ────────────────────────────────────
+info "Running dynamic IDE & AI Model adaptation..."
 
-# Claude Code
-if [ ! -f "$PROJECT_ROOT/CLAUDE.md" ] && [ -f "$UTILITIES_DIR/CLAUDE.md" ]; then
-  cp "$UTILITIES_DIR/CLAUDE.md" "$PROJECT_ROOT/CLAUDE.md"
-  ok "CLAUDE.md initialized"
+ADAPTER_SCRIPT="$PROJECT_ROOT/scripts/harness-adapter.js"
+if [ -f "$ADAPTER_SCRIPT" ] && command -v node &> /dev/null; then
+  node "$ADAPTER_SCRIPT"
+  ok "Harness adapter executed successfully via Node.js"
 else
-  ok "CLAUDE.md verified"
-fi
+  # Native Bash fallback
+  DETECTED_IDE="generic"
+  if [ -n "${ANTIGRAVITY_WORKSPACE:-}" ] || [ -n "${ANTIGRAVITY_IDE:-}" ] || [ -d "$PROJECT_ROOT/.antigravity" ]; then
+    DETECTED_IDE="antigravity"
+  elif [ -n "${CURSOR_VERSION:-}" ] || [ -d "$PROJECT_ROOT/.cursor" ] || [ -f "$PROJECT_ROOT/.cursorrules" ]; then
+    DETECTED_IDE="cursor"
+  elif [ -n "${WINDSURF_VERSION:-}" ] || [ -d "$PROJECT_ROOT/.windsurf" ] || [ -f "$PROJECT_ROOT/.windsurfrules" ]; then
+    DETECTED_IDE="windsurf"
+  elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] || [ -f "$PROJECT_ROOT/CLAUDE.md" ]; then
+    DETECTED_IDE="claude-code"
+  elif [ -n "${OPENCODE_VERSION:-}" ] || [ -d "$PROJECT_ROOT/.opencode" ]; then
+    DETECTED_IDE="opencode"
+  elif [ -n "${VSCODE_PID:-}" ]; then
+    DETECTED_IDE="vscode"
+  fi
 
-# OpenCode
-mkdir -p "$PROJECT_ROOT/.opencode"
-if [ ! -f "$PROJECT_ROOT/.opencode/instructions.md" ] && [ -f "$UTILITIES_DIR/.opencode/instructions.md" ]; then
-  cp "$UTILITIES_DIR/.opencode/instructions.md" "$PROJECT_ROOT/.opencode/instructions.md"
-  ok ".opencode/instructions.md initialized"
-else
-  ok ".opencode/instructions.md verified"
-fi
-
-# Antigravity
-mkdir -p "$PROJECT_ROOT/.antigravity"
-if [ ! -f "$PROJECT_ROOT/.antigravity/context.md" ] && [ -f "$UTILITIES_DIR/.antigravity/context.md" ]; then
-  cp "$UTILITIES_DIR/.antigravity/context.md" "$PROJECT_ROOT/.antigravity/context.md"
-  ok ".antigravity/context.md initialized"
-else
-  ok ".antigravity/context.md verified"
+  DETECTED_MODEL="${MODEL:-${AI_MODEL:-Gemini 3.8 Flash}}"
+  ok "Environment detected: IDE = $DETECTED_IDE, Model = $DETECTED_MODEL"
 fi
 
 # ── 7. Final verification summary ────────────────────────────────────────────

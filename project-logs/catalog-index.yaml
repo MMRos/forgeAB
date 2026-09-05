@@ -1,17 +1,60 @@
 # catalog-index.yaml
 # Inventario acumulativo y continuo de funciones, datos y UI de forgeAB.
 version: 1
-updated_at: "2026-09-02T19:51:02.347Z"
+updated_at: "2026-09-05T07:10:20.905Z"
 
 functions:
   checkSystemHealth:
     file: "src/shared/utils/health.ts"
     type: "function"
     has_ui: false
+  buildCoreDirective:
+    file: "src/shared/utils/harness/directive-templates.ts"
+    type: "function"
+    has_ui: false
+  detectActiveIde:
+    file: "src/shared/utils/harness/ide-detector.ts"
+    type: "function"
+    has_ui: false
+  adaptHarness:
+    file: "src/shared/utils/harness/index.ts"
+    type: "function"
+    has_ui: false
+  getModelGuidelines:
+    file: "src/shared/utils/harness/model-detector.ts"
+    type: "function"
+    has_ui: false
+  detectActiveModel:
+    file: "src/shared/utils/harness/model-detector.ts"
+    type: "function"
+    has_ui: false
+  generateRootDirectives:
+    file: "src/shared/utils/harness/root-generator.ts"
+    type: "function"
+    has_ui: false
+  writeRootDirectives:
+    file: "src/shared/utils/harness/root-generator.ts"
+    type: "function"
+    has_ui: false
 
 data_structures:
   SystemHealth:
     file: "src/shared/utils/health.ts"
+    type: "data_structure"
+  SupportedIde:
+    file: "src/shared/utils/harness/types.ts"
+    type: "data_structure"
+  SupportedModel:
+    file: "src/shared/utils/harness/types.ts"
+    type: "data_structure"
+  DetectionResult:
+    file: "src/shared/utils/harness/types.ts"
+    type: "data_structure"
+  DirectiveFile:
+    file: "src/shared/utils/harness/types.ts"
+    type: "data_structure"
+  AdaptationSummary:
+    file: "src/shared/utils/harness/types.ts"
     type: "data_structure"
 
 ui_components:

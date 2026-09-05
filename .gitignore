@@ -2,18 +2,40 @@
 *.bak
 *.tmp
 *.log
+.harness-cache/
 
-# Project logs
+# Project logs (Preserved under version control)
 project-logs/*.log
 !project-logs/catalog-index.yaml
 !project-logs/current-dev.yaml
 !project-logs/story-dev.yaml
+!project-logs/error-log.yaml
+
+# Project manuals, specifications, tests and code (Strictly preserved)
+!README.md
+!openspec/**
+!diagrams/**
+!tests/**
+!src/**
+!scripts/**
+
+# AI IDE Harness directives and local environment anchors (Harness-only)
+.cursorrules
+.cursor/
+.windsurfrules
+.windsurf/
+.clinerules
+.github/copilot-instructions.md
+GEMINI.md
+AGENTS.md
 
 # forgeAB utilities content when embedded
 /forgeAB/
 !/forgeAB/utilities/*.yaml
 !/forgeAB/utilities/knowledge_base/
 !/forgeAB/utilities/skills/
-node_modules
+
+# Dependencies and build outputs
+node_modules/
 coverage/
 dist/

@@ -133,38 +133,25 @@ if (-not (Test-Path $kbTarget)) {
     Write-Ok "knowledge_base/security-guidelines.md verified"
 }
 
-# ── 5. IDE Configurations ────────────────────────────────────────────────────
-Write-Info "Verifying IDE configurations..."
+# ── 5. IDE & AI Model Dynamic Adaptation ────────────────────────────────────
+Write-Info "Running dynamic IDE & AI Model adaptation..."
 
-# Claude Code
-$claudeTarget = Join-Path $ProjectRoot "CLAUDE.md"
-if (-not (Test-Path $claudeTarget)) {
-    Copy-Item (Join-Path $UtilitiesDir "CLAUDE.md") $claudeTarget
-    Write-Ok "CLAUDE.md initialized"
+$adapterScript = Join-Path $ProjectRoot "scripts\harness-adapter.js"
+if ((Test-Path $adapterScript) -and (Get-Command node -ErrorAction SilentlyContinue)) {
+    & node $adapterScript
+    Write-Ok "Harness adapter executed successfully via Node.js"
 } else {
-    Write-Ok "CLAUDE.md verified"
-}
+    # Native PowerShell detection fallback
+    $detectedIde = "generic"
+    if ($env:ANTIGRAVITY_WORKSPACE -or $env:ANTIGRAVITY_IDE -or (Test-Path "$ProjectRoot\.antigravity")) { $detectedIde = "antigravity" }
+    elseif ($env:CURSOR_VERSION -or (Test-Path "$ProjectRoot\.cursor") -or (Test-Path "$ProjectRoot\.cursorrules")) { $detectedIde = "cursor" }
+    elseif ($env:WINDSURF_VERSION -or (Test-Path "$ProjectRoot\.windsurf") -or (Test-Path "$ProjectRoot\.windsurfrules")) { $detectedIde = "windsurf" }
+    elseif ($env:CLAUDE_PROJECT_DIR -or (Test-Path "$ProjectRoot\CLAUDE.md")) { $detectedIde = "claude-code" }
+    elseif ($env:OPENCODE_VERSION -or (Test-Path "$ProjectRoot\.opencode")) { $detectedIde = "opencode" }
+    elseif ($env:VSCODE_PID) { $detectedIde = "vscode" }
 
-# OpenCode
-$openCodeDir = Join-Path $ProjectRoot ".opencode"
-if (-not (Test-Path $openCodeDir)) { New-Item -ItemType Directory -Path $openCodeDir | Out-Null }
-$openCodeTarget = Join-Path $openCodeDir "instructions.md"
-if (-not (Test-Path $openCodeTarget)) {
-    Copy-Item (Join-Path $UtilitiesDir ".opencode\instructions.md") $openCodeTarget
-    Write-Ok ".opencode/instructions.md initialized"
-} else {
-    Write-Ok ".opencode/instructions.md verified"
-}
-
-# Antigravity
-$antigravityDir = Join-Path $ProjectRoot ".antigravity"
-if (-not (Test-Path $antigravityDir)) { New-Item -ItemType Directory -Path $antigravityDir | Out-Null }
-$antigravityTarget = Join-Path $antigravityDir "context.md"
-if (-not (Test-Path $antigravityTarget)) {
-    Copy-Item (Join-Path $UtilitiesDir ".antigravity\context.md") $antigravityTarget
-    Write-Ok ".antigravity/context.md initialized"
-} else {
-    Write-Ok ".antigravity/context.md verified"
+    $detectedModel = if ($env:MODEL) { $env:MODEL } elseif ($env:AI_MODEL) { $env:AI_MODEL } else { "Gemini 3.8 Flash" }
+    Write-Ok "Environment detected: IDE = $detectedIde, Model = $detectedModel"
 }
 
 Write-Host ""

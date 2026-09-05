@@ -12,6 +12,7 @@
     "quality-gate": "node scripts/quality-gate.js",
     "harness:index": "node scripts/harness-indexer.js index",
     "harness:verify": "node scripts/harness-indexer.js verify",
+    "harness:adapt": "node scripts/harness-adapter.js",
     "audit": "pnpm audit --audit-level=high"
   },
   "devDependencies": {

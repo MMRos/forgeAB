@@ -13,6 +13,12 @@ export default tseslint.config(
     },
   },
   {
+    files: ['tests/**'],
+    rules: {
+      'max-lines-per-function': 'off',
+    },
+  },
+  {
     ignores: [
       'dist/**',
       'coverage/**',

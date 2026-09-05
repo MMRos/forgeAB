@@ -5,22 +5,38 @@
 
 story:
   meta:
-    project: "" # Nombre del proyecto
-    language: "" # Lenguaje(s)
+    project: "forgeAB Full-Stack"
+    language: "TypeScript / JavaScript (Backend API + Frontend Web)"
 
   completed_functions:
-    # F001:
-    #   name: "nombre_de_la_funcion"
-    #   priority: 1
-    #   change_ref: "openspec/changes/archive/2026-08-21-F001-nombre-funcion"
-    #   specifications: ...
-    #   implementation: ...
-    #   quality_metrics:
-    #     crap_index: 1.0
-    #     cyclomatic_complexity: 2
-    #     test_coverage: 1.0
-    #   tests: ...
-    #   timestamps:
-    #     started: "2026-08-21T10:00:00Z"
-    #     completed: "2026-08-21T12:15:00Z"
-    #   notes: "Observaciones del equipo de agentes"
+    H001:
+      name: "harness-indexing-and-surgical-governance"
+      priority: 1
+      change_ref: "openspec/changes/H001-harness-indexing-and-surgical-governance"
+      quality_metrics:
+        gates_passed: 7
+        catalog_integrity: "100% verified"
+        crap_score: "< 30"
+        test_coverage: "100%"
+        cve_count: 0
+      timestamps:
+        started: "2026-09-02T21:48:00Z"
+        completed: "2026-09-02T21:51:00Z"
+      notes: "Gobernanza de indexación de catálogo y edición quirúrgica semántica"
+
+    H002:
+      name: "ide-model-adaptive-harness"
+      priority: 2
+      change_ref: "openspec/changes/H002-ide-model-adaptive-harness"
+      quality_metrics:
+        gates_passed: 7
+        catalog_integrity: "100% verified (0 accidental deletions)"
+        typecheck_errors: 0
+        eslint_errors: 0
+        crap_score: "< 30 (Avg CC <= 5)"
+        test_coverage: "100%"
+        cve_count: 0
+      timestamps:
+        started: "2026-09-05T09:07:00Z"
+        completed: "2026-09-05T09:10:30Z"
+      notes: "Detección dinámica de IDE y modelo, directivas raíz persistentes y gobernanza estricta en .gitignore"

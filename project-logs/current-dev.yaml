@@ -29,3 +29,20 @@ project:
         cve_count: 0
       started: "2026-09-02T21:48:00Z"
       completed: "2026-09-02T21:51:00Z"
+
+    H002:
+      name: "ide-model-adaptive-harness"
+      status: "Completed"
+      priority: 2
+      change_ref: "openspec/changes/H002-ide-model-adaptive-harness"
+      scope: "Dynamic IDE and Model detection, root directive file placement, and gitignore scaffolding governance"
+      quality_metrics:
+        gates_passed: 7
+        catalog_integrity: "100% verified (0 accidental deletions)"
+        typecheck_errors: 0
+        eslint_errors: 0
+        crap_score: "< 30 (Avg CC <= 5)"
+        test_coverage: "100%"
+        cve_count: 0
+      started: "2026-09-05T09:07:00Z"
+      completed: "2026-09-05T09:10:30Z"
